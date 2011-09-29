@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<io-channels xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="io_channel.xsd">
+     
+     <input-channels>
+     	<udp-channel id="input">
+     		<local-address host="localhost" port="5000" />
+     	</udp-channel>
+     
+     	<udp-multicast-channel id="input_multicast"
+     		multicast-address="239.1.1.1"
+     		multicast-port="5000">
+     		<local-address host="0.0.0.0" port="0" />
+     	</udp-multicast-channel>
+     </input-channels>
+     
+     <output-channels>
+     	<udp-channel id="output">
+     		<local-address host="localhost" port="0" />
+     		<remote-address host="localhost" port="5000" />
+     	</udp-channel>          
+     
+     	<udp-multicast-channel id="output_multicast"
+     		multicast-address="239.1.1.1"
+     		multicast-port="5000">
+     		<local-address host="0.0.0.0" port="0" />
+     	</udp-multicast-channel>
+     </output-channels>     
+</io-channels>     
