@@ -5,7 +5,7 @@ import java.net.Socket;
 
 import org.apache.log4j.Logger;
 
-import com.fincher.io_channel.MyRunnableIfc;
+import com.fincher.thread.MyRunnableIfc;
 
 /** Used to connect a TCP Client socket
  * 

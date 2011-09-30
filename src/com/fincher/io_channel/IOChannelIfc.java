@@ -1,5 +1,7 @@
 package com.fincher.io_channel;
 
+import com.fincher.thread.DataHandlerIfc;
+
 /** A representation of a component used to send / receive data 
  * 
  * @author Brian Fincher
@@ -17,7 +19,7 @@ public interface IOChannelIfc <T extends ExchangeableIfc> {
 	 * May be null in which case the IO Thread will not attempt to receive data
 	 * @return the message handler used to notify clients of received data
 	 */
-	public MessageHandlerIfc<? super T> getMessageHandler();	
+	public DataHandlerIfc<? super T> getMessageHandler();	
 	
 	/** Connects this IOThread
 	 * @throws ChannelException

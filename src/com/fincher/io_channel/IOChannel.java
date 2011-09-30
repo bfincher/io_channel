@@ -4,6 +4,8 @@ import java.util.Iterator;
 
 import org.apache.log4j.Logger;
 
+import com.fincher.thread.DataHandlerIfc;
+
 
 /** An abstract class used to send / receive data
  * 
@@ -19,7 +21,7 @@ public abstract class IOChannel <T extends ExchangeableIfc> implements IOChannel
 	
 	/** The message handler used to notify clients of received data.  
 	 * May be null in which case the IO Thread will not attempt to receive data */
-	private final MessageHandlerIfc<? super T> messageHandler;
+	private final DataHandlerIfc<? super T> messageHandler;
 	
 	/** Is this IO Thread input, output, or both */
 	private final IOTypeEnum ioType;
@@ -34,7 +36,7 @@ public abstract class IOChannel <T extends ExchangeableIfc> implements IOChannel
 	 */
 	public IOChannel(String id, 
 			IOTypeEnum ioType,
-			MessageHandlerIfc<? super T> messageHandler) {
+			DataHandlerIfc<? super T> messageHandler) {
 		this.id = id;
 		this.messageHandler = messageHandler;
 		this.ioType = ioType;
@@ -95,7 +97,7 @@ public abstract class IOChannel <T extends ExchangeableIfc> implements IOChannel
 	}
 	
 	@Override
-	public MessageHandlerIfc<? super T> getMessageHandler() {
+	public DataHandlerIfc<? super T> getMessageHandler() {
 		return messageHandler;
 	}		
 		

@@ -5,8 +5,8 @@ import java.net.ServerSocket;
 
 import com.fincher.io_channel.ChannelException;
 import com.fincher.io_channel.MessageBuffer;
-import com.fincher.io_channel.MessageHandlerIfc;
-import com.fincher.io_channel.MyRunnableIfc;
+import com.fincher.thread.DataHandlerIfc;
+import com.fincher.thread.MyRunnableIfc;
 
 /** A TCPIOThread implementation for TCP Server sockets
  * 
@@ -57,7 +57,7 @@ public class TCPServerChannel extends TCPChannel {
 	 * @param localAddress The local address to which this socket will be bound.  If null "localhost" will be used
 	 */
 	public TCPServerChannel(String id,
-			MessageHandlerIfc<MessageBuffer> messageHandler,
+			DataHandlerIfc<MessageBuffer> messageHandler,
 			StreamIOIfc streamIo,
 			InetSocketAddress localAddress) {
 		super(id, localAddress, messageHandler, streamIo);

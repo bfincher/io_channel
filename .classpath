@@ -5,5 +5,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="/COTS/log4j-1.2.16.jar"/>
 	<classpathentry kind="lib" path="/COTS/junit.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/thread"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

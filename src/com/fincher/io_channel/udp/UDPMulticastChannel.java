@@ -11,7 +11,7 @@ import org.apache.log4j.Logger;
 
 import com.fincher.io_channel.ChannelException;
 import com.fincher.io_channel.MessageBuffer;
-import com.fincher.io_channel.MessageHandlerIfc;
+import com.fincher.thread.DataHandlerIfc;
 
 /** A UDP Multicast representation of a Socket IO Thread
  * 
@@ -116,7 +116,7 @@ public class UDPMulticastChannel extends UDPChannel {
 	 * @param multicastAddress The multicast address to which this socket will join
 	 */
 	public UDPMulticastChannel(String id,
-			MessageHandlerIfc<MessageBuffer> messageHandler,
+			DataHandlerIfc<MessageBuffer> messageHandler,
 			InetSocketAddress localAddress,
 			InetAddress multicastAddress) {
 		super(id, messageHandler, localAddress);

@@ -2,13 +2,15 @@ package com.fincher.io_channel;
 
 import java.util.concurrent.BlockingQueue;
 
+import com.fincher.thread.DataHandlerIfc;
+
 /** A message handler that simply places messages on a queue
  * 
  * @author Brian Fincher
  *
  * @param <T>
  */
-public class QueueMessageHandler <T> implements MessageHandlerIfc<T> {
+public class QueueMessageHandler <T> implements DataHandlerIfc<T> {
 	
 	private final BlockingQueue<T> queue;
 	

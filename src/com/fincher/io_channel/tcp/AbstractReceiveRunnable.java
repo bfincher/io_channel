@@ -6,7 +6,7 @@ import org.apache.log4j.Logger;
 
 import com.fincher.io_channel.ChannelException;
 import com.fincher.io_channel.MessageBuffer;
-import com.fincher.io_channel.MyRunnableIfc;
+import com.fincher.thread.MyRunnableIfc;
 
 public abstract class AbstractReceiveRunnable implements MyRunnableIfc {
 	

@@ -4,6 +4,8 @@ import java.net.InetSocketAddress;
 
 import org.apache.log4j.Logger;
 
+import com.fincher.thread.DataHandlerIfc;
+
 /** An IO Thread that is implemented for network socket communication
  * 
  * @author Brian Fincher
@@ -23,7 +25,7 @@ public abstract class SocketIOChannel extends IOChannel<MessageBuffer> {
 	 */
 	public SocketIOChannel(String id,
 			IOTypeEnum ioType,
-			MessageHandlerIfc<MessageBuffer> messageHandler,
+			DataHandlerIfc<MessageBuffer> messageHandler,
 			InetSocketAddress localAddress) {
 		super(id, ioType, messageHandler);
 		

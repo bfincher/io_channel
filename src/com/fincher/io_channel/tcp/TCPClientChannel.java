@@ -5,7 +5,7 @@ import java.net.Socket;
 
 import com.fincher.io_channel.ChannelException;
 import com.fincher.io_channel.MessageBuffer;
-import com.fincher.io_channel.MessageHandlerIfc;
+import com.fincher.thread.DataHandlerIfc;
 
 /** A TCP client socket
  * 
@@ -60,7 +60,7 @@ public class TCPClientChannel extends TCPChannel {
 	 * @param remoteAddress The remote address to which this client is trying to connect
 	 */
 	public TCPClientChannel(String id, 
-			MessageHandlerIfc<MessageBuffer> messageHandler,
+			DataHandlerIfc<MessageBuffer> messageHandler,
 			StreamIOIfc streamIo,
 			InetSocketAddress localAddress, 
 			InetSocketAddress remoteAddress) {

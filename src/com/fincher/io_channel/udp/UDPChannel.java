@@ -13,11 +13,11 @@ import org.apache.log4j.Logger;
 import com.fincher.io_channel.ChannelException;
 import com.fincher.io_channel.IOTypeEnum;
 import com.fincher.io_channel.MessageBuffer;
-import com.fincher.io_channel.MessageHandlerIfc;
-import com.fincher.io_channel.MyRunnableIfc;
-import com.fincher.io_channel.MyThread;
 import com.fincher.io_channel.SocketIOChannel;
 import com.fincher.io_channel.StateEnum;
+import com.fincher.thread.DataHandlerIfc;
+import com.fincher.thread.MyRunnableIfc;
+import com.fincher.thread.MyThread;
 
 /**
  * A UDP Unicast representation of a Socket IO Thread
@@ -178,7 +178,7 @@ public class UDPChannel extends SocketIOChannel {
 	 *            "localhost" will be used
 	 */
 	public UDPChannel(String id,
-			MessageHandlerIfc<MessageBuffer> messageHandler,
+			DataHandlerIfc<MessageBuffer> messageHandler,
 			InetSocketAddress localAddress) {
 		super(id, IOTypeEnum.INPUT_ONLY, messageHandler,
 				localAddress);

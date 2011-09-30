@@ -3,7 +3,7 @@ package com.fincher.io_channel.tcp;
 import java.net.Socket;
 
 import com.fincher.io_channel.ChannelException;
-import com.fincher.io_channel.MyRunnableIfc;
+import com.fincher.thread.MyRunnableIfc;
 
 public interface ReceiveRunnableFactoryIfc {
 	

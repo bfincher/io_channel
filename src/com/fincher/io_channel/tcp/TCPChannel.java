@@ -17,11 +17,11 @@ import org.apache.log4j.Logger;
 import com.fincher.io_channel.ChannelException;
 import com.fincher.io_channel.IOTypeEnum;
 import com.fincher.io_channel.MessageBuffer;
-import com.fincher.io_channel.MessageHandlerIfc;
-import com.fincher.io_channel.MyRunnableIfc;
-import com.fincher.io_channel.MyThread;
 import com.fincher.io_channel.SocketIOChannel;
 import com.fincher.io_channel.StateEnum;
+import com.fincher.thread.DataHandlerIfc;
+import com.fincher.thread.MyRunnableIfc;
+import com.fincher.thread.MyThread;
 
 /** An IO Thread implementation of TCP sockets */
 public abstract class TCPChannel extends SocketIOChannel {
@@ -74,7 +74,7 @@ public abstract class TCPChannel extends SocketIOChannel {
 	 */
 	public TCPChannel(String id, 
 			InetSocketAddress localAddress,
-			MessageHandlerIfc<MessageBuffer> messageHandler,
+			DataHandlerIfc<MessageBuffer> messageHandler,
 			StreamIOIfc streamIo) {
 		super(id, IOTypeEnum.INPUT_AND_OUTPUT, messageHandler, localAddress);
 		
