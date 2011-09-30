@@ -4,7 +4,6 @@ import java.util.Iterator;
 
 import org.apache.log4j.Logger;
 
-//import ec2bmc.ifc.config.IOChannelType;
 
 /** An abstract class used to send / receive data
  * 

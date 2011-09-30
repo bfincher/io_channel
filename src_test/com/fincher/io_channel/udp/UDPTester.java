@@ -26,10 +26,6 @@ public class UDPTester extends IOChannelTesterBase<MessageBuffer> {
 	private static InetSocketAddress localAddress5000;
 	private static InetSocketAddress multicastAddress;
 	
-//	private static final File SOURCE_UNICAST_CONFIG = new File("javaSrcTest/ec2bmc/ifc/io_channel/udp/test_unicast_config.xml");
-//	private static final File DEST_UNICAST_CONFIG = new File("data/test_unicast_config.xml");
-//	private static final File SCHEMA_FILE = new File("data/io_channel.xsd");
-	
 	/** Method name is self explainatory 
 	 * @throws Exception
 	 */
@@ -102,40 +98,4 @@ public class UDPTester extends IOChannelTesterBase<MessageBuffer> {
 			fail(e.getMessage());
 		}
 	}
-	
-//	/** Method name is self explanatory */
-//	public void testUnicastFromConfig() {				
-//		try {
-//			UDPChannel output = UDPChannel.createUDPChannel((OutputUDPIOChannelType)configMap.get("output"), MessageFormatEnum.EC2BMC_INTERNAL);
-//			
-//			UDPChannel input = UDPChannel.createUDPChannel((InputUDPIOChannelType)configMap.get("input"),
-//					MessageFormatEnum.EC2BMC_INTERNAL,
-//					new QueueMessageHandler<MessageBuffer>(messageQueue));
-//			
-//			test(input, output, new TestDataFactory());
-//		}
-//		catch (Throwable t) {
-//			t.printStackTrace();
-//			fail();
-//		}
-//	}
-//	
-//	/** Method name is self explanatory */
-//	public void testMulticastFromConfig() {
-//		try {			
-//			UDPMulticastChannel output = 
-//				UDPMulticastChannel.createOutputUDPMulticastChannel((UDPMulticastIOChannelType)configMap.get("output_multicast"), MessageFormatEnum.EC2BMC_INTERNAL);
-//			
-//			UDPMulticastChannel input = 
-//				UDPMulticastChannel.createInputUDPMulticastIOChannel((UDPMulticastIOChannelType)configMap.get("input_multicast"), 
-//						MessageFormatEnum.EC2BMC_INTERNAL,
-//						new QueueMessageHandler<MessageBuffer>(messageQueue));						
-//			
-//			test(input, output, new TestDataFactory());
-//		}
-//		catch (Exception e) {
-//			e.printStackTrace();
-//			fail(e.getMessage());
-//		}
-//	}
 }

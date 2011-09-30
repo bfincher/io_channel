@@ -24,10 +24,6 @@ public class TCPTester extends IOChannelTesterBase<MessageBuffer> {
 		public abstract TCPServerChannel createTCPServer() throws ChannelException;
 	}
 	
-//	private static final File SOURCE_CONFIG_FILE = new File("javaSrcTest/ec2bmc/ifc/io_channel/tcp/test_tcp_config.xml");
-//	private static final File DEST_CONFIG_FILE = new File("data/test_tcp_config.xml");
-//	private static final File SCHEMA_FILE = new File("data/io_channel.xsd");
-	
 	private BlockingQueue<MessageBuffer> queue1 = new LinkedBlockingQueue<MessageBuffer>();
 	private BlockingQueue<MessageBuffer> queue2 = new LinkedBlockingQueue<MessageBuffer>();	
 	
@@ -136,32 +132,4 @@ public class TCPTester extends IOChannelTesterBase<MessageBuffer> {
 			fail(e.getMessage());
 		}						
 	}
-	
-//	/** Test TCP sockets loaded from configuration files */
-//	public void testFromConfig() {
-//		queue1.clear();
-//		queue2.clear();
-//
-//
-//		TCPClientChannel client1 = TCPClientChannel.createTCPClientChannel((TCPClientIOChannelType)configMap.get("input_1"),
-//				MessageFormatEnum.EC2BMC_INTERNAL,
-//				new QueueMessageHandler<MessageBuffer>(queue1), 
-//				new SimpleStreamIO());
-//
-//		TCPClientChannel client2 = TCPClientChannel.createTCPClientChannel((TCPClientIOChannelType)configMap.get("input_2"), 
-//				MessageFormatEnum.EC2BMC_INTERNAL,
-//				new QueueMessageHandler<MessageBuffer>(queue2), 
-//				new SimpleStreamIO());
-//
-//		test(client1, client2, new TCPServerFactory() {
-//
-//			@Override
-//			public TCPServerChannel createTCPServer() throws ChannelException {
-//				return TCPServerChannel.createTCPServerChannel((TCPIOChannelType)configMap.get("output"), 
-//						MessageFormatEnum.EC2BMC_INTERNAL,
-//						null, 
-//						new SimpleStreamIO());
-//			}
-//		});		
-//	}
 }
