@@ -1,0 +1,33 @@
+<project basedir="." name="IOChannel" default="all">
+	
+	<property name="class.dir" value="${basedir}/class" />
+	<property name="jar.file" value="${basedir}/io_channel.jar" />
+
+	<target name="clean">
+		<delete dir="${class.dir}" />
+		<delete file="${jar.file}" />
+	</target>
+	
+	<target name="build">
+		<mkdir dir="${class.dir}" />
+		
+		<path id="classpath">
+			<pathelement location="${basedir}/../COTS/log4j-1.2.16.jar"/>
+			<pathelement location="${basedir}/../thread/thread.jar"/>
+		</path>
+		
+		<javac debug="on"
+			destdir="${class.dir}"
+			srcdir="${basedir}/src"
+			classpathref="classpath"
+		/>
+		
+		<jar basedir="${class.dir}" destfile="${jar.file}" />
+
+	</target>
+		
+	<target name="all">
+		<antcall target="clean" />
+		<antcall target="build" />
+	</target>
+</project>
