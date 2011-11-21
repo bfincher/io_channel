@@ -19,7 +19,7 @@ import com.fincher.io_channel.TestDataFactoryIfc;
  * @author Brian Fincher
  *
  */
-public class UDPTester extends IOChannelTesterBase<MessageBuffer> {
+public class UDPTest extends IOChannelTesterBase<MessageBuffer> {
 	
 	
 	private static InetSocketAddress localAddress0;
@@ -32,8 +32,8 @@ public class UDPTester extends IOChannelTesterBase<MessageBuffer> {
 	@BeforeClass
 	public static void setUp() throws Exception {
 //		loadConfigMap(SOURCE_UNICAST_CONFIG, DEST_UNICAST_CONFIG, SCHEMA_FILE);
-		localAddress0 = new InetSocketAddress(InetAddress.getByName("0.0.0.0"), 0);
-		localAddress5000 = new InetSocketAddress(InetAddress.getByName("0.0.0.0"), 5000);
+		localAddress0 = new InetSocketAddress(InetAddress.getByName("localhost"), 0);
+		localAddress5000 = new InetSocketAddress(InetAddress.getByName("localhost"), 5000);
 		multicastAddress = new InetSocketAddress(InetAddress.getByName("239.1.1.1"), 5000);				
 	}					
 	

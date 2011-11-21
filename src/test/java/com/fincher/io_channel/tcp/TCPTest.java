@@ -18,7 +18,7 @@ import com.fincher.io_channel.MessageBuffer;
 import com.fincher.io_channel.QueueMessageHandler;
 
 /** A JUnit tester for TCP sockets */
-public class TCPTester extends IOChannelTesterBase<MessageBuffer> {
+public class TCPTest extends IOChannelTesterBase<MessageBuffer> {
 	
 	private abstract class TCPServerFactory {
 		public abstract TCPServerChannel createTCPServer() throws ChannelException;
