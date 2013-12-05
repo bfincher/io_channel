@@ -6,8 +6,8 @@
     <property name="lib.dir" value="lib" />
 
     <path id="classpath">
-        <fileset dir="../threading/lib" includes="*.jar"/>
-        <fileset dir="../threading/target" includes="thread.jar"/>
+        <fileset dir="../java-thread/lib" includes="*.jar"/>
+        <fileset dir="../java-thread/target" includes="thread.jar"/>
     </path>
 
     <target name="clean">
