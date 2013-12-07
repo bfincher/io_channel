@@ -1,11 +1,13 @@
 package com.fincher.io_channel;
 
+import java.io.IOException;
+
 /** An exception related to IOChannels
  * 
  * @author Brian Fincher
  *
  */
-public class ChannelException extends Exception {
+public class ChannelException extends IOException {
 	
 	/** Construct a new ChannelException
 	 * 
