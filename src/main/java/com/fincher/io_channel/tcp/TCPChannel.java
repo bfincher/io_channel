@@ -204,7 +204,14 @@ public abstract class TCPChannel extends SocketIOChannel {
 		send(msgBytes, 0, msgBytes.length, channel);		
 	}			
 	
-//	@Override
+	/** Send data via this IO Thread
+	 * @param message The data to be sent
+	 * @throws ChannelException
+	 */
+	public void send(byte[] message) throws ChannelException {
+        send(new MessageBuffer(message));
+    }
+
 	/** Send data via this IO Thread
 	 * @param message The data to be sent
 	 * @throws ChannelException
