@@ -67,9 +67,9 @@ public abstract class AbstractReceiveRunnable implements MyRunnableIfc {
     	return terminate;
     }
     
-    protected void messageReceived(byte[] buf, int offset, int length) {
+    protected void messageReceived(byte[] buf) {
     	if (!isTerminated()) {
-			MessageBuffer mb = new MessageBuffer(buf, offset, length);
+			MessageBuffer mb = new MessageBuffer(buf);
 			mb.receivedFromIOChannel = getId();					
 			getParent().messageReceived(mb, LOGGER, "");
 		}

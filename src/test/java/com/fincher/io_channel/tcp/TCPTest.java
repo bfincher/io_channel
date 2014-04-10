@@ -102,9 +102,9 @@ public class TCPTest extends IOChannelTesterBase<MessageBuffer> {
 		
 		try {
 			
-			final InetSocketAddress localAddress5000 = new InetSocketAddress(InetAddress.getLocalHost(), 5000);
+			final InetSocketAddress localAddress5001 = new InetSocketAddress(InetAddress.getLocalHost(), 5001);
 			
-			InetSocketAddress remoteAddress = new InetSocketAddress(InetAddress.getLocalHost(), 5000);
+			InetSocketAddress remoteAddress = new InetSocketAddress(InetAddress.getLocalHost(), 5001);
 			
 			InetSocketAddress localAddress0 = new InetSocketAddress(InetAddress.getLocalHost(), 0);
 			TCPClientChannel client1 = new TCPClientChannel("client1", 
@@ -123,7 +123,7 @@ public class TCPTest extends IOChannelTesterBase<MessageBuffer> {
 				
 				@Override
 				public TCPServerChannel createTCPServer() throws ChannelException {
-					return new TCPServerChannel("server", new SimpleStreamIO(), localAddress5000);
+					return new TCPServerChannel("server", new SimpleStreamIO(), localAddress5001);
 				}
 			});						
 		} 
