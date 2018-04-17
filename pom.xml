@@ -13,9 +13,15 @@
 	<groupId>com.fincher</groupId>
 	<artifactId>io-channel</artifactId>
 	<packaging>jar</packaging>
-	<version>1.2</version>
+	<version>1.3</version>
 	<name>Input / Output channels</name>
 	<url>http://maven.apache.org</url>
+
+	<properties>
+	    <maven.compiler.source>1.8</maven.compiler.source>
+	    <maven.compiler.target>1.8</maven.compiler.target>
+	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>log4j</groupId>
@@ -33,7 +39,7 @@
 		<dependency>
 			<groupId>com.fincher</groupId>
 			<artifactId>thread</artifactId>
-			<version>1.0.4</version>
+			<version>1.0.5</version>
 		</dependency>
 		
 		<dependency>
