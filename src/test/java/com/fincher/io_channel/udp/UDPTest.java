@@ -7,6 +7,7 @@ import java.net.InetSocketAddress;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.fincher.io_channel.IOChannelTesterBase;
@@ -59,6 +60,7 @@ public class UDPTest extends IOChannelTesterBase<MessageBuffer> {
 	 * 
 	 */
 	@Test
+	@Ignore
 	public void testMulticast() {
 		try {			
 			UDPMulticastChannel output = new UDPMulticastChannel("output",
