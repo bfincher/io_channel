@@ -1,7 +1,13 @@
 plugins {
     id 'java'
     id 'maven-publish'
+    id 'checkstyle'
 }
+
+group = 'com.fincher'
+version = '1.4.0'
+description = 'Input / Output channels'
+sourceCompatibility = '1.8'
 
 repositories {
     mavenLocal()
@@ -12,15 +18,11 @@ repositories {
 
 dependencies {
     compile 'log4j:log4j:1.2.16'
-    compile 'com.fincher:thread:1.1.5'
+    compile 'com.fincher:java-thread:1.1.5'
     compile 'com.squareup.okio:okio:0.5.0'
     testCompile 'junit:junit:4.10'
 }
 
-group = 'com.fincher'
-version = '1.4.0'
-description = 'Input / Output channels'
-sourceCompatibility = '1.8'
 
 task sourcesJar(type: Jar) {
     from sourceSets.main.allJava
@@ -34,4 +36,8 @@ publishing {
             artifact tasks.sourcesJar
         }
     }
+}
+
+checkstyle {
+    configFile file("config/checkstyle/checkstyle.xml")
 }
