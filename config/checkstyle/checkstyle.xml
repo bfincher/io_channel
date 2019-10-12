@@ -27,7 +27,7 @@ Checkstyle configuration that checks the Google coding conventions from Google J
     </module>
     <module name="LineLength">
       <property name="ignorePattern" value="^package.*|^import.*|a href|href|http://|https://|ftp://"/>
-      <property name="max" value="100"/>
+      <property name="max" value="120"/>
     </module>
     <module name="AvoidStarImport"/>
     <module name="OneTopLevelClass"/>
@@ -95,7 +95,7 @@ Checkstyle configuration that checks the Google coding conventions from Google J
       <property name="tokens" value="METHOD_REF"/>
     </module>
     <module name="PackageName">
-      <property name="format" value="^[a-z]+(\.[a-z][a-z0-9]*)*$"/>
+      <property name="format" value="^[a-z]+(\.[a-z][a-z0-9_]*)*$"/>
       <message key="name.invalidPattern" value="Package name ''{0}'' must match pattern ''{1}''."/>
     </module>
     <module name="TypeName">
@@ -217,7 +217,10 @@ Checkstyle configuration that checks the Google coding conventions from Google J
     <module name="EmptyCatchBlock">
       <property name="exceptionVariableName" value="expected"/>
     </module>
-    <module name="CommentsIndentation"/>
+    <module name="CommentsIndentation">
+      <property name="severity" value="ignore"/>
+      <metadata name="net.sf.eclipsecs.core.lastEnabledSeverity" value="inherit"/>
+    </module>
     <module name="JavadocStyle">
       <property name="severity" value="ignore"/>
       <property name="checkFirstSentence" value="false"/>
@@ -268,5 +271,6 @@ Checkstyle configuration that checks the Google coding conventions from Google J
   </module>
   <module name="FileTabCharacter">
     <property name="eachLine" value="true"/>
+    <property name="fileExtensions" value="*.java"/>
   </module>
 </module>
