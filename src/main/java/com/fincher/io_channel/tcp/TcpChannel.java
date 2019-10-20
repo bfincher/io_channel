@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.log4j.Level;
@@ -364,7 +365,7 @@ public abstract class TcpChannel extends SocketIoChannel {
         } finally {
             // wait 3 seconds to give threads time to close
             try {
-                wait(3000);
+                MyThread.wait(3, TimeUnit.SECONDS, this);
             } catch (InterruptedException ie) {
                 logger.warn(getId() + " " + ie.getMessage(), ie);
                 Thread.currentThread().interrupt();

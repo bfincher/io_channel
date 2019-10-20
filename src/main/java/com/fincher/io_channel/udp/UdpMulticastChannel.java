@@ -19,9 +19,9 @@ import org.apache.log4j.Logger;
  * @author Brian Fincher
  *
  */
-public class UcpMulticastChannel extends UdpChannel {
+public class UdpMulticastChannel extends UdpChannel {
 
-    private static Logger logger = Logger.getLogger(UcpMulticastChannel.class);
+    private static Logger logger = Logger.getLogger(UdpMulticastChannel.class);
 
     private final InetAddress multicastAddress;
 
@@ -33,7 +33,7 @@ public class UcpMulticastChannel extends UdpChannel {
      * @param localAddress     The local address to which this socket will be bound.
      * @param multicastAddress The multicast address to which this socket will join
      */
-    public UcpMulticastChannel(String id, DataHandlerIfc<MessageBuffer> messageHandler,
+    public UdpMulticastChannel(String id, DataHandlerIfc<MessageBuffer> messageHandler,
             InetSocketAddress localAddress, InetAddress multicastAddress) {
         super(id, messageHandler, localAddress);
 
@@ -58,7 +58,7 @@ public class UcpMulticastChannel extends UdpChannel {
      * @param localAddress     The local address to which this socket will be bound.
      * @param multicastAddress The remote multicast address to which messages will be sent
      */
-    public UcpMulticastChannel(String id, InetSocketAddress localAddress,
+    public UdpMulticastChannel(String id, InetSocketAddress localAddress,
             InetSocketAddress multicastAddress) {
 
         super(id, localAddress, multicastAddress);
@@ -103,7 +103,7 @@ public class UcpMulticastChannel extends UdpChannel {
      * @throws ChannelException
      */
     @Override
-    protected DatagramSocket createSocket() throws IOException, ChannelException {
+    protected DatagramSocket createSocket() throws IOException {
         MulticastSocket socket = new MulticastSocket(getlocalAddress());
 
         UdpMulticastSocketOptions socketOptions = (UdpMulticastSocketOptions) this.socketOptions;

@@ -2,12 +2,14 @@ package com.fincher.io_channel.tcp;
 
 import com.fincher.io_channel.ChannelException;
 import com.fincher.thread.MyCallableIfc;
+import com.fincher.thread.MyThread;
 
 import java.io.IOException;
 import java.net.BindException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
 
@@ -78,16 +80,7 @@ class TcpServerConnectRunnable implements MyCallableIfc<Socket> {
 
         try {
             if (!serverSocketConnected) {
-                try {
-                    serverSocket.bind(tcpServer.getlocalAddress());
-                    serverSocketConnected = true;
-                } catch (BindException be) {
-                    logger.warn(tcpServer.getId() + " " + be.getMessage());
-                    synchronized (this) {
-                        wait(2000);
-                    }
-                    throw be;
-                }
+                serverSocketConnected = connectSocket();
             }
 
             Socket socket = serverSocket.accept();
@@ -97,10 +90,19 @@ class TcpServerConnectRunnable implements MyCallableIfc<Socket> {
             return null;
         } catch (IOException e) {
             logger.error(tcpServer.getId() + " " + e.getMessage(), e);
-            synchronized (this) {
-                wait(2000);
-            }
+            MyThread.wait(2, TimeUnit.SECONDS, this);
             throw new ChannelException(e);
+        }
+    }
+    
+    private boolean connectSocket() throws IOException, InterruptedException {
+        try {
+            serverSocket.bind(tcpServer.getlocalAddress());
+            return true;
+        } catch (BindException be) {
+            logger.warn(tcpServer.getId() + " " + be.getMessage());
+            MyThread.wait(2, TimeUnit.SECONDS, this);
+            throw be;
         }
     }
 

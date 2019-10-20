@@ -72,7 +72,7 @@ public class UdpChannel extends SocketIoChannel {
         @Override
         /** No action taken */
         public void terminate() {
-
+            // no action necessary
         }
     }
 
@@ -87,7 +87,6 @@ public class UdpChannel extends SocketIoChannel {
 
     /** The UDP Socket Options */
     protected UdpSocketOptions socketOptions = new UdpSocketOptions();
-
 
     /**
      * Constructs a new input only UDP IO Thread
@@ -135,14 +134,8 @@ public class UdpChannel extends SocketIoChannel {
     @Override
     /** Connects this UDP IO thread */
     public void connect() throws ChannelException, InterruptedException {
-
-        switch (getState()) {
-            case INITIAL:
-                break;
-
-            default:
-                throw new IllegalStateException(
-                        getId() + " Illegal state for connect: " + getState());
+        if (getState() != StateEnum.INITIAL) {
+            throw new IllegalStateException(getId() + " Illegal state for connect: " + getState());
         }
 
         boolean socketCreated = false;
@@ -165,7 +158,7 @@ public class UdpChannel extends SocketIoChannel {
                 receiveThread = new MyThread(getId() + "ReceiveThread", new ReceiveRunnable());
                 receiveThread.start();
                 break;
-                
+
             case OUTPUT_ONLY:
                 // no action necessary
                 break;
@@ -190,10 +183,10 @@ public class UdpChannel extends SocketIoChannel {
      * @throws IOException
      * @throws ChannelException
      */
-    protected DatagramSocket createSocket() throws IOException, ChannelException {
-        DatagramSocket socket = new DatagramSocket(getlocalAddress());
-        socketOptions.applySocketOptions(getId(), socket);
-        return socket;
+    protected DatagramSocket createSocket() throws IOException {
+        DatagramSocket createdSocket = new DatagramSocket(getlocalAddress());
+        socketOptions.applySocketOptions(getId(), createdSocket);
+        return createdSocket;
     }
 
     @Override

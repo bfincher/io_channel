@@ -59,7 +59,6 @@ public abstract class SocketIoChannel extends IoChannel<MessageBuffer> {
         return localAddress;
     }
 
-
     /**
      * Get the type of data processed by this IoChannel
      * 
@@ -79,7 +78,7 @@ public abstract class SocketIoChannel extends IoChannel<MessageBuffer> {
      */
     @Override
     protected void messageReceived(MessageBuffer mb, Logger logger, String logString) {
-//      mb.receivedFromIOChannel = getId();
+        mb.setReceivedFromIoChannelId(getId());
         super.messageReceived(mb, logger, logString + " size = " + mb.getBytes().length);
     }
 }

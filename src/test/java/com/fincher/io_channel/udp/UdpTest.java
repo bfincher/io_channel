@@ -64,10 +64,10 @@ public class UdpTest extends IoChannelTesterBase<MessageBuffer> {
     @Test
     @Ignore
     public void testMulticast() throws UnknownHostException {
-        UcpMulticastChannel output = new UcpMulticastChannel("output", localAddress0,
+        UdpMulticastChannel output = new UdpMulticastChannel("output", localAddress0,
                 multicastAddress);
 
-        UcpMulticastChannel input = new UcpMulticastChannel("input",
+        UdpMulticastChannel input = new UdpMulticastChannel("input",
                 new QueueMessageHandler<MessageBuffer>(messageQueue), localAddress5000,
                 InetAddress.getByName("239.1.1.1"));
 

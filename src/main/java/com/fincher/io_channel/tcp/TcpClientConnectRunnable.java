@@ -1,10 +1,12 @@
 package com.fincher.io_channel.tcp;
 
 import com.fincher.thread.MyCallableIfc;
+import com.fincher.thread.MyThread;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
 
@@ -63,9 +65,7 @@ class TcpClientConnectRunnable implements MyCallableIfc<Socket> {
             return socket;
         } catch (IOException ioe) {
             logger.error(parent.getId() + " " + ioe.getMessage(), ioe);
-            synchronized (this) {
-                wait(2000);
-            }
+            MyThread.wait(2, TimeUnit.SECONDS, this);
             throw ioe;
         }
     }

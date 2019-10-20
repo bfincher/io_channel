@@ -22,23 +22,6 @@ public class TcpSocketOptions extends SocketOptions {
     private boolean tcpNoDelay = true;
 
     /**
-     * Get a new TcpSocketOptions object from XML configuration
-     * 
-     * @param config The XML configuration
-     * @return The newly created TcpSocketOptions type
-     */
-//    public static TcpSocketOptions getSocketOptions(TCPSocketOptionsType config) {
-//        TcpSocketOptions socketOptions = new TcpSocketOptions();
-//        SocketOptions.getSocketOptions(socketOptions, config);
-//
-//        socketOptions.keepAlive = config.isKeepAlive();
-//        socketOptions.tcpNoDelay = config.isNoDelay();
-//
-//        return socketOptions;
-//
-//    }
-
-    /**
      * Sets the options represented by this object to the given TCP Socket
      * 
      * @param socketId The ID of the socket
@@ -68,7 +51,7 @@ public class TcpSocketOptions extends SocketOptions {
             logString.append(socketId);
             logString.append(
                     " actual socket options: receiveBufferSize = " + socket.getReceiveBufferSize());
-            ;
+            
             logString.append(", sendBufferSize = " + socket.getSendBufferSize());
             logString.append(", keepAlive = " + socket.getKeepAlive());
             logString.append(", reuseAddress = " + socket.getReuseAddress());
@@ -105,7 +88,7 @@ public class TcpSocketOptions extends SocketOptions {
         logString.append(socketId);
         logString.append(
                 " actual socket options: receiveBufferSize = " + socket.getReceiveBufferSize());
-        ;
+        
         logString.append(", reuseAddress = " + socket.getReuseAddress());
         logString.append(", timeout = " + socket.getSoTimeout());
 

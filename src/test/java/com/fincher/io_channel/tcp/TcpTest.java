@@ -16,6 +16,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Logger;
 import org.apache.log4j.SimpleLayout;
+import org.awaitility.Awaitility;
 import org.junit.Test;
 
 /** A JUnit tester for TCP sockets */
@@ -35,33 +36,29 @@ public class TcpTest extends IoChannelTesterBase<MessageBuffer> {
         client1.connect();
         client2.connect();
 
-        while (!client1.isConnected() || !client2.isConnected()) {
-            Thread.sleep(100);
-        }
+        Awaitility.await().until(() -> client1.isConnected() && client2.isConnected());
 
         for (int i = 0; i < 5; i++) {
             server.send(new MessageBuffer(
                     SimpleStreamIO.prePendLength(new String("Hello World " + i).getBytes())));
-            Thread.sleep(1000);
         }
+        
+        Awaitility.await().until(() -> queue1.size() == 5);
 
         server.close();
         server = tcpServerFactory.createTcpServer();
         server.connect();
 
-        Thread.sleep(1000);
-
-        while (!client1.isConnected() || !client2.isConnected()) {
-            Thread.sleep(100);
-        }
+        Awaitility.await().until(() -> client1.isConnected() && client2.isConnected());
 
         System.out.println(client1.isConnected() + " " + client2.isConnected());
 
         for (int i = 5; i < 10; i++) {
             server.send(new MessageBuffer(
                     SimpleStreamIO.prePendLength(new String("Hello World " + i).getBytes())));
-            Thread.sleep(1000);
         }
+        
+        Awaitility.await().until(() -> queue1.size() == 10);
 
         assertEquals(10, queue1.size());
         assertEquals(10, queue2.size());
@@ -81,7 +78,7 @@ public class TcpTest extends IoChannelTesterBase<MessageBuffer> {
      * Test TCP sockets
      * 
      */
-    @Test
+    @Test(timeout = 10000)
     public void test() throws ChannelException, InterruptedException, UnknownHostException {
 
         Logger.getRootLogger().addAppender(new ConsoleAppender(new SimpleLayout()));

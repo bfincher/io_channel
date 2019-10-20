@@ -44,7 +44,7 @@ public class UdpSocketOptions extends SocketOptions {
         logString.append(socketId);
         logString.append(
                 " actual socket options: receiveBufferSize = " + socket.getReceiveBufferSize());
-        ;
+
         logString.append(", sendBufferSize = " + socket.getSendBufferSize());
         logString.append(", reuseAddress = " + socket.getReuseAddress());
         logString.append(", timeout = " + socket.getSoTimeout());

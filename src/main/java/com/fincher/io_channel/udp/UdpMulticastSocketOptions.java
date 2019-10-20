@@ -16,10 +16,42 @@ public class UdpMulticastSocketOptions extends UdpSocketOptions {
     private static Logger logger = Logger.getLogger(UdpMulticastSocketOptions.class);
 
     /** The multicast TTL option */
-    public int timeToLive = 16;
+    private int timeToLive = 16;
 
     /** The multicast Loopback Disabled option */
-    public boolean loopbackDisabled = false;
+    private boolean loopbackDisabled = false;
+
+    /** Gets the multicast TTL option
+     * 
+     * @return the multicast TTL option
+     */
+    public int getTimeToLive() {
+        return timeToLive;
+    }
+
+    /** Sets the multicast TTL option
+     * 
+     * @param timeToLive the multicast TTL option
+     */
+    public void setTimeToLive(int timeToLive) {
+        this.timeToLive = timeToLive;
+    }
+
+    /** Gets the multicast loopback disabled option
+     * 
+     * @return the multicast loopback disabled option
+     */
+    public boolean isLoopbackDisabled() {
+        return loopbackDisabled;
+    }
+
+    /** Sets the multicast loopback disabled option
+     * 
+     * @param loopbackDisabled the multicast loopback disabled option
+     */
+    public void setLoopbackDisabled(boolean loopbackDisabled) {
+        this.loopbackDisabled = loopbackDisabled;
+    }
 
     /**
      * Sets the options represented by this object to the given socket
@@ -35,21 +67,4 @@ public class UdpMulticastSocketOptions extends UdpSocketOptions {
 
         logger.info(socketId + " timeToLive = " + socket.getTimeToLive());
     }
-
-    /**
-     * Build a UdpMulticastSocketOptions object from XML configuration
-     * 
-     * @param config the XML configuration
-     * @return The newly created UdpMulticastSocketOptions
-     */
-//    public static UdpMulticastSocketOptions getSocketOptions(UDPMulticastSocketOptionsType config) {
-//        UdpMulticastSocketOptions socketOptions = new UdpMulticastSocketOptions();
-//        SocketOptions.getSocketOptions(socketOptions, config);
-//
-//        socketOptions.timeToLive = config.getTimeToLive();
-//        socketOptions.loopbackDisabled = config.isLoopbackDisabled();
-//
-//        return socketOptions;
-//    }
-
 }
