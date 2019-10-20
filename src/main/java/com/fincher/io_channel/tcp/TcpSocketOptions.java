@@ -16,10 +16,10 @@ public class TcpSocketOptions extends SocketOptions {
     private static Logger logger = Logger.getLogger(TcpSocketOptions.class);
 
     /** The SO_KEEPALIVE socket setting. Defaults to true */
-    public boolean keepAlive = true;
+    private boolean keepAlive = true;
 
     /** The TCP_NODELAY socket setting. Defaults to true */
-    public boolean tcpNoDelay = true;
+    private boolean tcpNoDelay = true;
 
     /**
      * Get a new TcpSocketOptions object from XML configuration
@@ -47,17 +47,21 @@ public class TcpSocketOptions extends SocketOptions {
      */
     public void applySocketOptions(String socketId, Socket socket) throws ChannelException {
         try {
-            if (receiveBufferSize != -1) {
-                socket.setReceiveBufferSize(receiveBufferSize);
+            if (getReceiveBufferSize().isPresent()) {
+                socket.setReceiveBufferSize(getReceiveBufferSize().getAsInt());
             }
 
-            if (sendBufferSize != -1) {
-                socket.setSendBufferSize(sendBufferSize);
+            if (getSendBufferSize().isPresent()) {
+                socket.setSendBufferSize(getSendBufferSize().getAsInt());
             }
 
             socket.setKeepAlive(keepAlive);
-            socket.setReuseAddress(reuseAddress);
-            socket.setSoTimeout(timeout);
+            socket.setReuseAddress(isReuseAddress());
+            
+            if (getTimeout().isPresent()) {
+                socket.setSoTimeout(getTimeout().getAsInt());
+            }
+            
             socket.setTcpNoDelay(tcpNoDelay);
 
             StringBuilder logString = new StringBuilder();
@@ -87,12 +91,15 @@ public class TcpSocketOptions extends SocketOptions {
      * @throws IOException
      */
     public void applySocketOptions(String socketId, ServerSocket socket) throws IOException {
-        if (receiveBufferSize != -1) {
-            socket.setReceiveBufferSize(receiveBufferSize);
+        if (getReceiveBufferSize().isPresent()) {
+            socket.setReceiveBufferSize(getReceiveBufferSize().getAsInt());
         }
 
-        socket.setReuseAddress(reuseAddress);
-        socket.setSoTimeout(timeout);
+        socket.setReuseAddress(isReuseAddress());
+        
+        if (getTimeout().isPresent()) {
+            socket.setSoTimeout(getTimeout().getAsInt());
+        }
 
         StringBuilder logString = new StringBuilder();
         logString.append(socketId);
@@ -103,6 +110,38 @@ public class TcpSocketOptions extends SocketOptions {
         logString.append(", timeout = " + socket.getSoTimeout());
 
         logger.info(logString.toString());
+    }
+    
+    /** The SO_KEEPALIVE socket setting.
+     * 
+     * @param val The SO_KEEPALIVE socket setting.
+     */
+    public void setKeepAlive(boolean val) {
+        keepAlive = val;
+    }
+    
+    /** The SO_KEEPALIVE socket setting.
+     * 
+     * @return The SO_KEEPALIVE socket setting.n 
+     */
+    public boolean getKeepAlive() {
+        return keepAlive;
+    }
+    
+    /** The TCP_NODELAY socket setting.
+     * 
+     * @return The TCP_NODELAY socket setting
+     */
+    public void setTcpNoDelay(boolean val) {
+        tcpNoDelay = val;
+    }
+
+    /** The TCP_NODELAY socket setting.
+     * 
+     * @return The TCP_NODELAY socket setting
+     */
+    public boolean getTcpNoDelay() {
+        return tcpNoDelay;
     }
 
 }

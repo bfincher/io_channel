@@ -14,8 +14,8 @@ public class UdpSocketOptions extends SocketOptions {
 
     /** Constructs a new UdpSocketOptions object */
     public UdpSocketOptions() {
-        receiveBufferSize = 64 * 1024;
-        sendBufferSize = 64 * 1024;
+        setReceiveBufferSize(64 * 1024);
+        setSendBufferSize(64 * 1024);
     }
 
     /**
@@ -26,16 +26,19 @@ public class UdpSocketOptions extends SocketOptions {
      * @throws SocketException
      */
     public void applySocketOptions(String socketId, DatagramSocket socket) throws SocketException {
-        if (receiveBufferSize != -1) {
-            socket.setReceiveBufferSize(receiveBufferSize);
+        if (getReceiveBufferSize().isPresent()) {
+            socket.setReceiveBufferSize(getReceiveBufferSize().getAsInt());
         }
 
-        if (sendBufferSize != -1) {
-            socket.setSendBufferSize(sendBufferSize);
+        if (getSendBufferSize().isPresent()) {
+            socket.setSendBufferSize(getSendBufferSize().getAsInt());
         }
 
-        socket.setReuseAddress(reuseAddress);
-        socket.setSoTimeout(timeout);
+        socket.setReuseAddress(isReuseAddress());
+        
+        if (getTimeout().isPresent()) {
+            socket.setSoTimeout(getTimeout().getAsInt());
+        }
 
         StringBuilder logString = new StringBuilder();
         logString.append(socketId);

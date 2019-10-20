@@ -3,10 +3,11 @@ package com.fincher.io_channel.tcp;
 import com.fincher.io_channel.ChannelException;
 import com.fincher.io_channel.MessageBuffer;
 import com.fincher.thread.DataHandlerIfc;
-import com.fincher.thread.MyRunnableIfc;
+import com.fincher.thread.MyCallableIfc;
 
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
+import java.net.Socket;
 
 /**
  * A TCPIOThread implementation for TCP Server sockets
@@ -15,45 +16,6 @@ import java.net.ServerSocket;
  *
  */
 public class TcpServerChannel extends TcpChannel {
-
-    /**
-     * Creates a new TcpServerChannel from JAXB XML configuration
-     * 
-     * @param config         The JAXB XML configuration
-     * @param messageFormat  The message format for this IoChannel
-     * @param messageHandler Used to notify clients of received data. May be null if this is an
-     *                       output only channel
-     * @param streamIo       Used to determine how many bytes should be read from the socket for
-     *                       each message
-     * @return A new TcpServerChannel
-     * @throws ChannelException
-     */
-//    public static TcpServerChannel createTCPServerChannel(TCPIOChannelType config,
-//            MessageFormatEnum messageFormat, MessageHandlerIfc<MessageBuffer> messageHandler,
-//            StreamIoIfc streamIo) throws ChannelException {
-//
-//        if (config.getLocalAddress() == null)
-//            throw new ChannelException(config.getId() + " local-address must be set");
-//
-//        InetSocketAddress localAddress = getLocalAddress(config);
-//
-//        TcpServerChannel channel;
-//        if (messageHandler == null)
-//            channel = new TcpServerChannel(config.getId(), messageFormat, streamIo, localAddress);
-//        else
-//            channel = new TcpServerChannel(config.getId(), messageFormat, messageHandler, streamIo,
-//                    localAddress);
-//
-//        if (config.getSocketOptions() != null) {
-//            TcpSocketOptions socketOptions = TcpSocketOptions
-//                    .getSocketOptions(config.getSocketOptions());
-//            channel.setSocketOptions(socketOptions);
-//        }
-//
-//        loadFromConfig(channel, config);
-//
-//        return channel;
-//    }
 
     /**
      * Constructs a new TCP server socket that is capable of both sending and receiving data
@@ -90,7 +52,7 @@ public class TcpServerChannel extends TcpChannel {
      * @throws ChannelException
      */
     @Override
-    protected MyRunnableIfc getConnectRunnable() throws ChannelException {
+    protected MyCallableIfc<Socket> getConnectRunnable() throws ChannelException {
         return new TcpServerConnectRunnable(this);
     }
 
@@ -100,7 +62,7 @@ public class TcpServerChannel extends TcpChannel {
      */
     @Override
     public InetSocketAddress getlocalAddress() {
-        ServerSocket socket = ((TcpServerConnectRunnable) connectThread.getRunnable()).serverSocket;
+        ServerSocket socket = ((TcpServerConnectRunnable) connectThread.getCallable().get()).serverSocket;
         if (socket.isBound()) {
             return new InetSocketAddress(socket.getInetAddress(), socket.getLocalPort());
         } else {

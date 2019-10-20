@@ -54,24 +54,6 @@ public class SimpleStreamIO implements StreamIoIfc {
         return toReturn;
     }
 
-//    /**
-//     * Creates a header that should be sent prior to the message bytes
-//     * 
-//     * @param message The message to be sent
-//     * @return The message header
-//     */
-//    @Override
-//    public byte[] getOutgoingHeader(byte[] message) {
-//        byte[] dest = new byte[4];
-//
-//        dest[0] = (byte) ((message.length >> 24) & 0xff);
-//        dest[1] = (byte) ((message.length >> 16) & 0xff);
-//        dest[2] = (byte) ((message.length >> 8) & 0xff);
-//        dest[3] = (byte) (message.length & 0xff);
-//
-//        return dest;
-//    }
-
     /**
      * Should the header be included as a part of the message that is placed on the socket's queue?
      * 

@@ -23,7 +23,7 @@ public abstract class IoChannel<T extends ExchangeableIfc> implements IoChannelI
      * The message handler used to notify clients of received data. May be null in which case the IO
      * Thread will not attempt to receive data
      */
-    private final DataHandlerIfc<? super T> messageHandler;
+    private final DataHandlerIfc<T> messageHandler;
 
     /** Is this IO Thread input, output, or both */
     private final IoTypeEnum ioType;
@@ -38,7 +38,7 @@ public abstract class IoChannel<T extends ExchangeableIfc> implements IoChannelI
      * @param ioType         Is this IO Thread input, output, or both
      * @param messageHandler The message handler used to notify clients of received data
      */
-    public IoChannel(String id, IoTypeEnum ioType, DataHandlerIfc<? super T> messageHandler) {
+    public IoChannel(String id, IoTypeEnum ioType, DataHandlerIfc<T> messageHandler) {
         this.id = id;
         this.messageHandler = messageHandler;
         this.ioType = ioType;
@@ -109,23 +109,10 @@ public abstract class IoChannel<T extends ExchangeableIfc> implements IoChannelI
     }
 
     @Override
-    public DataHandlerIfc<? super T> getMessageHandler() {
+    public DataHandlerIfc<T> getMessageHandler() {
         return messageHandler;
     }
 
-    /**
-     * Initialize this IoChannel from configuration
-     * 
-     * @param ioChannel The IoChannel to load
-     * @param config    The config
-     */
-//    protected static void loadFromConfig(IoChannelIfc<?> ioChannel, IOChannelType config) {
-//        ioChannel.addTags(config.getTag());
-//
-//        for (String str : config.getAssociatedMessageType()) {
-//            ioChannel.addAssociatedMessageType(MessageTypeEnum.valueOf(str));
-//        }
-//    }
 
     /**
      * Log the fact that this IoChannel is sending data

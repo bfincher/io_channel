@@ -24,7 +24,7 @@ public interface IoChannelIfc<T extends ExchangeableIfc> {
      * 
      * @return the message handler used to notify clients of received data
      */
-    public DataHandlerIfc<? super T> getMessageHandler();
+    public DataHandlerIfc<T> getMessageHandler();
 
     /**
      * Connects this IOThread

@@ -1,7 +1,7 @@
 package com.fincher.io_channel.tcp;
 
 import com.fincher.io_channel.ChannelException;
-import com.fincher.thread.MyRunnableIfc;
+import com.fincher.thread.MyCallableIfc;
 
 import java.io.IOException;
 import java.net.BindException;
@@ -17,7 +17,7 @@ import org.apache.log4j.Logger;
  * @author Brian Fincher
  *
  */
-class TcpServerConnectRunnable implements MyRunnableIfc {
+class TcpServerConnectRunnable implements MyCallableIfc<Socket> {
 
     private static Logger logger = Logger.getLogger(TcpServerConnectRunnable.class);
 
@@ -74,7 +74,7 @@ class TcpServerConnectRunnable implements MyRunnableIfc {
 
     @Override
     /** The body of the thread */
-    public void run() {
+    public Socket call() throws InterruptedException, ChannelException {
 
         try {
             if (!serverSocketConnected) {
@@ -82,28 +82,25 @@ class TcpServerConnectRunnable implements MyRunnableIfc {
                     serverSocket.bind(tcpServer.getlocalAddress());
                     serverSocketConnected = true;
                 } catch (BindException be) {
-                    try {
-                        logger.warn(tcpServer.getId() + " " + be.getMessage());
-                        Thread.sleep(2000);
-                        return;
-                    } catch (InterruptedException ie) {
-                        logger.warn(tcpServer.getId() + " " + ie.getMessage(), ie);
+                    logger.warn(tcpServer.getId() + " " + be.getMessage());
+                    synchronized (this) {
+                        wait(2000);
                     }
+                    throw be;
                 }
             }
 
             Socket socket = serverSocket.accept();
             tcpServer.connectionEstablished(socket);
+            return socket;
         } catch (SocketTimeoutException ste) {
-            // no action necessary
-        } catch (Exception e) {
+            return null;
+        } catch (IOException e) {
             logger.error(tcpServer.getId() + " " + e.getMessage(), e);
-
-            try {
-                Thread.sleep(2000);
-            } catch (InterruptedException ie) {
-                logger.warn(tcpServer.getId() + " " + ie.getMessage(), ie);
+            synchronized (this) {
+                wait(2000);
             }
+            throw new ChannelException(e);
         }
     }
 

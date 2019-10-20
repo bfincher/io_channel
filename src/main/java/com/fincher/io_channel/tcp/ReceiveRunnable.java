@@ -43,6 +43,17 @@ public class ReceiveRunnable extends AbstractReceiveRunnable {
             throw new ChannelException(e);
         }
     }
+    
+    private byte[] growBufIfNecessary(byte[] buf, int offset, int length) {
+        int bytesRemaining = buf.length - offset;
+        int delta = length - bytesRemaining;
+        if (delta > 0) {
+            byte[] newBuf = new byte[buf.length + delta + 100];
+            System.arraycopy(buf, 0, newBuf, 0, buf.length);
+            return newBuf;
+        }
+        return buf;
+    }
 
     /**
      * Read data from the socket
@@ -53,20 +64,11 @@ public class ReceiveRunnable extends AbstractReceiveRunnable {
      * @return The param buf if buf was sized sufficiently. Otherwise, a later byte array with the
      *         contents of buf copied into it
      * @throws IOException
-     * @throws EOFException
      */
-    private byte[] read(byte[] buf, int offset, int length) throws IOException, EOFException {
+    private byte[] read(byte[] buf, int offset, int length) throws IOException {
 
         // increase size of buf if necessary
-        {
-            int bytesRemaining = buf.length - offset;
-            int delta = length - bytesRemaining;
-            if (delta > 0) {
-                byte[] newBuf = new byte[buf.length + delta + 100];
-                System.arraycopy(buf, 0, newBuf, 0, buf.length);
-                buf = newBuf;
-            }
-        }
+        growBufIfNecessary(buf, offset, length);
 
         int remaining = length;
         while (remaining > 0) {

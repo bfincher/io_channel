@@ -59,21 +59,6 @@ public abstract class SocketIoChannel extends IoChannel<MessageBuffer> {
         return localAddress;
     }
 
-//    /**
-//     * Builds a local address from JAXB XML configuration
-//     * 
-//     * @param config The JAXB XML configuration
-//     * @return The local address as retrieved from the configuration
-//     */
-//    protected static InetSocketAddress getLocalAddress(SocketIOChannelType config) {
-//        InetSocketAddress localAddress = null;
-//        if (config.getLocalAddress() != null) {
-//            localAddress = new InetSocketAddress(config.getLocalAddress().getHost(),
-//                    config.getLocalAddress().getPort());
-//        }
-//
-//        return localAddress;
-//    }
 
     /**
      * Get the type of data processed by this IoChannel

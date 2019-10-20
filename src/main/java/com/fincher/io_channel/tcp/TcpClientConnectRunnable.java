@@ -1,7 +1,8 @@
 package com.fincher.io_channel.tcp;
 
-import com.fincher.thread.MyRunnableIfc;
+import com.fincher.thread.MyCallableIfc;
 
+import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 
@@ -13,7 +14,7 @@ import org.apache.log4j.Logger;
  * @author Brian Fincher
  *
  */
-class TcpClientConnectRunnable implements MyRunnableIfc {
+class TcpClientConnectRunnable implements MyCallableIfc<Socket> {
 
     private static Logger logger = Logger.getLogger(TcpClientConnectRunnable.class);
 
@@ -49,7 +50,7 @@ class TcpClientConnectRunnable implements MyRunnableIfc {
 
     @Override
     /** The body of the thread */
-    public void run() {
+    public Socket call() throws InterruptedException, IOException {
         try {
             Socket socket = new Socket(remoteAddress.getAddress(), remoteAddress.getPort());
 
@@ -59,19 +60,19 @@ class TcpClientConnectRunnable implements MyRunnableIfc {
                     + socket.getLocalPort());
             parent.connectionEstablished(socket);
             continueExecution = false;
-        } catch (Exception e) {
-            logger.error(parent.getId() + " " + e.getMessage(), e);
-
-            try {
-                Thread.sleep(2000);
-            } catch (InterruptedException ie) {
-                logger.warn(parent.getId() + " " + ie.getMessage(), ie);
+            return socket;
+        } catch (IOException ioe) {
+            logger.error(parent.getId() + " " + ioe.getMessage(), ioe);
+            synchronized (this) {
+                wait(2000);
             }
+            throw ioe;
         }
     }
 
     @Override
     /** No action taken */
     public void terminate() {
+        // no action necessary
     }
 }

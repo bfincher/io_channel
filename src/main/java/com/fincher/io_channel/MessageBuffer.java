@@ -11,11 +11,11 @@ public class MessageBuffer implements ExchangeableIfc {
 
     private long transactionId;
 
-    private List<Long> parentTransactionIds = new ArrayList<Long>();
+    private List<Long> parentTransactionIds = new ArrayList<>();
 
     private final long originationTime;
 
-    public String receivedFromIoChannel;
+    private String receivedFromIoChannel;
 
     /**
      * Constructs a new MessageBuffer
@@ -109,7 +109,7 @@ public class MessageBuffer implements ExchangeableIfc {
         sb.append(toHexString(bytes));
         return sb.toString();
     }
-
+    
     /**
      * Convert the array of bytes into a hexadecimal formatted string
      * 
@@ -132,6 +132,25 @@ public class MessageBuffer implements ExchangeableIfc {
         return sb.toString();
     }
 
+    
+    
+    /** Sets the ID of the channel from which this message was received
+     * 
+     * @param channelId the ID of the channel from which this message was received
+     */
+    public void setReceivedFromIoChannelId(String channelId) {
+        receivedFromIoChannel = channelId;
+    }
+    
+    /** Gets the ID of the IO channel from which this message was received
+     * 
+     * @return the ID of the IO channel from which this message was received
+     */
+    public String getReceivedFromChannelId() {
+        return receivedFromIoChannel;
+    }
+
+  
     /**
      * Convert the hex string into a MessageBuffer
      * 

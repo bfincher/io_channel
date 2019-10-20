@@ -1,5 +1,7 @@
 package com.fincher.io_channel;
 
+import java.util.OptionalInt;
+
 /**
  * IP Socket Options
  * 
@@ -9,15 +11,80 @@ package com.fincher.io_channel;
 public class SocketOptions {
 
     /** The SO_SNDBUF socket setting */
-    public int sendBufferSize = -1;
+    private OptionalInt sendBufferSize = OptionalInt.empty();
 
     /** The SO_RCVBUF socket setting */
-    public int receiveBufferSize = -1;
+    private OptionalInt receiveBufferSize = OptionalInt.empty();
 
     /** The SO_REUSEADDR socket setting. Defaults to true */
-    public boolean reuseAddress = true;
+    private boolean reuseAddress = true;
 
     /** The SO_TIMEOUT socket setting (in milliseconds). Defaults to 2000 (2 seconds) */
-    public int timeout = 2000;
+    private OptionalInt timeout = OptionalInt.of(2000);
+
+    /** Gets the SO_SNDBUF socket setting
+     * 
+     * @return the SO_SNDBUF socket setting
+     */
+    public OptionalInt getSendBufferSize() {
+        return sendBufferSize;
+    }
+
+    /** Sets the SO_SNDBUF socket setting
+     * 
+     * @param sendBufferSize the SO_SNDBUF socket setting
+     */
+    public void setSendBufferSize(int sendBufferSize) {
+        this.sendBufferSize = OptionalInt.of(sendBufferSize);
+    }
+
+    
+    /** Gets the SO_RCVBUF socket setting
+     * 
+     * @return the SO_RCVBUF socket setting
+     */
+    public OptionalInt getReceiveBufferSize() {
+        return receiveBufferSize;
+    }
+
+    /** Sets the SO_RCVBUF socket setting
+     * 
+     * @param receiveBufferSize the SO_RCVBUF socket setting
+     */
+    public void setReceiveBufferSize(int receiveBufferSize) {
+        this.receiveBufferSize = OptionalInt.of(receiveBufferSize);
+    }
+
+    /** Gets the SO_REUSEADDR socket setting
+     * 
+     * @return the SO_REUSEADDR socket setting
+     */
+    public boolean isReuseAddress() {
+        return reuseAddress;
+    }
+
+    /** Sets the SO_REUSEADDR socket setting
+     * 
+     * @param reuseAddress the SO_REUSEADDR socket setting
+     */
+    public void setReuseAddress(boolean reuseAddress) {
+        this.reuseAddress = reuseAddress;
+    }
+
+    /** Gets the SO_TIMEOUT socket setting (in milliseconds)
+     * 
+     * @return the SO_TIMEOUT socket setting (in milliseconds)
+     */
+    public OptionalInt getTimeout() {
+        return timeout;
+    }
+
+    /** Sets the SO_TIMEOUT socket setting (in milliseconds)
+     * 
+     * @param timeout the SO_TIMEOUT socket setting (in milliseconds)
+     */
+    public void setTimeout(int timeout) {
+        this.timeout = OptionalInt.of(timeout);
+    }
 
 }

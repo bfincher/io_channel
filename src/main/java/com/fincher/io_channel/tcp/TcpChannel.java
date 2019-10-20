@@ -6,6 +6,7 @@ import com.fincher.io_channel.MessageBuffer;
 import com.fincher.io_channel.SocketIoChannel;
 import com.fincher.io_channel.StateEnum;
 import com.fincher.thread.DataHandlerIfc;
+import com.fincher.thread.MyCallableIfc;
 import com.fincher.thread.MyRunnableIfc;
 import com.fincher.thread.MyThread;
 
@@ -32,10 +33,10 @@ public abstract class TcpChannel extends SocketIoChannel {
     private final StreamIoIfc streamIo;
 
     /** A map of TCP Sockets that have been connected */
-    protected final Map<String, Socket> sockets = new HashMap<String, Socket>();
+    protected final Map<String, Socket> sockets = new HashMap<>();
 
     /** A map of receive threads */
-    private final Map<String, MyThread> receiveThreads = new HashMap<String, MyThread>();
+    private final Map<String, MyThread> receiveThreads = new HashMap<>();
 
     /** The thread used to connect the socket */
     protected MyThread connectThread;
@@ -50,7 +51,7 @@ public abstract class TcpChannel extends SocketIoChannel {
      * The minimum amount of time between warning messages regarding sending when no sockets are
      * connected
      */
-    private double noSocketsSendErrorWarningInterval = new Double(
+    private double noSocketsSendErrorWarningInterval = Double.parseDouble(
             System.getProperty("no.sockets.send.error.warning.interval.seconds", "30.0"));
 
     /**
@@ -153,7 +154,7 @@ public abstract class TcpChannel extends SocketIoChannel {
      * @return the Runnable object used to create a connect thread
      * @throws ChannelException
      */
-    protected abstract MyRunnableIfc getConnectRunnable() throws ChannelException;
+    protected abstract MyCallableIfc<Socket> getConnectRunnable() throws ChannelException;
 
     @Override
     /** Is this socket connected */
@@ -284,8 +285,7 @@ public abstract class TcpChannel extends SocketIoChannel {
      * @return The socket ID
      */
     protected final String getSocketId(Socket socket) {
-        String socketId = socket.getInetAddress().getHostName() + ":" + socket.getPort();
-        return socketId;
+        return socket.getInetAddress().getHostName() + ":" + socket.getPort();
     }
 
     /**
@@ -364,9 +364,10 @@ public abstract class TcpChannel extends SocketIoChannel {
         } finally {
             // wait 3 seconds to give threads time to close
             try {
-                Thread.sleep(3000);
+                wait(3000);
             } catch (InterruptedException ie) {
                 logger.warn(getId() + " " + ie.getMessage(), ie);
+                Thread.currentThread().interrupt();
             }
         }
     }
@@ -382,7 +383,7 @@ public abstract class TcpChannel extends SocketIoChannel {
     public void removeConnectionEstablishedListener(ConnectionEstablishedListener listener) {
         connectionEstablishedListeners.remove(listener);
     }
-
+    
     @Override
     protected void messageReceived(MessageBuffer mb, Logger logger, String logString) {
         super.messageReceived(mb, logger, logString);

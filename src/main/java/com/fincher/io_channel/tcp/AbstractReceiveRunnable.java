@@ -23,8 +23,7 @@ public abstract class AbstractReceiveRunnable implements MyRunnableIfc {
 
     protected final TcpChannel parent;
 
-    public AbstractReceiveRunnable(String id, Socket socket, TcpChannel parent)
-            throws ChannelException {
+    public AbstractReceiveRunnable(String id, Socket socket, TcpChannel parent) {
         this.id = id;
         this.socket = socket;
         this.parent = parent;
@@ -71,7 +70,7 @@ public abstract class AbstractReceiveRunnable implements MyRunnableIfc {
     protected void messageReceived(byte[] buf, int offset, int length) {
         if (!isTerminated()) {
             MessageBuffer mb = new MessageBuffer(buf, offset, length);
-            mb.receivedFromIoChannel = getId();
+            mb.setReceivedFromIoChannelId(getId());
             getParent().messageReceived(mb, LOGGER, "");
         }
     }
