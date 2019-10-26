@@ -18,7 +18,6 @@ public class TcpClientChannel extends TcpChannel {
     /** The remote address to which this client is trying to connect */
     private final InetSocketAddress remoteAddress;
 
-
     /**
      * Constructs a new TCP client socket that is capable of both sending and receiving data
      * 
@@ -30,8 +29,8 @@ public class TcpClientChannel extends TcpChannel {
      *                       "localhost" will be used that the OS will choose an available port
      * @param remoteAddress  The remote address to which this client is trying to connect
      */
-    public TcpClientChannel(String id, Consumer<MessageBuffer> messageHandler,
-            StreamIoIfc streamIo, InetSocketAddress localAddress, InetSocketAddress remoteAddress) {
+    protected TcpClientChannel(String id, Consumer<MessageBuffer> messageHandler, StreamIoIfc streamIo,
+            InetSocketAddress localAddress, InetSocketAddress remoteAddress) {
         super(id, localAddress, messageHandler, streamIo);
         this.remoteAddress = remoteAddress;
     }
@@ -46,10 +45,59 @@ public class TcpClientChannel extends TcpChannel {
      *                      "localhost" will be used that the OS will choose an available port
      * @param remoteAddress The remote address to which this client is trying to connect
      */
-    public TcpClientChannel(String id, StreamIoIfc streamIo, InetSocketAddress localAddress,
+    protected TcpClientChannel(String id, StreamIoIfc streamIo, InetSocketAddress localAddress,
             InetSocketAddress remoteAddress) {
         super(id, localAddress, streamIo);
         this.remoteAddress = remoteAddress;
+    }
+
+    /**
+     * Creates a new TCP client socket that is capable of both sending and receiving data
+     * 
+     * @param id             The ID of this IO Thread
+     * @param messageHandler Used to notify clients of received data
+     * @param streamIo       Used to determine how many bytes should be read from the socket for
+     *                       each message
+     * @param localAddress   The local address to which this socket will be bound. If null
+     *                       "localhost" will be used that the OS will choose an available port
+     * @param remoteAddress  The remote address to which this client is trying to connect
+     * @return a new TCP client socket that is capable of both sending and receiving data
+     */
+    public static TcpClientChannel createChannel(String id, Consumer<MessageBuffer> messageHandler,
+            StreamIoIfc streamIo, InetSocketAddress localAddress, InetSocketAddress remoteAddress) {
+        return new TcpClientChannel(id, messageHandler, streamIo, localAddress, remoteAddress);
+    }
+
+    /**
+     * Creates a new TCP client socket that is capable of both sending and receiving data
+     * 
+     * @param id            The ID of this IO Thread
+     * @param streamIo      Used to determine how many bytes should be read from the socket for each
+     *                      message
+     * @param localAddress  The local address to which this socket will be bound. If null
+     *                      "localhost" will be used that the OS will choose an available port
+     * @param remoteAddress The remote address to which this client is trying to connect
+     * @return a new TCP client socket that is capable of both sending and receiving data
+     */
+    public static TcpClientChannel createChannel(String id, StreamIoIfc streamIo,
+            InetSocketAddress localAddress, InetSocketAddress remoteAddress) {
+        return new TcpClientChannel(id, null, streamIo, localAddress, remoteAddress);
+    }
+
+    /**
+     * Creates a new TCP client socket that is capable of only sending data
+     * 
+     * @param id            The ID of this IO Thread
+     * @param streamIo      Used to determine how many bytes should be read from the socket for each
+     *                      message
+     * @param localAddress  The local address to which this socket will be bound. If null
+     *                      "localhost" will be used that the OS will choose an available port
+     * @param remoteAddress The remote address to which this client is trying to connect
+     * @return a new TCP client socket that is capable of only sending data
+     */
+    public static TcpClientChannel createOutputOnlyChannel(String id, StreamIoIfc streamIo,
+            InetSocketAddress localAddress, InetSocketAddress remoteAddress) {
+        return new TcpClientChannel(id, streamIo, localAddress, remoteAddress);
     }
 
     @Override

@@ -35,7 +35,7 @@ public class UdpMulticastChannel extends UdpChannel {
      * @param localAddress     The local address to which this socket will be bound.
      * @param multicastAddress The multicast address to which this socket will join
      */
-    public UdpMulticastChannel(String id, Consumer<MessageBuffer> messageHandler,
+    protected UdpMulticastChannel(String id, Consumer<MessageBuffer> messageHandler,
             InetSocketAddress localAddress, InetAddress multicastAddress) {
         super(id, messageHandler, localAddress);
 
@@ -57,7 +57,7 @@ public class UdpMulticastChannel extends UdpChannel {
      * @param localAddress     The local address to which this socket will be bound.
      * @param multicastAddress The remote multicast address to which messages will be sent
      */
-    public UdpMulticastChannel(String id, InetSocketAddress localAddress,
+    protected UdpMulticastChannel(String id, InetSocketAddress localAddress,
             InetSocketAddress multicastAddress) {
 
         super(id, localAddress, multicastAddress);
