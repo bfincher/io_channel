@@ -17,7 +17,8 @@ import java.net.InetSocketAddress;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A UDP Unicast representation of a Socket IO Thread
@@ -27,7 +28,7 @@ import org.apache.log4j.Logger;
  */
 public class UdpChannel extends SocketIoChannel {
 
-    private static Logger logger = Logger.getLogger(UdpChannel.class);
+    private static final Logger LOG = LoggerFactory.getLogger(UdpChannel.class);
 
     /** Used by a thread to receive messages */
     private class ReceiveRunnable implements MyRunnableIfc {
@@ -50,12 +51,12 @@ public class UdpChannel extends SocketIoChannel {
 
             try {
                 socket.receive(packet);
-                messageReceived(new MessageBuffer(buf, 0, packet.getLength()), logger,
+                messageReceived(new MessageBuffer(buf, 0, packet.getLength()), LOG,
                         packet.getSocketAddress().toString());
             } catch (SocketTimeoutException ste) {
                 // no action necessary
             } catch (IOException ioe) {
-                logger.error(ioe.getMessage(), ioe);
+                LOG.error(ioe.getMessage(), ioe);
             }
         }
 
@@ -144,7 +145,7 @@ public class UdpChannel extends SocketIoChannel {
                 socket = createSocket();
                 socketCreated = true;
             } catch (BindException be) {
-                logger.warn(getId() + " " + be.getMessage());
+                LOG.warn(getId() + " " + be.getMessage());
                 Thread.sleep(2000);
             } catch (IOException se) {
                 throw new ChannelException(getId(), se);
@@ -165,13 +166,13 @@ public class UdpChannel extends SocketIoChannel {
         }
         setState(StateEnum.CONNECTED);
 
-        logger.info(getId() + " Connected to local address " + socket.getLocalAddress() + " "
+        LOG.info(getId() + " Connected to local address " + socket.getLocalAddress() + " "
                 + socket.getLocalPort());
 
         if (remoteAddress == null) {
-            logger.info(getId() + " Remote address = null");
+            LOG.info(getId() + " Remote address = null");
         } else {
-            logger.info(getId() + " Remote address = " + remoteAddress);
+            LOG.info(getId() + " Remote address = " + remoteAddress);
         }
     }
 
@@ -230,7 +231,7 @@ public class UdpChannel extends SocketIoChannel {
                     getId() + " Socket state = " + getState() + ", IO Type = " + getIoType());
         }
 
-        logSend(logger, message, "remote address = " + remoteAddress.toString() + " size = "
+        logSend(LOG, message, "remote address = " + remoteAddress.toString() + " size = "
                 + message.getBytes().length);
         byte[] bytes = message.getBytes();
 

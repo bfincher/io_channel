@@ -8,7 +8,8 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Used to connect a TCP Client socket
@@ -18,7 +19,7 @@ import org.apache.log4j.Logger;
  */
 class TcpClientConnectRunnable implements MyCallableIfc<Socket> {
 
-    private static Logger logger = Logger.getLogger(TcpClientConnectRunnable.class);
+    private static final Logger LOG = LoggerFactory.getLogger(TcpClientConnectRunnable.class);
 
     /** Should this thread continue to execute */
     private boolean continueExecution = true;
@@ -58,13 +59,12 @@ class TcpClientConnectRunnable implements MyCallableIfc<Socket> {
 
             socket.setSoTimeout(2000);
 
-            logger.info(parent.getId() + " connection established.  Local port = "
-                    + socket.getLocalPort());
+            LOG.info("{} connection established.  Local port = {}", parent.getId(), socket.getLocalPort());
             parent.connectionEstablished(socket);
             continueExecution = false;
             return socket;
         } catch (IOException ioe) {
-            logger.error(parent.getId() + " " + ioe.getMessage(), ioe);
+            LOG.error(parent.getId() + " " + ioe.getMessage(), ioe);
             MyThread.wait(2, TimeUnit.SECONDS, this);
             throw ioe;
         }

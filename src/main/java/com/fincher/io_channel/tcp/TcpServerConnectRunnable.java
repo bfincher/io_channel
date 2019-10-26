@@ -11,7 +11,8 @@ import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Used to connect a TCP Server socket
@@ -21,7 +22,7 @@ import org.apache.log4j.Logger;
  */
 class TcpServerConnectRunnable implements MyCallableIfc<Socket> {
 
-    private static Logger logger = Logger.getLogger(TcpServerConnectRunnable.class);
+    private static final Logger LOG = LoggerFactory.getLogger(TcpServerConnectRunnable.class);
 
     /** Should this thread continue to execute */
     private boolean continueExecution = true;
@@ -69,7 +70,7 @@ class TcpServerConnectRunnable implements MyCallableIfc<Socket> {
             try {
                 serverSocket.close();
             } catch (IOException ioe) {
-                logger.error(tcpServer.getId() + " " + ioe.getMessage(), ioe);
+                LOG.error(tcpServer.getId() + " " + ioe.getMessage(), ioe);
             }
         }
     }
@@ -89,7 +90,7 @@ class TcpServerConnectRunnable implements MyCallableIfc<Socket> {
         } catch (SocketTimeoutException ste) {
             return null;
         } catch (IOException e) {
-            logger.error(tcpServer.getId() + " " + e.getMessage(), e);
+            LOG.error(tcpServer.getId() + " " + e.getMessage(), e);
             MyThread.wait(2, TimeUnit.SECONDS, this);
             throw new ChannelException(e);
         }
@@ -100,7 +101,7 @@ class TcpServerConnectRunnable implements MyCallableIfc<Socket> {
             serverSocket.bind(tcpServer.getlocalAddress());
             return true;
         } catch (BindException be) {
-            logger.warn(tcpServer.getId() + " " + be.getMessage());
+            LOG.warn("{} {} ", tcpServer.getId(), be.getMessage());
             MyThread.wait(2, TimeUnit.SECONDS, this);
             throw be;
         }

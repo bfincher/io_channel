@@ -4,7 +4,7 @@ import com.fincher.thread.DataHandlerIfc;
 
 import java.util.Iterator;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 
 /**
  * An abstract class used to send / receive data
@@ -103,8 +103,7 @@ public abstract class IoChannel<T extends ExchangeableIfc> implements IoChannelI
      * @param logString log information about the received message
      */
     protected void messageReceived(T mb, Logger logger, String logString) {
-        logger.info("Message received on IO Thread " + getId() + " " + mb.getTransactionId() + " "
-                + logString);
+        logger.info("Message received on IO Thread {} {} {}", getId(), mb.getTransactionId(), logString);
         messageHandler.handleMessage(mb);
     }
 

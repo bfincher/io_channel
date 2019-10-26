@@ -3,7 +3,8 @@ package com.fincher.io_channel.udp;
 import java.io.IOException;
 import java.net.MulticastSocket;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A set of socket options for UDP Multicast sockets
@@ -13,7 +14,7 @@ import org.apache.log4j.Logger;
  */
 public class UdpMulticastSocketOptions extends UdpSocketOptions {
 
-    private static Logger logger = Logger.getLogger(UdpMulticastSocketOptions.class);
+    private static final Logger LOG = LoggerFactory.getLogger(UdpMulticastSocketOptions.class);
 
     /** The multicast TTL option */
     private int timeToLive = 16;
@@ -65,6 +66,6 @@ public class UdpMulticastSocketOptions extends UdpSocketOptions {
         socket.setTimeToLive(timeToLive);
         socket.setLoopbackMode(loopbackDisabled);
 
-        logger.info(socketId + " timeToLive = " + socket.getTimeToLive());
+        LOG.info(socketId + " timeToLive = " + socket.getTimeToLive());
     }
 }

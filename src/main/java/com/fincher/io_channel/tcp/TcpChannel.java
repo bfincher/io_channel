@@ -22,13 +22,13 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /** An IO Thread implementation of TCP sockets */
 public abstract class TcpChannel extends SocketIoChannel {
 
-    private static final Logger logger = Logger.getLogger(TcpChannel.class);
+    private static final Logger LOG = LoggerFactory.getLogger(TcpChannel.class);
 
     /** Used to determine how many bytes to read for each message */
     private final StreamIoIfc streamIo;
@@ -143,7 +143,7 @@ public abstract class TcpChannel extends SocketIoChannel {
      * @throws ChannelException
      */
     protected void performConnect() throws ChannelException {
-        logger.debug(getId() + " Setting state to CONNECTING");
+        LOG.debug("{} Setting state to CONNECTING", getId());
         setState(StateEnum.CONNECTING);
         connectThread = new MyThread(getId() + "ConnectThread", getConnectRunnable());
         connectThread.start();
@@ -160,14 +160,14 @@ public abstract class TcpChannel extends SocketIoChannel {
     @Override
     /** Is this socket connected */
     public boolean isConnected() {
-        logger.debug(getId() + " isConnected() returning " + (getState() == StateEnum.CONNECTED));
+        LOG.debug("{} isConnected() returning {}", getId(),  (getState() == StateEnum.CONNECTED));
         return getState() == StateEnum.CONNECTED;
     }
 
     @Override
     /** Close this socket */
     public void close() throws ChannelException {
-        logger.debug(getId() + " setting state to CLOSED");
+        LOG.debug("{} setting state to CLOSED", getId());
         setState(StateEnum.CLOSED);
 
         if (connectThread != null) {
@@ -194,7 +194,7 @@ public abstract class TcpChannel extends SocketIoChannel {
         byte[] bytes = message.getBytes();
 
         if (logSend) {
-            logSend(logger, message, "message length = " + bytes.length);
+            logSend(LOG, message, "message length = " + bytes.length);
         }
 
         send(bytes, channel);
@@ -230,7 +230,7 @@ public abstract class TcpChannel extends SocketIoChannel {
 
         byte[] bytes = message.getBytes();
 
-        logSend(logger, message, "message length = " + bytes.length);
+        logSend(LOG, message, "message length = " + bytes.length);
 
         synchronized (sockets) {
             if (sockets.values().isEmpty()) {
@@ -267,16 +267,14 @@ public abstract class TcpChannel extends SocketIoChannel {
         long currentTime = System.currentTimeMillis();
         double durationSecs = (currentTime - lastNoSocketsSendError) / 1000.0;
 
-        Level logLevel;
+        String logStr = getId() + " Cannot send due to no sockets connected";
+
         if (durationSecs > noSocketsSendErrorWarningInterval) {
-            logLevel = Level.WARN;
+            LOG.warn(logStr);
             lastNoSocketsSendError = currentTime;
         } else {
-            logLevel = Level.INFO;
+            LOG.info(logStr);
         }
-
-        logger.log(logLevel, getId() + " Cannot send due to no sockets connected");
-
     }
 
     /**
@@ -325,7 +323,7 @@ public abstract class TcpChannel extends SocketIoChannel {
 
         connectionCount.incrementAndGet();
 
-        logger.debug(getId() + " setting state to CONNECTED");
+        LOG.debug("{} setting state to CONNECTED", getId());
         setState(StateEnum.CONNECTED);
 
         for (ConnectionEstablishedListener listener : connectionEstablishedListeners) {
@@ -340,12 +338,12 @@ public abstract class TcpChannel extends SocketIoChannel {
      * @throws ChannelException
      */
     protected synchronized void connectionLost(Socket socket) throws ChannelException {
-        logger.warn(getId() + " " + getSocketId(socket) + " connection lost");
+        LOG.warn("{} {} connection lost", getId(), getSocketId(socket));
 
         int count = connectionCount.decrementAndGet();
 
         if (count <= 0) {
-            logger.debug(getId() + " setting state to CONNECTING");
+            LOG.debug("{} setting state to CONNECTING", getId());
             setState(StateEnum.CONNECTING);
         }
 
@@ -361,13 +359,13 @@ public abstract class TcpChannel extends SocketIoChannel {
         try {
             socket.close();
         } catch (IOException e) {
-            logger.error(e.getMessage(), e);
+            LOG.error(e.getMessage(), e);
         } finally {
             // wait 3 seconds to give threads time to close
             try {
                 MyThread.wait(3, TimeUnit.SECONDS, this);
             } catch (InterruptedException ie) {
-                logger.warn(getId() + " " + ie.getMessage(), ie);
+                LOG.warn(getId() + " " + ie.getMessage(), ie);
                 Thread.currentThread().interrupt();
             }
         }

@@ -8,12 +8,13 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /** Socket options for TCP Sockets */
 public class TcpSocketOptions extends SocketOptions {
 
-    private static Logger logger = Logger.getLogger(TcpSocketOptions.class);
+    private static final Logger LOG = LoggerFactory.getLogger(TcpSocketOptions.class);
 
     /** The SO_KEEPALIVE socket setting. Defaults to true */
     private boolean keepAlive = true;
@@ -40,25 +41,27 @@ public class TcpSocketOptions extends SocketOptions {
 
             socket.setKeepAlive(keepAlive);
             socket.setReuseAddress(isReuseAddress());
-            
+
             if (getTimeout().isPresent()) {
                 socket.setSoTimeout(getTimeout().getAsInt());
             }
-            
+
             socket.setTcpNoDelay(tcpNoDelay);
 
-            StringBuilder logString = new StringBuilder();
-            logString.append(socketId);
-            logString.append(
-                    " actual socket options: receiveBufferSize = " + socket.getReceiveBufferSize());
-            
-            logString.append(", sendBufferSize = " + socket.getSendBufferSize());
-            logString.append(", keepAlive = " + socket.getKeepAlive());
-            logString.append(", reuseAddress = " + socket.getReuseAddress());
-            logString.append(", timeout = " + socket.getSoTimeout());
-            logString.append(", tcpNoDelay = " + socket.getTcpNoDelay());
+            if (LOG.isInfoEnabled()) {
+                StringBuilder logString = new StringBuilder();
+                logString.append(socketId);
+                logString.append(" actual socket options: receiveBufferSize = "
+                        + socket.getReceiveBufferSize());
 
-            logger.info(logString.toString());
+                logString.append(", sendBufferSize = " + socket.getSendBufferSize());
+                logString.append(", keepAlive = " + socket.getKeepAlive());
+                logString.append(", reuseAddress = " + socket.getReuseAddress());
+                logString.append(", timeout = " + socket.getSoTimeout());
+                logString.append(", tcpNoDelay = " + socket.getTcpNoDelay());
+
+                LOG.info(logString.toString());
+            }
         } catch (SocketException se) {
             throw new ChannelException(socketId, se);
         }
@@ -79,7 +82,7 @@ public class TcpSocketOptions extends SocketOptions {
         }
 
         socket.setReuseAddress(isReuseAddress());
-        
+
         if (getTimeout().isPresent()) {
             socket.setSoTimeout(getTimeout().getAsInt());
         }
@@ -88,30 +91,33 @@ public class TcpSocketOptions extends SocketOptions {
         logString.append(socketId);
         logString.append(
                 " actual socket options: receiveBufferSize = " + socket.getReceiveBufferSize());
-        
+
         logString.append(", reuseAddress = " + socket.getReuseAddress());
         logString.append(", timeout = " + socket.getSoTimeout());
 
-        logger.info(logString.toString());
+        LOG.info(logString.toString());
     }
-    
-    /** The SO_KEEPALIVE socket setting.
+
+    /**
+     * The SO_KEEPALIVE socket setting.
      * 
      * @param val The SO_KEEPALIVE socket setting.
      */
     public void setKeepAlive(boolean val) {
         keepAlive = val;
     }
-    
-    /** The SO_KEEPALIVE socket setting.
+
+    /**
+     * The SO_KEEPALIVE socket setting.
      * 
-     * @return The SO_KEEPALIVE socket setting.n 
+     * @return The SO_KEEPALIVE socket setting.n
      */
     public boolean getKeepAlive() {
         return keepAlive;
     }
-    
-    /** The TCP_NODELAY socket setting.
+
+    /**
+     * The TCP_NODELAY socket setting.
      * 
      * @return The TCP_NODELAY socket setting
      */
@@ -119,7 +125,8 @@ public class TcpSocketOptions extends SocketOptions {
         tcpNoDelay = val;
     }
 
-    /** The TCP_NODELAY socket setting.
+    /**
+     * The TCP_NODELAY socket setting.
      * 
      * @return The TCP_NODELAY socket setting
      */

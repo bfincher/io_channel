@@ -5,12 +5,13 @@ import com.fincher.io_channel.SocketOptions;
 import java.net.DatagramSocket;
 import java.net.SocketException;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /** Options for UDP Unicast sockets */
 public class UdpSocketOptions extends SocketOptions {
 
-    private static Logger logger = Logger.getLogger(UdpSocketOptions.class);
+    private static final Logger LOG = LoggerFactory.getLogger(UdpSocketOptions.class);
 
     /** Constructs a new UdpSocketOptions object */
     public UdpSocketOptions() {
@@ -49,7 +50,7 @@ public class UdpSocketOptions extends SocketOptions {
         logString.append(", reuseAddress = " + socket.getReuseAddress());
         logString.append(", timeout = " + socket.getSoTimeout());
 
-        logger.info(logString.toString());
+        LOG.info(logString.toString());
     }
 
 }

@@ -13,9 +13,6 @@ import java.net.UnknownHostException;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import org.apache.log4j.ConsoleAppender;
-import org.apache.log4j.Logger;
-import org.apache.log4j.SimpleLayout;
 import org.awaitility.Awaitility;
 import org.junit.Test;
 
@@ -42,7 +39,7 @@ public class TcpTest extends IoChannelTesterBase<MessageBuffer> {
             server.send(new MessageBuffer(
                     SimpleStreamIO.prePendLength(new String("Hello World " + i).getBytes())));
         }
-        
+
         Awaitility.await().until(() -> queue1.size() == 5);
 
         server.close();
@@ -57,7 +54,7 @@ public class TcpTest extends IoChannelTesterBase<MessageBuffer> {
             server.send(new MessageBuffer(
                     SimpleStreamIO.prePendLength(new String("Hello World " + i).getBytes())));
         }
-        
+
         Awaitility.await().until(() -> queue1.size() == 10);
 
         assertEquals(10, queue1.size());
@@ -80,23 +77,19 @@ public class TcpTest extends IoChannelTesterBase<MessageBuffer> {
      */
     @Test(timeout = 10000)
     public void test() throws ChannelException, InterruptedException, UnknownHostException {
-
-        Logger.getRootLogger().addAppender(new ConsoleAppender(new SimpleLayout()));
-
-        final InetSocketAddress localAddress5000 = new InetSocketAddress(
-                InetAddress.getLocalHost(), 5000);
-
-        InetSocketAddress remoteAddress = new InetSocketAddress(InetAddress.getLocalHost(),
+        final InetSocketAddress localAddress5000 = new InetSocketAddress(InetAddress.getLocalHost(),
                 5000);
+
+        InetSocketAddress remoteAddress = new InetSocketAddress(InetAddress.getLocalHost(), 5000);
 
         InetSocketAddress localAddress0 = new InetSocketAddress(InetAddress.getLocalHost(), 0);
         TcpClientChannel client1 = new TcpClientChannel("client1",
-                new QueueMessageHandler<MessageBuffer>(queue1), new SimpleStreamIO(),
-                localAddress0, remoteAddress);
+                new QueueMessageHandler<MessageBuffer>(queue1), new SimpleStreamIO(), localAddress0,
+                remoteAddress);
 
         TcpClientChannel client2 = new TcpClientChannel("client2",
-                new QueueMessageHandler<MessageBuffer>(queue2), new SimpleStreamIO(),
-                localAddress0, remoteAddress);
+                new QueueMessageHandler<MessageBuffer>(queue2), new SimpleStreamIO(), localAddress0,
+                remoteAddress);
 
         test(client1, client2, new TcpServerFactory() {
 

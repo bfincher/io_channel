@@ -11,7 +11,8 @@ import java.net.InetSocketAddress;
 import java.net.MulticastSocket;
 import java.net.SocketException;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A UDP Multicast representation of a Socket IO Thread
@@ -21,7 +22,7 @@ import org.apache.log4j.Logger;
  */
 public class UdpMulticastChannel extends UdpChannel {
 
-    private static Logger logger = Logger.getLogger(UdpMulticastChannel.class);
+    private static final Logger LOG = LoggerFactory.getLogger(UdpMulticastChannel.class);
 
     private final InetAddress multicastAddress;
 
@@ -83,7 +84,7 @@ public class UdpMulticastChannel extends UdpChannel {
             case INPUT_AND_OUTPUT:
                 try {
                     ((MulticastSocket) socket).joinGroup(multicastAddress);
-                    logger.info(getId() + " joined multicast group "
+                    LOG.info(getId() + " joined multicast group "
                             + multicastAddress.getHostAddress());
                 } catch (IOException se) {
                     throw new ChannelException(getId(), se);

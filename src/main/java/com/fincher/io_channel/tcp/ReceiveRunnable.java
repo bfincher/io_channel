@@ -8,11 +8,12 @@ import java.io.InputStream;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ReceiveRunnable extends AbstractReceiveRunnable {
 
-    private static final Logger logger = Logger.getLogger(ReceiveRunnable.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ReceiveRunnable.class);
 
     /** The byte array used to receive data */
     private byte[] buf = new byte[4096];
@@ -97,15 +98,15 @@ public class ReceiveRunnable extends AbstractReceiveRunnable {
     public void run() {
         try {
 
-            if (logger.isTraceEnabled()) {
-                logger.trace(getId() + " Reading header (length = " + headerLength + ")");
+            if (LOG.isTraceEnabled()) {
+                LOG.trace("{} Reading header (length = {})", getId(), headerLength);
             }
             buf = read(buf, 0, headerLength);
 
             final int messageLength = streamIo.getMessageLength(buf);
 
-            if (logger.isTraceEnabled()) {
-                logger.trace(getId() + " message length = " + messageLength);
+            if (LOG.isTraceEnabled()) {
+                LOG.trace("{} message length = {}", getId(), messageLength);
             }
 
             int bytesToRead;
@@ -118,28 +119,28 @@ public class ReceiveRunnable extends AbstractReceiveRunnable {
                 offset = 0;
             }
 
-            if (logger.isDebugEnabled()) {
-                logger.debug("reading length " + bytesToRead);
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("reading length {}", bytesToRead);
             }
 
             buf = read(buf, offset, bytesToRead);
 
             messageReceived(buf, 0, bytesToRead + offset);
         } catch (EOFException eofe) {
-            logger.warn("end of stream reached");
+            LOG.warn("end of stream reached");
 
             try {
                 closeSocket();
             } catch (ChannelException ce) {
-                logger.error(ce.getMessage(), ce);
+                LOG.error(ce.getMessage(), ce);
             }
         } catch (IOException ioe) {
-            logger.error(ioe.getMessage(), ioe);
+            LOG.error(ioe.getMessage(), ioe);
 
             try {
                 closeSocket();
             } catch (ChannelException ce) {
-                logger.error(ce.getMessage(), ce);
+                LOG.error(ce.getMessage(), ce);
             }
         }
     }
