@@ -145,7 +145,7 @@ public class UdpChannel extends SocketIoChannel {
                 socket = createSocket();
                 socketCreated = true;
             } catch (BindException be) {
-                LOG.warn(getId() + " " + be.getMessage());
+                LOG.warn("{} {} ", getId(), be.getMessage());
                 Thread.sleep(2000);
             } catch (IOException se) {
                 throw new ChannelException(getId(), se);
@@ -170,9 +170,9 @@ public class UdpChannel extends SocketIoChannel {
                 + socket.getLocalPort());
 
         if (remoteAddress == null) {
-            LOG.info(getId() + " Remote address = null");
+            LOG.info("{} Remote address = null", getId());
         } else {
-            LOG.info(getId() + " Remote address = " + remoteAddress);
+            LOG.info("{} Remote address = {}", getId(), remoteAddress);
         }
     }
 

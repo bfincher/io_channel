@@ -36,21 +36,23 @@ public class UdpSocketOptions extends SocketOptions {
         }
 
         socket.setReuseAddress(isReuseAddress());
-        
+
         if (getTimeout().isPresent()) {
             socket.setSoTimeout(getTimeout().getAsInt());
         }
 
-        StringBuilder logString = new StringBuilder();
-        logString.append(socketId);
-        logString.append(
-                " actual socket options: receiveBufferSize = " + socket.getReceiveBufferSize());
+        if (LOG.isInfoEnabled()) {
+            StringBuilder logString = new StringBuilder();
+            logString.append(socketId);
+            logString.append(
+                    " actual socket options: receiveBufferSize = " + socket.getReceiveBufferSize());
 
-        logString.append(", sendBufferSize = " + socket.getSendBufferSize());
-        logString.append(", reuseAddress = " + socket.getReuseAddress());
-        logString.append(", timeout = " + socket.getSoTimeout());
+            logString.append(", sendBufferSize = " + socket.getSendBufferSize());
+            logString.append(", reuseAddress = " + socket.getReuseAddress());
+            logString.append(", timeout = " + socket.getSoTimeout());
 
-        LOG.info(logString.toString());
+            LOG.info(logString.toString());
+        }
     }
 
 }
