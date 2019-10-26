@@ -1,8 +1,7 @@
 package com.fincher.io_channel;
 
-import com.fincher.thread.DataHandlerIfc;
-
 import java.net.InetSocketAddress;
+import java.util.function.Consumer;
 
 import org.slf4j.Logger;
 
@@ -22,19 +21,14 @@ public abstract class SocketIoChannel extends IoChannel<MessageBuffer> {
      * 
      * @param id             The ID of this IO Thread
      * @param ioType         Is this IO Thread input, output, or both
-     * @param messageHandler Used to notify clients of received data
+     * @param messageListener Used to notify clients of received data
      * @param localAddress   The local address to which this socket will be bound. If null
      *                       "localhost" will be used that the OS will choose an available port
      */
     public SocketIoChannel(String id, IoTypeEnum ioType,
-            DataHandlerIfc<MessageBuffer> messageHandler, InetSocketAddress localAddress) {
-        super(id, ioType, messageHandler);
-
-        if (localAddress == null) {
-            this.localAddress = new InetSocketAddress(0);
-        } else {
-            this.localAddress = localAddress;
-        }
+            Consumer<MessageBuffer> messageListener, InetSocketAddress localAddress) {
+        this(id, ioType, localAddress);
+        addMessageListener(messageListener);
     }
 
     /**
@@ -46,7 +40,13 @@ public abstract class SocketIoChannel extends IoChannel<MessageBuffer> {
      *                     will be used that the OS will choose an available port
      */
     public SocketIoChannel(String id, IoTypeEnum ioType, InetSocketAddress localAddress) {
-        this(id, ioType, null, localAddress);
+        super(id, ioType);
+
+        if (localAddress == null) {
+            this.localAddress = new InetSocketAddress(0);
+        } else {
+            this.localAddress = localAddress;
+        }
     }
 
     /**

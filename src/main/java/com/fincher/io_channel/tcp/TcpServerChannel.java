@@ -2,12 +2,12 @@ package com.fincher.io_channel.tcp;
 
 import com.fincher.io_channel.ChannelException;
 import com.fincher.io_channel.MessageBuffer;
-import com.fincher.thread.DataHandlerIfc;
 import com.fincher.thread.MyCallableIfc;
 
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.function.Consumer;
 
 /**
  * A TCPIOThread implementation for TCP Server sockets
@@ -27,7 +27,7 @@ public class TcpServerChannel extends TcpChannel {
      * @param localAddress   The local address to which this socket will be bound. If null
      *                       "localhost" will be used
      */
-    public TcpServerChannel(String id, DataHandlerIfc<MessageBuffer> messageHandler,
+    public TcpServerChannel(String id, Consumer<MessageBuffer> messageHandler,
             StreamIoIfc streamIo, InetSocketAddress localAddress) {
         super(id, localAddress, messageHandler, streamIo);
     }

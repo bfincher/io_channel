@@ -2,7 +2,6 @@ package com.fincher.io_channel.udp;
 
 import com.fincher.io_channel.IoChannelTesterBase;
 import com.fincher.io_channel.MessageBuffer;
-import com.fincher.io_channel.QueueMessageHandler;
 import com.fincher.io_channel.TestDataFactoryIfc;
 
 import java.net.InetAddress;
@@ -68,7 +67,7 @@ public class UdpTest extends IoChannelTesterBase<MessageBuffer> {
                 multicastAddress);
 
         UdpMulticastChannel input = new UdpMulticastChannel("input",
-                new QueueMessageHandler<MessageBuffer>(messageQueue), localAddress5000,
+                messageQueue::add, localAddress5000,
                 InetAddress.getByName("239.1.1.1"));
 
         test(input, output, new TestDataFactory());
@@ -83,7 +82,7 @@ public class UdpTest extends IoChannelTesterBase<MessageBuffer> {
         UdpChannel output = new UdpChannel("output", localAddress0, localAddress5000);
 
         UdpChannel input = new UdpChannel("input",
-                new QueueMessageHandler<MessageBuffer>(messageQueue), localAddress5000);
+                messageQueue::add, localAddress5000);
         test(input, output, new TestDataFactory());
     }
 }

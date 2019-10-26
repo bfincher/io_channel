@@ -2,7 +2,7 @@ package com.fincher.io_channel.udp;
 
 import com.fincher.io_channel.ChannelException;
 import com.fincher.io_channel.MessageBuffer;
-import com.fincher.thread.DataHandlerIfc;
+import com.google.common.base.Preconditions;
 
 import java.io.IOException;
 import java.net.DatagramSocket;
@@ -10,6 +10,7 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.MulticastSocket;
 import java.net.SocketException;
+import java.util.function.Consumer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,22 +35,19 @@ public class UdpMulticastChannel extends UdpChannel {
      * @param localAddress     The local address to which this socket will be bound.
      * @param multicastAddress The multicast address to which this socket will join
      */
-    public UdpMulticastChannel(String id, DataHandlerIfc<MessageBuffer> messageHandler,
+    public UdpMulticastChannel(String id, Consumer<MessageBuffer> messageHandler,
             InetSocketAddress localAddress, InetAddress multicastAddress) {
         super(id, messageHandler, localAddress);
+
+        Preconditions.checkArgument(localAddress != null && localAddress.getPort() != 0,
+                id + " localAddress port must be non zero");
         
-        if (localAddress == null || localAddress.getPort() == 0) {
-            throw new IllegalArgumentException(id + " localAddress port must be non zero");
-        }
+        Preconditions.checkArgument(multicastAddress.isMulticastAddress(),
+                "The multicast address given is not a valid multicast address");
 
         this.multicastAddress = multicastAddress;
 
         socketOptions = new UdpMulticastSocketOptions();
-
-        if (!multicastAddress.isMulticastAddress()) {
-            throw new IllegalArgumentException(
-                    "The multicast address given is not a valid multicast address");
-        }
     }
 
     /**
@@ -68,10 +66,8 @@ public class UdpMulticastChannel extends UdpChannel {
 
         socketOptions = new UdpMulticastSocketOptions();
 
-        if (!multicastAddress.getAddress().isMulticastAddress()) {
-            throw new IllegalArgumentException(
-                    "The multicast address given is not a valid multicast address");
-        }
+        Preconditions.checkArgument(multicastAddress.getAddress().isMulticastAddress(),
+                "The multicast address given is not a valid multicast address");
     }
 
     /**
@@ -84,7 +80,7 @@ public class UdpMulticastChannel extends UdpChannel {
      * @return a new input only UDP MULTICAST IO Thread
      */
     public static UdpMulticastChannel createInputChannel(String id,
-            DataHandlerIfc<MessageBuffer> messageHandler, InetSocketAddress localAddress,
+            Consumer<MessageBuffer> messageHandler, InetSocketAddress localAddress,
             InetAddress multicastAddress) {
         return new UdpMulticastChannel(id, messageHandler, localAddress, multicastAddress);
     }
@@ -110,7 +106,7 @@ public class UdpMulticastChannel extends UdpChannel {
      * @param multicastAddress The remote multicast address to which messages will be sent
      * @return Creates a new output only UDP IO Thread
      */
-    public static  UdpMulticastChannel createOutputChannel(String id, InetSocketAddress localAddress,
+    public static UdpMulticastChannel createOutputChannel(String id, InetSocketAddress localAddress,
             InetSocketAddress multicastAddress) {
         return new UdpMulticastChannel(id, localAddress, multicastAddress);
     }

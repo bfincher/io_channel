@@ -5,7 +5,6 @@ import static org.junit.Assert.assertEquals;
 import com.fincher.io_channel.ChannelException;
 import com.fincher.io_channel.IoChannelTesterBase;
 import com.fincher.io_channel.MessageBuffer;
-import com.fincher.io_channel.QueueMessageHandler;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -75,7 +74,7 @@ public class TcpTest extends IoChannelTesterBase<MessageBuffer> {
      * Test TCP sockets
      * 
      */
-    @Test(timeout = 10000)
+    @Test//(timeout = 10000)
     public void test() throws ChannelException, InterruptedException, UnknownHostException {
         final InetSocketAddress localAddress5000 = new InetSocketAddress(InetAddress.getLocalHost(),
                 5000);
@@ -84,11 +83,13 @@ public class TcpTest extends IoChannelTesterBase<MessageBuffer> {
 
         InetSocketAddress localAddress0 = new InetSocketAddress(InetAddress.getLocalHost(), 0);
         TcpClientChannel client1 = new TcpClientChannel("client1",
-                new QueueMessageHandler<MessageBuffer>(queue1), new SimpleStreamIO(), localAddress0,
+                queue1::add,
+                new SimpleStreamIO(), localAddress0,
                 remoteAddress);
 
         TcpClientChannel client2 = new TcpClientChannel("client2",
-                new QueueMessageHandler<MessageBuffer>(queue2), new SimpleStreamIO(), localAddress0,
+                queue2::add,
+                new SimpleStreamIO(), localAddress0,
                 remoteAddress);
 
         test(client1, client2, new TcpServerFactory() {

@@ -2,10 +2,10 @@ package com.fincher.io_channel.tcp;
 
 import com.fincher.io_channel.ChannelException;
 import com.fincher.io_channel.MessageBuffer;
-import com.fincher.thread.DataHandlerIfc;
 
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.util.function.Consumer;
 
 /**
  * A TCP client socket
@@ -30,7 +30,7 @@ public class TcpClientChannel extends TcpChannel {
      *                       "localhost" will be used that the OS will choose an available port
      * @param remoteAddress  The remote address to which this client is trying to connect
      */
-    public TcpClientChannel(String id, DataHandlerIfc<MessageBuffer> messageHandler,
+    public TcpClientChannel(String id, Consumer<MessageBuffer> messageHandler,
             StreamIoIfc streamIo, InetSocketAddress localAddress, InetSocketAddress remoteAddress) {
         super(id, localAddress, messageHandler, streamIo);
         this.remoteAddress = remoteAddress;

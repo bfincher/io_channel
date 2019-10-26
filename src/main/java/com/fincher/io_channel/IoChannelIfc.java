@@ -1,6 +1,7 @@
 package com.fincher.io_channel;
 
-import com.fincher.thread.DataHandlerIfc;
+import java.util.Collection;
+import java.util.function.Consumer;
 
 /**
  * A representation of a component used to send / receive data
@@ -19,12 +20,14 @@ public interface IoChannelIfc<T extends ExchangeableIfc> {
     public String getId();
 
     /**
-     * Gets the message handler used to notify clients of received data. May be null in which case
-     * the IO Thread will not attempt to receive data
+     * Gets the a cop of the message listeners used to notify clients of received data. 
      * 
-     * @return the message handler used to notify clients of received data
+     * @return a copy of the message listeners used to notify clients of received data
      */
-    public DataHandlerIfc<T> getMessageHandler();
+    public Collection<Consumer<T>> getMessageListeners();
+    
+    /** Adds a listener to be notified of received messages.  Not applicable for output only channels */
+    public void addMessageListener(Consumer<T> listener);
 
     /**
      * Connects this IOThread

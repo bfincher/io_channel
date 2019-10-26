@@ -1,8 +1,12 @@
 package com.fincher.io_channel;
 
-import com.fincher.thread.DataHandlerIfc;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableList;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
+import java.util.function.Consumer;
 
 import org.slf4j.Logger;
 
@@ -14,35 +18,22 @@ import org.slf4j.Logger;
  * @param <T>
  *
  */
+
 public abstract class IoChannel<T extends ExchangeableIfc> implements IoChannelIfc<T> {
 
     /** The ID of this IO Thread */
-    private final String id;
+    private final String id;    
 
     /**
-     * The message handler used to notify clients of received data. May be null in which case the IO
-     * Thread will not attempt to receive data
+     * The message listeners used to notify clients of received data. Not applicable for output only channels
      */
-    private final DataHandlerIfc<T> messageHandler;
+    private final Collection<Consumer<T>> messageListeners = new ArrayList<>();
 
     /** Is this IO Thread input, output, or both */
     private final IoTypeEnum ioType;
 
     /** The state of this TCP socket */
     private StateEnum state = StateEnum.INITIAL;
-
-    /**
-     * Constructs a new IOThread that is capable of both sending and receiving data
-     * 
-     * @param id             The ID of this IO Thread
-     * @param ioType         Is this IO Thread input, output, or both
-     * @param messageHandler The message handler used to notify clients of received data
-     */
-    public IoChannel(String id, IoTypeEnum ioType, DataHandlerIfc<T> messageHandler) {
-        this.id = id;
-        this.messageHandler = messageHandler;
-        this.ioType = ioType;
-    }
 
     /**
      * Constructs a new IOThread that is capable of only sending data
@@ -53,7 +44,6 @@ public abstract class IoChannel<T extends ExchangeableIfc> implements IoChannelI
     public IoChannel(String id, IoTypeEnum ioType) {
         this.id = id;
         this.ioType = ioType;
-        this.messageHandler = null;
     }
 
     /**
@@ -104,12 +94,19 @@ public abstract class IoChannel<T extends ExchangeableIfc> implements IoChannelI
      */
     protected void messageReceived(T mb, Logger logger, String logString) {
         logger.info("Message received on IO Thread {} {} {}", getId(), mb.getTransactionId(), logString);
-        messageHandler.handleMessage(mb);
+        messageListeners.forEach(listener -> listener.accept(mb));
     }
 
     @Override
-    public DataHandlerIfc<T> getMessageHandler() {
-        return messageHandler;
+    public Collection<Consumer<T>> getMessageListeners() {
+        return ImmutableList.copyOf(messageListeners);
+    }
+    
+    
+    @Override
+    public void addMessageListener(Consumer<T> listener) {
+        Preconditions.checkState(ioType.isInput(), "Cannot set a message listener on an output only channel");
+        messageListeners.add(listener);
     }
 
 

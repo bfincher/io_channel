@@ -5,9 +5,9 @@ import com.fincher.io_channel.IoTypeEnum;
 import com.fincher.io_channel.MessageBuffer;
 import com.fincher.io_channel.SocketIoChannel;
 import com.fincher.io_channel.StateEnum;
-import com.fincher.thread.DataHandlerIfc;
 import com.fincher.thread.MyRunnableIfc;
 import com.fincher.thread.MyThread;
+import com.google.common.base.Preconditions;
 
 import java.io.IOException;
 import java.net.BindException;
@@ -16,6 +16,7 @@ import java.net.DatagramSocket;
 import java.net.InetSocketAddress;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
+import java.util.function.Consumer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -97,7 +98,7 @@ public class UdpChannel extends SocketIoChannel {
      * @param localAddress   The local address to which this socket will be bound. If null
      *                       "localhost" will be used
      */
-    protected UdpChannel(String id, DataHandlerIfc<MessageBuffer> messageHandler,
+    protected UdpChannel(String id, Consumer<MessageBuffer> messageHandler,
             InetSocketAddress localAddress) {
         super(id, IoTypeEnum.INPUT_ONLY, messageHandler, localAddress);
 
@@ -112,7 +113,8 @@ public class UdpChannel extends SocketIoChannel {
      *                      "localhost" will be used
      * @param remoteAddress The remote address to which messages will be sent
      */
-    protected UdpChannel(String id, InetSocketAddress localAddress, InetSocketAddress remoteAddress) {
+    protected UdpChannel(String id, InetSocketAddress localAddress,
+            InetSocketAddress remoteAddress) {
 
         super(id, IoTypeEnum.OUTPUT_ONLY, localAddress);
 
@@ -128,8 +130,8 @@ public class UdpChannel extends SocketIoChannel {
      *                       "localhost" will be used
      * @return a new input only UDP IO Thread
      */
-    public static UdpChannel createInputChannel(String id,
-            DataHandlerIfc<MessageBuffer> messageHandler, InetSocketAddress localAddress) {
+    public static UdpChannel createInputChannel(String id, Consumer<MessageBuffer> messageHandler,
+            InetSocketAddress localAddress) {
         return new UdpChannel(id, messageHandler, localAddress);
     }
 
@@ -142,7 +144,7 @@ public class UdpChannel extends SocketIoChannel {
      * @return a new input only UDP IO Thread
      */
     public static UdpChannel createInputChannel(String id, InetSocketAddress localAddress) {
-        return new UdpChannel(id, (DataHandlerIfc<MessageBuffer>) null, localAddress);
+        return new UdpChannel(id, (Consumer<MessageBuffer>) null, localAddress);
     }
 
     /**
@@ -164,19 +166,16 @@ public class UdpChannel extends SocketIoChannel {
      * @param socketOptions The TCP socket options
      */
     public void setSocketOptions(UdpSocketOptions socketOptions) {
-        if (getState() != StateEnum.INITIAL) {
-            throw new IllegalStateException(
-                    getId() + " The state must be INITIAL for setSocketOptions");
-        }
+        Preconditions.checkState(getState() == StateEnum.INITIAL,
+                getId() + " The state must be INITIAL for setSocketOptions");
         this.socketOptions = socketOptions;
     }
 
     @Override
     /** Connects this UDP IO thread */
     public void connect() throws ChannelException, InterruptedException {
-        if (getState() != StateEnum.INITIAL) {
-            throw new IllegalStateException(getId() + " Illegal state for connect: " + getState());
-        }
+        Preconditions.checkState(getState() == StateEnum.INITIAL,
+                getId() + " Illegal state for connect: " + getState());
 
         boolean socketCreated = false;
         while (!socketCreated) {
@@ -265,10 +264,8 @@ public class UdpChannel extends SocketIoChannel {
      * @param message The message to be sent
      */
     public void send(MessageBuffer message) throws ChannelException {
-        if (getState() != StateEnum.CONNECTED || getIoType() == IoTypeEnum.INPUT_ONLY) {
-            throw new IllegalStateException(
-                    getId() + " Socket state = " + getState() + ", IO Type = " + getIoType());
-        }
+        Preconditions.checkState(getState() == StateEnum.CONNECTED && getIoType().isOutput(),
+                getId() + " Socket state = " + getState() + ", IO Type = " + getIoType());
 
         logSend(LOG, message, "remote address = " + remoteAddress.toString() + " size = "
                 + message.getBytes().length);

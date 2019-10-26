@@ -5,10 +5,10 @@ import com.fincher.io_channel.IoTypeEnum;
 import com.fincher.io_channel.MessageBuffer;
 import com.fincher.io_channel.SocketIoChannel;
 import com.fincher.io_channel.StateEnum;
-import com.fincher.thread.DataHandlerIfc;
 import com.fincher.thread.MyCallableIfc;
 import com.fincher.thread.MyRunnableIfc;
 import com.fincher.thread.MyThread;
+import com.google.common.base.Preconditions;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -85,7 +86,7 @@ public abstract class TcpChannel extends SocketIoChannel {
      *                       "localhost" will be used that the OS will choose an available port
      */
     public TcpChannel(String id, InetSocketAddress localAddress,
-            DataHandlerIfc<MessageBuffer> messageHandler, StreamIoIfc streamIo) {
+            Consumer<MessageBuffer> messageHandler, StreamIoIfc streamIo) {
         super(id, IoTypeEnum.INPUT_AND_OUTPUT, messageHandler, localAddress);
 
         this.streamIo = streamIo;
@@ -105,11 +106,9 @@ public abstract class TcpChannel extends SocketIoChannel {
         this.streamIo = streamIo;
     }
 
-    public void setReceiveRunnableFactory(ReceiveRunnableFactoryIfc factory) {
-        if (getState() != StateEnum.INITIAL) {
-            throw new IllegalStateException(
-                    "The state must be INITIAL for setReceiveRunnableFactory");
-        }
+    protected void setReceiveRunnableFactory(ReceiveRunnableFactoryIfc factory) {
+        Preconditions.checkState(getState() == StateEnum.INITIAL,
+                "The state must be INITIAL for setReceiveRunnableFactory");
 
         this.receiveRunnableFactory = factory;
     }
@@ -120,9 +119,8 @@ public abstract class TcpChannel extends SocketIoChannel {
      * @param socketOptions The TCP socket options
      */
     public void setSocketOptions(TcpSocketOptions socketOptions) {
-        if (getState() != StateEnum.INITIAL) {
-            throw new IllegalStateException("The state must be INITIAL for setSocketOptions");
-        }
+        Preconditions.checkState(getState() == StateEnum.INITIAL,
+                "The state must be INITIAL for setSocketOptions");
 
         this.socketOptions = socketOptions;
     }
@@ -130,10 +128,9 @@ public abstract class TcpChannel extends SocketIoChannel {
     @Override
     /** Connect this socket */
     public final void connect() throws ChannelException, InterruptedException {
-        if (getState() != StateEnum.INITIAL) {
-            throw new IllegalStateException("Cannot connect when state = " + getState());
-        }
-        
+        Preconditions.checkState(getState() == StateEnum.INITIAL,
+            "Cannot connect when state = " + getState());
+
         performConnect();
     }
 
@@ -160,7 +157,7 @@ public abstract class TcpChannel extends SocketIoChannel {
     @Override
     /** Is this socket connected */
     public boolean isConnected() {
-        LOG.debug("{} isConnected() returning {}", getId(),  (getState() == StateEnum.CONNECTED));
+        LOG.debug("{} isConnected() returning {}", getId(), (getState() == StateEnum.CONNECTED));
         return getState() == StateEnum.CONNECTED;
     }
 
@@ -312,7 +309,7 @@ public abstract class TcpChannel extends SocketIoChannel {
 
         socketOptions.applySocketOptions(getId(), socket);
 
-        if (getMessageHandler() != null) {
+        if (getIoType().isInput()) {
             String receiveThreadId = socketId;
             MyRunnableIfc receiveRunnable = receiveRunnableFactory
                     .createReceiveRunnable(receiveThreadId, socket, streamIo, this);
@@ -382,7 +379,7 @@ public abstract class TcpChannel extends SocketIoChannel {
     public void removeConnectionEstablishedListener(ConnectionEstablishedListener listener) {
         connectionEstablishedListeners.remove(listener);
     }
-    
+
     @Override
     protected void messageReceived(MessageBuffer mb, Logger logger, String logString) {
         super.messageReceived(mb, logger, logString);
