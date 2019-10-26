@@ -97,7 +97,7 @@ public class UdpChannel extends SocketIoChannel {
      * @param localAddress   The local address to which this socket will be bound. If null
      *                       "localhost" will be used
      */
-    public UdpChannel(String id, DataHandlerIfc<MessageBuffer> messageHandler,
+    protected UdpChannel(String id, DataHandlerIfc<MessageBuffer> messageHandler,
             InetSocketAddress localAddress) {
         super(id, IoTypeEnum.INPUT_ONLY, messageHandler, localAddress);
 
@@ -112,11 +112,50 @@ public class UdpChannel extends SocketIoChannel {
      *                      "localhost" will be used
      * @param remoteAddress The remote address to which messages will be sent
      */
-    public UdpChannel(String id, InetSocketAddress localAddress, InetSocketAddress remoteAddress) {
+    protected UdpChannel(String id, InetSocketAddress localAddress, InetSocketAddress remoteAddress) {
 
         super(id, IoTypeEnum.OUTPUT_ONLY, localAddress);
 
         this.remoteAddress = remoteAddress;
+    }
+
+    /**
+     * Creates a new input only UDP IO Thread
+     * 
+     * @param id             The ID of this IO Thread
+     * @param messageHandler Used to notify clients of received data
+     * @param localAddress   The local address to which this socket will be bound. If null
+     *                       "localhost" will be used
+     * @return a new input only UDP IO Thread
+     */
+    public static UdpChannel createInputChannel(String id,
+            DataHandlerIfc<MessageBuffer> messageHandler, InetSocketAddress localAddress) {
+        return new UdpChannel(id, messageHandler, localAddress);
+    }
+
+    /**
+     * Creates a new input only UDP IO Thread
+     * 
+     * @param id           The ID of this IO Thread
+     * @param localAddress The local address to which this socket will be bound. If null "localhost"
+     *                     will be used
+     * @return a new input only UDP IO Thread
+     */
+    public static UdpChannel createInputChannel(String id, InetSocketAddress localAddress) {
+        return new UdpChannel(id, (DataHandlerIfc<MessageBuffer>) null, localAddress);
+    }
+
+    /**
+     * Constructs a new output only UDP IO Thread
+     * 
+     * @param id            The ID of this IO Thread
+     * @param localAddress  The local address to which this socket will be bound. If null
+     *                      "localhost" will be used
+     * @param remoteAddress The remote address to which messages will be sent
+     */
+    public static UdpChannel createOutputChannel(String id, InetSocketAddress localAddress,
+            InetSocketAddress remoteAddress) {
+        return new UdpChannel(id, localAddress, remoteAddress);
     }
 
     /**
