@@ -9,7 +9,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.function.Consumer;
 
-import org.slf4j.Logger;
+import org.apache.logging.log4j.Logger;
 
 /**
  * An abstract class used to send / receive data

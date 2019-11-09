@@ -6,12 +6,12 @@ import com.fincher.thread.MyRunnableIfc;
 
 import java.net.Socket;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public abstract class AbstractReceiveRunnable implements MyRunnableIfc {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractReceiveRunnable.class);
+    private static final Logger LOGGER = LogManager.getLogger();
 
     /** Should this thread continue to execute */
     private boolean continueExecution = true;

@@ -8,13 +8,13 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /** Socket options for TCP Sockets */
 public class TcpSocketOptions extends SocketOptions {
 
-    private static final Logger LOG = LoggerFactory.getLogger(TcpSocketOptions.class);
+    private static final Logger LOG = LogManager.getLogger();
 
     /** The SO_KEEPALIVE socket setting. Defaults to true */
     private boolean keepAlive = true;

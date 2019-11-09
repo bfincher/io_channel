@@ -28,10 +28,11 @@ public class TcpTest extends IoChannelTesterBase<MessageBuffer> {
     private void test(TcpClientChannel client1, TcpClientChannel client2,
             TcpServerFactory tcpServerFactory) throws ChannelException, InterruptedException {
         TcpServerChannel server = tcpServerFactory.createTcpServer();
-        server.connect();
+        
         client1.connect();
         client2.connect();
-
+        server.connect();
+        
         Awaitility.await().until(() -> client1.isConnected() && client2.isConnected());
 
         for (int i = 0; i < 5; i++) {

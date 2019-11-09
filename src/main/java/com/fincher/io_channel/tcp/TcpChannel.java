@@ -23,13 +23,13 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /** An IO Thread implementation of TCP sockets */
 public abstract class TcpChannel extends SocketIoChannel {
 
-    private static final Logger LOG = LoggerFactory.getLogger(TcpChannel.class);
+    private static final Logger LOG = LogManager.getLogger();
 
     /** Used to determine how many bytes to read for each message */
     private final StreamIoIfc streamIo;

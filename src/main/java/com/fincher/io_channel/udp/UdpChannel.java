@@ -18,8 +18,8 @@ import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.util.function.Consumer;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * A UDP Unicast representation of a Socket IO Thread
@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
  */
 public class UdpChannel extends SocketIoChannel {
 
-    private static final Logger LOG = LoggerFactory.getLogger(UdpChannel.class);
+    private static final Logger LOG = LogManager.getLogger();
 
     /** Used by a thread to receive messages */
     private class ReceiveRunnable implements MyRunnableIfc {

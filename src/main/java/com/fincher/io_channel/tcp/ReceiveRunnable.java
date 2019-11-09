@@ -8,12 +8,12 @@ import java.io.InputStream;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class ReceiveRunnable extends AbstractReceiveRunnable {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ReceiveRunnable.class);
+    private static final Logger LOG = LogManager.getLogger();
 
     /** The byte array used to receive data */
     private byte[] buf = new byte[4096];

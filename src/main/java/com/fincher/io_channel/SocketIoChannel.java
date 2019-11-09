@@ -3,7 +3,7 @@ package com.fincher.io_channel;
 import java.net.InetSocketAddress;
 import java.util.function.Consumer;
 
-import org.slf4j.Logger;
+import org.apache.logging.log4j.Logger;
 
 /**
  * An IO Thread that is implemented for network socket communication

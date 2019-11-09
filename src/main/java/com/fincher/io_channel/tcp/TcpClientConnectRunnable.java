@@ -8,8 +8,8 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.concurrent.TimeUnit;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Used to connect a TCP Client socket
@@ -19,7 +19,7 @@ import org.slf4j.LoggerFactory;
  */
 class TcpClientConnectRunnable implements MyCallableIfc<Socket> {
 
-    private static final Logger LOG = LoggerFactory.getLogger(TcpClientConnectRunnable.class);
+    private static final Logger LOG = LogManager.getLogger();
 
     /** Should this thread continue to execute */
     private boolean continueExecution = true;

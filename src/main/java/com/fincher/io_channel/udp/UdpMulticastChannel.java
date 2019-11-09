@@ -12,8 +12,8 @@ import java.net.MulticastSocket;
 import java.net.SocketException;
 import java.util.function.Consumer;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * A UDP Multicast representation of a Socket IO Thread
@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
  */
 public class UdpMulticastChannel extends UdpChannel {
 
-    private static final Logger LOG = LoggerFactory.getLogger(UdpMulticastChannel.class);
+    private static final Logger LOG = LogManager.getLogger();
 
     private final InetAddress multicastAddress;
 
