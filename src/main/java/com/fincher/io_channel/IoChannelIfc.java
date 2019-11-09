@@ -1,6 +1,5 @@
 package com.fincher.io_channel;
 
-import java.util.Collection;
 import java.util.function.Consumer;
 
 /**
@@ -18,19 +17,19 @@ public interface IoChannelIfc<T extends ExchangeableIfc> {
      * @return the ID of this IO Thread
      */
     public String getId();
-
-    /**
-     * Gets the a cop of the message listeners used to notify clients of received data. 
-     * 
-     * @return a copy of the message listeners used to notify clients of received data
-     */
-    public Collection<Consumer<T>> getMessageListeners();
     
     /** Adds a listener to be notified of received messages.  Not applicable for output only channels */
     public void addMessageListener(Consumer<T> listener);
+    
+    /** Remove a previously registered message listener.
+     * 
+     * @param listener The listener to remove
+     * @return True if a listener was removed
+     */
+    public boolean removeMessageListener(Consumer<T> listener);
 
     /**
-     * Connects this IOThread
+     * Connects this IOChannel
      * 
      * @throws ChannelException
      * @throws InterruptedException

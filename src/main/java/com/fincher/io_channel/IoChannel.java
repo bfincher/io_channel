@@ -1,11 +1,12 @@
 package com.fincher.io_channel;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableList;
+import com.google.common.eventbus.EventBus;
+import com.google.common.eventbus.Subscribe;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.function.Consumer;
 
 import org.slf4j.Logger;
@@ -27,7 +28,9 @@ public abstract class IoChannel<T extends ExchangeableIfc> implements IoChannelI
     /**
      * The message listeners used to notify clients of received data. Not applicable for output only channels
      */
-    private final Collection<Consumer<T>> messageListeners = new ArrayList<>();
+    private final EventBus eventBus;
+    
+    private final Collection<ListenerEntry> listeners;
 
     /** Is this IO Thread input, output, or both */
     private final IoTypeEnum ioType;
@@ -44,6 +47,14 @@ public abstract class IoChannel<T extends ExchangeableIfc> implements IoChannelI
     public IoChannel(String id, IoTypeEnum ioType) {
         this.id = id;
         this.ioType = ioType;
+        
+        if (ioType == IoTypeEnum.OUTPUT_ONLY) {
+            eventBus = null;
+            listeners = null;
+        } else {
+            eventBus = new EventBus();
+            listeners = new LinkedList<>();
+        }
     }
 
     /**
@@ -94,19 +105,40 @@ public abstract class IoChannel<T extends ExchangeableIfc> implements IoChannelI
      */
     protected void messageReceived(T mb, Logger logger, String logString) {
         logger.info("Message received on IO Thread {} {} {}", getId(), mb.getTransactionId(), logString);
-        messageListeners.forEach(listener -> listener.accept(mb));
-    }
-
-    @Override
-    public Collection<Consumer<T>> getMessageListeners() {
-        return ImmutableList.copyOf(messageListeners);
+        eventBus.post(mb);
     }
     
     
     @Override
     public void addMessageListener(Consumer<T> listener) {
         Preconditions.checkState(ioType.isInput(), "Cannot set a message listener on an output only channel");
-        messageListeners.add(listener);
+        
+        Object subscriber = new Object() {
+            
+            @Subscribe
+            public void handleMessage(T msg) {
+                listener.accept(msg);
+            }
+        };
+        
+        eventBus.register(subscriber);
+        listeners.add(new ListenerEntry(listener, subscriber));
+    }
+    
+    
+    @Override
+    public boolean removeMessageListener(Consumer<T> listener) {
+        if (listeners != null) {
+            for (Iterator<ListenerEntry> it = listeners.iterator(); it.hasNext(); ) {
+                ListenerEntry entry = it.next();
+                if (entry.listener == listener) {
+                    it.remove();
+                    eventBus.unregister(entry.subscriber);
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
 
@@ -138,6 +170,16 @@ public abstract class IoChannel<T extends ExchangeableIfc> implements IoChannelI
             }
 
             logger.info(sb.toString());
+        }
+    }
+    
+    private class ListenerEntry {
+        final Consumer<T> listener;
+        final Object subscriber;
+        
+        ListenerEntry(Consumer<T> listener, Object subscriber) {
+            this.listener = listener;
+            this.subscriber = subscriber;
         }
     }
 }
