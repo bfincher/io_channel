@@ -1,5 +1,6 @@
 package com.fincher.io_channel;
 
+import java.io.Closeable;
 import java.util.function.Consumer;
 
 /**
@@ -9,7 +10,7 @@ import java.util.function.Consumer;
  *
  * @param <T>
  */
-public interface IoChannelIfc<T extends ExchangeableIfc> {
+public interface IoChannelIfc<T extends ExchangeableIfc> extends Closeable {
 
     /**
      * Get the ID of this IO Thread
@@ -49,7 +50,7 @@ public interface IoChannelIfc<T extends ExchangeableIfc> {
      * @throws ChannelException
      * @throws InterruptedException
      */
-    public void close() throws ChannelException, InterruptedException;
+    public void close() throws ChannelException;
 
     /**
      * Send data via this IO Thread

@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import com.fincher.io_channel.ChannelException;
 import com.fincher.io_channel.IoChannelTesterBase;
 import com.fincher.io_channel.MessageBuffer;
+import com.google.common.io.Closer;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -18,21 +19,26 @@ import org.junit.Test;
 /** A JUnit tester for TCP sockets */
 public class TcpTest extends IoChannelTesterBase<MessageBuffer> {
 
-    private abstract class TcpServerFactory {
-        public abstract TcpServerChannel createTcpServer() throws ChannelException;
+    @FunctionalInterface
+    private interface ChannelFactory {
+        public TcpChannel createChannel(String id) throws ChannelException;
     }
 
     private BlockingQueue<MessageBuffer> queue1 = new LinkedBlockingQueue<MessageBuffer>();
     private BlockingQueue<MessageBuffer> queue2 = new LinkedBlockingQueue<MessageBuffer>();
 
     private void test(TcpClientChannel client1, TcpClientChannel client2,
-            TcpServerFactory tcpServerFactory) throws ChannelException, InterruptedException {
-        TcpServerChannel server = tcpServerFactory.createTcpServer();
-        
+            ChannelFactory channelFactory) throws ChannelException, InterruptedException {
+        Closer closer = Closer.create();
+
+        TcpChannel server = closer.register(channelFactory.createChannel("sender"));
+
+        closer.register(client1);
+        closer.register(client2);
         client1.connect();
         client2.connect();
         server.connect();
-        
+
         Awaitility.await().until(() -> client1.isConnected() && client2.isConnected());
 
         for (int i = 0; i < 5; i++) {
@@ -43,7 +49,7 @@ public class TcpTest extends IoChannelTesterBase<MessageBuffer> {
         Awaitility.await().until(() -> queue1.size() == 5);
 
         server.close();
-        server = tcpServerFactory.createTcpServer();
+        server = closer.register(channelFactory.createChannel("sender"));
         server.connect();
 
         Awaitility.await().until(() -> client1.isConnected() && client2.isConnected());
@@ -75,7 +81,7 @@ public class TcpTest extends IoChannelTesterBase<MessageBuffer> {
      * Test TCP sockets
      * 
      */
-    @Test//(timeout = 10000)
+    @Test(timeout = 10000)
     public void test() throws ChannelException, InterruptedException, UnknownHostException {
         final InetSocketAddress localAddress5000 = new InetSocketAddress(InetAddress.getLocalHost(),
                 5000);
@@ -83,22 +89,29 @@ public class TcpTest extends IoChannelTesterBase<MessageBuffer> {
         InetSocketAddress remoteAddress = new InetSocketAddress(InetAddress.getLocalHost(), 5000);
 
         InetSocketAddress localAddress0 = new InetSocketAddress(InetAddress.getLocalHost(), 0);
-        TcpClientChannel client1 = new TcpClientChannel("client1",
-                queue1::add,
-                new SimpleStreamIO(), localAddress0,
-                remoteAddress);
 
-        TcpClientChannel client2 = new TcpClientChannel("client2",
-                queue2::add,
-                new SimpleStreamIO(), localAddress0,
-                remoteAddress);
+        ChannelFactory createServer = (id) -> {
+            return new TcpServerChannel(id, new SimpleStreamIO(), localAddress5000);
+        };
 
-        test(client1, client2, new TcpServerFactory() {
+        TcpClientChannel client1 = new TcpClientChannel("client1", queue1::add,
+                new SimpleStreamIO(), localAddress0, remoteAddress);
 
-            @Override
-            public TcpServerChannel createTcpServer() throws ChannelException {
-                return new TcpServerChannel("server", new SimpleStreamIO(), localAddress5000);
-            }
-        });
+        TcpClientChannel client2 = new TcpClientChannel("client2", queue2::add,
+                new SimpleStreamIO(), localAddress0, remoteAddress);
+
+        test(client1, client2, createServer);
+    }
+
+    public void testClientSendingToServer() throws Exception {
+        final InetSocketAddress localAddress5000 = new InetSocketAddress(InetAddress.getLocalHost(),
+                5000);
+        InetSocketAddress address5001 = new InetSocketAddress(InetAddress.getLocalHost(), 5001);
+        InetSocketAddress localAddress0 = new InetSocketAddress(InetAddress.getLocalHost(), 0);
+        
+        LinkedBlockingQueue<MessageBuffer> queue = new LinkedBlockingQueue<>();
+        
+        TcpServerChannel server = TcpServerChannel.createChannel("server", queue::add, new SimpleStreamIO(), address5001);
+        TcpClientChannel client = TcpClientChannel.createOutputOnlyChannel("client", new SimpleStreamIO(), localAddress0, address5001);
     }
 }

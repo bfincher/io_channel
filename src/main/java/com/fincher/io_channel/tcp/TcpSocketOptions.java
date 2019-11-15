@@ -87,15 +87,17 @@ public class TcpSocketOptions extends SocketOptions {
             socket.setSoTimeout(getTimeout().getAsInt());
         }
 
-        StringBuilder logString = new StringBuilder();
-        logString.append(socketId);
-        logString.append(
-                " actual socket options: receiveBufferSize = " + socket.getReceiveBufferSize());
+        if (LOG.isInfoEnabled()) {
+            StringBuilder logString = new StringBuilder();
+            logString.append(socketId);
+            logString.append(
+                    " actual socket options: receiveBufferSize = " + socket.getReceiveBufferSize());
 
-        logString.append(", reuseAddress = " + socket.getReuseAddress());
-        logString.append(", timeout = " + socket.getSoTimeout());
+            logString.append(", reuseAddress = " + socket.getReuseAddress());
+            logString.append(", timeout = " + socket.getSoTimeout());
 
-        LOG.info(logString.toString());
+            LOG.info(logString.toString());
+        }
     }
 
     /**

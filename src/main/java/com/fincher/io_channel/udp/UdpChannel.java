@@ -240,13 +240,17 @@ public class UdpChannel extends SocketIoChannel {
 
     @Override
     /** Closes this IO Thread */
-    public void close() throws InterruptedException {
+    public void close() throws ChannelException {
         if (receiveThread != null) {
             receiveThread.terminate();
         }
 
         if (receiveThread != null) {
-            receiveThread.join();
+            try {
+                receiveThread.join();
+            } catch (InterruptedException e) {
+                throw new ChannelException(e);
+            }
         }
 
         if (socket != null) {
