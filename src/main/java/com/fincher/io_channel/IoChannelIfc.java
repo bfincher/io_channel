@@ -80,4 +80,16 @@ public interface IoChannelIfc<T extends ExchangeableIfc> extends Closeable {
      * @return the type of data processed by this IoChannel
      */
     public IoChannelDataTypeEnum getDataType();
+    
+    /** Determine if this channel is capable of receiving messages
+     * 
+     * @return true if this channel is capable of receiving messages
+     */
+    public boolean isInput();
+    
+    /** Determine if this channel is capable of sending messages
+     * 
+     * @return true if this channel is capable of sending messages
+     */
+    public boolean isOutput();
 }

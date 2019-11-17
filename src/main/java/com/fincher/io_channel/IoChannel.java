@@ -110,8 +110,9 @@ public abstract class IoChannel<T extends ExchangeableIfc> implements IoChannelI
     
     
     @Override
-    public void addMessageListener(Consumer<T> listener) {
+    public void addMessageListener(final Consumer<T> listener) {
         Preconditions.checkState(ioType.isInput(), "Cannot set a message listener on an output only channel");
+        Preconditions.checkNotNull(listener, "Listener cannot be null");
         
         Object subscriber = new Object() {
             
@@ -139,6 +140,18 @@ public abstract class IoChannel<T extends ExchangeableIfc> implements IoChannelI
             }
         }
         return false;
+    }
+    
+    
+    @Override
+    public boolean isInput() {
+        return ioType.isInput();
+    }
+    
+    
+    @Override
+    public boolean isOutput() {
+        return ioType.isOutput();
     }
 
 

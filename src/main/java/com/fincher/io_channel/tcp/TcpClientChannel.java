@@ -1,6 +1,7 @@
 package com.fincher.io_channel.tcp;
 
 import com.fincher.io_channel.ChannelException;
+import com.fincher.io_channel.IoTypeEnum;
 import com.fincher.io_channel.MessageBuffer;
 
 import java.net.InetSocketAddress;
@@ -19,35 +20,19 @@ public class TcpClientChannel extends TcpChannel {
     private final InetSocketAddress remoteAddress;
 
     /**
-     * Constructs a new TCP client socket that is capable of both sending and receiving data
-     * 
-     * @param id             The ID of this IO Thread
-     * @param messageHandler Used to notify clients of received data
-     * @param streamIo       Used to determine how many bytes should be read from the socket for
-     *                       each message
-     * @param localAddress   The local address to which this socket will be bound. If null
-     *                       "localhost" will be used that the OS will choose an available port
-     * @param remoteAddress  The remote address to which this client is trying to connect
-     */
-    protected TcpClientChannel(String id, Consumer<MessageBuffer> messageHandler, StreamIoIfc streamIo,
-            InetSocketAddress localAddress, InetSocketAddress remoteAddress) {
-        super(id, localAddress, messageHandler, streamIo);
-        this.remoteAddress = remoteAddress;
-    }
-
-    /**
-     * Constructs a new TCP client socket that is capable of only sending data
+     * Constructs a new TCP client socket.
      * 
      * @param id            The ID of this IO Thread
+     * @param ioType        Specifies the input/output status of this channel
      * @param streamIo      Used to determine how many bytes should be read from the socket for each
      *                      message
      * @param localAddress  The local address to which this socket will be bound. If null
      *                      "localhost" will be used that the OS will choose an available port
      * @param remoteAddress The remote address to which this client is trying to connect
      */
-    protected TcpClientChannel(String id, StreamIoIfc streamIo, InetSocketAddress localAddress,
-            InetSocketAddress remoteAddress) {
-        super(id, localAddress, streamIo);
+    private TcpClientChannel(String id, IoTypeEnum ioType, StreamIoIfc streamIo,
+            InetSocketAddress localAddress, InetSocketAddress remoteAddress) {
+        super(id, ioType, localAddress, streamIo);
         this.remoteAddress = remoteAddress;
     }
 
@@ -65,7 +50,10 @@ public class TcpClientChannel extends TcpChannel {
      */
     public static TcpClientChannel createChannel(String id, Consumer<MessageBuffer> messageHandler,
             StreamIoIfc streamIo, InetSocketAddress localAddress, InetSocketAddress remoteAddress) {
-        return new TcpClientChannel(id, messageHandler, streamIo, localAddress, remoteAddress);
+        TcpClientChannel channel = new TcpClientChannel(id, IoTypeEnum.INPUT_AND_OUTPUT, streamIo,
+                localAddress, remoteAddress);
+        channel.addMessageListener(messageHandler);
+        return channel;
     }
 
     /**
@@ -81,7 +69,7 @@ public class TcpClientChannel extends TcpChannel {
      */
     public static TcpClientChannel createChannel(String id, StreamIoIfc streamIo,
             InetSocketAddress localAddress, InetSocketAddress remoteAddress) {
-        return new TcpClientChannel(id, null, streamIo, localAddress, remoteAddress);
+        return new TcpClientChannel(id, IoTypeEnum.INPUT_AND_OUTPUT, streamIo, localAddress, remoteAddress);
     }
 
     /**
@@ -97,7 +85,7 @@ public class TcpClientChannel extends TcpChannel {
      */
     public static TcpClientChannel createOutputOnlyChannel(String id, StreamIoIfc streamIo,
             InetSocketAddress localAddress, InetSocketAddress remoteAddress) {
-        return new TcpClientChannel(id, streamIo, localAddress, remoteAddress);
+        return new TcpClientChannel(id, IoTypeEnum.OUTPUT_ONLY, streamIo, localAddress, remoteAddress);
     }
 
     @Override

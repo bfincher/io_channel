@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -21,7 +22,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Consumer;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -79,32 +79,17 @@ public abstract class TcpChannel extends SocketIoChannel {
      * Constructs a new TCP socket that is capable of both sending and receiving data
      * 
      * @param id             The ID of this IO Thread
-     * @param messageHandler Used to notify clients of received data
+     * @param ioType         Specifies the input/output status of this channel
      * @param streamIo       Used to determine how many bytes should be read from the socket for
      *                       each message
      * @param localAddress   The local address to which this socket will be bound. If null
      *                       "localhost" will be used that the OS will choose an available port
      */
-    public TcpChannel(String id, InetSocketAddress localAddress,
-            Consumer<MessageBuffer> messageHandler, StreamIoIfc streamIo) {
-        super(id, IoTypeEnum.INPUT_AND_OUTPUT, messageHandler, localAddress);
-
+    protected TcpChannel(String id, IoTypeEnum ioType, InetSocketAddress localAddress, StreamIoIfc streamIo) {
+        super(id, ioType, localAddress);
         this.streamIo = streamIo;
     }
 
-    /**
-     * Constructs a new TCP socket that is capable of only sending data
-     * 
-     * @param id           The ID of this IO Thread
-     * @param streamIo     Used to determine how many bytes should be read from the socket for each
-     *                     message
-     * @param localAddress The local address to which this socket will be bound. If null "localhost"
-     *                     will be used that the OS will choose an available port
-     */
-    public TcpChannel(String id, InetSocketAddress localAddress, StreamIoIfc streamIo) {
-        super(id, IoTypeEnum.OUTPUT_ONLY, localAddress);
-        this.streamIo = streamIo;
-    }
 
     protected void setReceiveRunnableFactory(ReceiveRunnableFactoryIfc factory) {
         Preconditions.checkState(getState() == StateEnum.INITIAL,
@@ -259,6 +244,10 @@ public abstract class TcpChannel extends SocketIoChannel {
             }
         }
     }
+    
+    public List<String> getSocketIds() {
+        return new ArrayList<>(sockets.keySet());
+    }
 
     private final void logNoSocketsSendError() {
         long currentTime = System.currentTimeMillis();
@@ -280,7 +269,7 @@ public abstract class TcpChannel extends SocketIoChannel {
      * @param socket The socket for which the ID should be built
      * @return The socket ID
      */
-    protected final String getSocketId(Socket socket) {
+    protected static final String getSocketId(Socket socket) {
         return socket.getInetAddress().getHostName() + ":" + socket.getPort();
     }
 

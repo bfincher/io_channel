@@ -34,9 +34,6 @@ public abstract class AbstractReceiveRunnable implements MyRunnableIfc {
         return id;
     }
 
-    public Socket getSocket() {
-        return socket;
-    }
 
     public TcpChannel getParent() {
         return parent;

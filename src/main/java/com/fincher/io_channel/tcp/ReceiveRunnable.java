@@ -45,15 +45,14 @@ public class ReceiveRunnable extends AbstractReceiveRunnable {
         }
     }
     
-    private byte[] growBufIfNecessary(byte[] buf, int offset, int length) {
+    private void growBufIfNecessary(int offset, int length) {
         int bytesRemaining = buf.length - offset;
         int delta = length - bytesRemaining;
         if (delta > 0) {
             byte[] newBuf = new byte[buf.length + delta + 100];
             System.arraycopy(buf, 0, newBuf, 0, buf.length);
-            return newBuf;
+            buf = newBuf;
         }
-        return buf;
     }
 
     /**
@@ -62,14 +61,12 @@ public class ReceiveRunnable extends AbstractReceiveRunnable {
      * @param buf    The byte array used to store the result of the read
      * @param offset The index into buf used to store the result of the read
      * @param length The number of bytes that should be read
-     * @return The param buf if buf was sized sufficiently. Otherwise, a later byte array with the
-     *         contents of buf copied into it
      * @throws IOException
      */
-    private byte[] read(byte[] buf, int offset, int length) throws IOException {
+    private void read(int offset, int length) throws IOException {
 
         // increase size of buf if necessary
-        growBufIfNecessary(buf, offset, length);
+        growBufIfNecessary(offset, length);
 
         int remaining = length;
         while (remaining > 0) {
@@ -86,8 +83,6 @@ public class ReceiveRunnable extends AbstractReceiveRunnable {
                 // no action necessary
             }
         }
-
-        return buf;
     }
 
     /**
@@ -101,7 +96,7 @@ public class ReceiveRunnable extends AbstractReceiveRunnable {
             if (LOG.isTraceEnabled()) {
                 LOG.trace("{} Reading header (length = {})", getId(), headerLength);
             }
-            buf = read(buf, 0, headerLength);
+            read(0, headerLength);
 
             final int messageLength = streamIo.getMessageLength(buf);
 
@@ -123,7 +118,7 @@ public class ReceiveRunnable extends AbstractReceiveRunnable {
                 LOG.debug("reading length {}", bytesToRead);
             }
 
-            buf = read(buf, offset, bytesToRead);
+            read(offset, bytesToRead);
 
             messageReceived(buf, 0, bytesToRead + offset);
         } catch (EOFException eofe) {

@@ -8,6 +8,21 @@ package com.fincher.io_channel.tcp;
  *
  */
 public class SimpleStreamIO implements StreamIoIfc {
+    
+    private final boolean headerPartOfMessage;
+    
+    /** Constructs a new SimpleStreamIO with headerPartOfMessage = false */
+    public SimpleStreamIO() {
+        headerPartOfMessage = false;
+    }
+    
+    /** Constructs a new SimpleStreamIO 
+     * 
+     * @param headerPartOfMessage Is the header considered a part of the message
+     */
+    public SimpleStreamIO(boolean headerPartOfMessage) {
+        this.headerPartOfMessage = headerPartOfMessage;
+    }
 
     @Override
     /**
@@ -42,14 +57,21 @@ public class SimpleStreamIO implements StreamIoIfc {
      * @param bytes
      * @return the original bytes plus the 4 byte length pre-pended
      */
-    public static byte[] prePendLength(byte[] bytes) {
+    public byte[] prePendLength(byte[] bytes) {
         int origLength = bytes.length;
+        int length;
+        if (headerPartOfMessage) {
+            length = origLength + 4;
+        } else {
+            length = origLength;
+        }
+        
         byte[] toReturn = new byte[origLength + 4];
         System.arraycopy(bytes, 0, toReturn, 4, origLength);
-        toReturn[0] = (byte) ((origLength >> 24) & 0xff);
-        toReturn[1] = (byte) ((origLength >> 16) & 0xff);
-        toReturn[2] = (byte) ((origLength >> 8) & 0xff);
-        toReturn[3] = (byte) (origLength & 0xff);
+        toReturn[0] = (byte) ((length >> 24) & 0xff);
+        toReturn[1] = (byte) ((length >> 16) & 0xff);
+        toReturn[2] = (byte) ((length >> 8) & 0xff);
+        toReturn[3] = (byte) (length & 0xff);
 
         return toReturn;
     }
@@ -61,7 +83,7 @@ public class SimpleStreamIO implements StreamIoIfc {
      */
     @Override
     public boolean headerPartOfMessage() {
-        return false;
+        return headerPartOfMessage;
     }
 
 }
