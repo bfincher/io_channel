@@ -34,7 +34,7 @@ public class UdpTest extends IoChannelTesterBase<MessageBuffer> {
     public static void setUp() throws Exception {
         //      loadConfigMap(SOURCE_UNICAST_CONFIG, DEST_UNICAST_CONFIG, SCHEMA_FILE);
         localAddress0 = new InetSocketAddress(InetAddress.getByName("localhost"), 0);
-        localAddress5000 = new InetSocketAddress(InetAddress.getByName("localhost"), 5000);
+        localAddress5000 = new InetSocketAddress(InetAddress.getByName("0.0.0.0"), 5000);
         multicastAddress = new InetSocketAddress(InetAddress.getByName("239.1.1.1"), 5000);
     }
 
@@ -61,14 +61,13 @@ public class UdpTest extends IoChannelTesterBase<MessageBuffer> {
      * 
      */
     @Test
-    @Ignore
     public void testMulticast() throws UnknownHostException {
-        UdpMulticastChannel output = new UdpMulticastChannel("output", localAddress0,
+        UdpMulticastChannel output = UdpMulticastChannel.createOutputChannel("output", localAddress0,
                 multicastAddress);
 
-        UdpMulticastChannel input = new UdpMulticastChannel("input",
+        UdpMulticastChannel input = UdpMulticastChannel.createInputChannel("input",
                 messageQueue::add, localAddress5000,
-                InetAddress.getByName("239.1.1.1"));
+                multicastAddress.getAddress());
 
         test(input, output, new TestDataFactory());
     }
@@ -79,9 +78,9 @@ public class UdpTest extends IoChannelTesterBase<MessageBuffer> {
      */
     @Test
     public void testUnicast() {
-        UdpChannel output = new UdpChannel("output", localAddress0, localAddress5000);
+        UdpChannel output = UdpChannel.createOutputChannel("output", localAddress0, localAddress5000);
 
-        UdpChannel input = new UdpChannel("input",
+        UdpChannel input = UdpChannel.createInputChannel("input",
                 messageQueue::add, localAddress5000);
         test(input, output, new TestDataFactory());
     }

@@ -66,6 +66,6 @@ public class UdpMulticastSocketOptions extends UdpSocketOptions {
         socket.setTimeToLive(timeToLive);
         socket.setLoopbackMode(loopbackDisabled);
 
-        LOG.info("{} timeToLive = {}", socketId, socket.getTimeToLive());
+        LOG.info("{} timeToLive = {}.  loopbackDisabled = {}", socketId, socket.getTimeToLive(), loopbackDisabled);
     }
 }

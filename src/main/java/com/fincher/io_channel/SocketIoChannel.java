@@ -1,7 +1,6 @@
 package com.fincher.io_channel;
 
 import java.net.InetSocketAddress;
-import java.util.function.Consumer;
 
 import org.apache.logging.log4j.Logger;
 
@@ -15,21 +14,6 @@ public abstract class SocketIoChannel extends IoChannel<MessageBuffer> {
 
     /** The local network address and port to which this socket will be bound */
     private final InetSocketAddress localAddress;
-
-    /**
-     * Constructs a new SocketIOThread
-     * 
-     * @param id             The ID of this IO Thread
-     * @param ioType         Is this IO Thread input, output, or both
-     * @param messageListener Used to notify clients of received data
-     * @param localAddress   The local address to which this socket will be bound. If null
-     *                       "localhost" will be used that the OS will choose an available port
-     */
-    public SocketIoChannel(String id, IoTypeEnum ioType,
-            Consumer<MessageBuffer> messageListener, InetSocketAddress localAddress) {
-        this(id, ioType, localAddress);
-        addMessageListener(messageListener);
-    }
 
     /**
      * Constructs a new SocketIOThread

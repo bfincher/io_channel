@@ -94,14 +94,12 @@ public class UdpChannel extends SocketIoChannel {
      * Constructs a new input only UDP IO Thread
      * 
      * @param id             The ID of this IO Thread
-     * @param messageHandler Used to notify clients of received data
+     * @param ioType        The input/output status of this channel
      * @param localAddress   The local address to which this socket will be bound. If null
      *                       "localhost" will be used
      */
-    protected UdpChannel(String id, Consumer<MessageBuffer> messageHandler,
-            InetSocketAddress localAddress) {
-        super(id, IoTypeEnum.INPUT_ONLY, messageHandler, localAddress);
-
+    protected UdpChannel(String id, IoTypeEnum ioType, InetSocketAddress localAddress) {
+        super(id, ioType, localAddress);
         remoteAddress = null;
     }
 
@@ -109,15 +107,15 @@ public class UdpChannel extends SocketIoChannel {
      * Constructs a new output only UDP IO Thread
      * 
      * @param id            The ID of this IO Thread
+     * @param ioType        The input/output status of this channel
      * @param localAddress  The local address to which this socket will be bound. If null
      *                      "localhost" will be used
      * @param remoteAddress The remote address to which messages will be sent
      */
-    protected UdpChannel(String id, InetSocketAddress localAddress,
+    protected UdpChannel(String id, IoTypeEnum ioType, InetSocketAddress localAddress,
             InetSocketAddress remoteAddress) {
 
-        super(id, IoTypeEnum.OUTPUT_ONLY, localAddress);
-
+        super(id, ioType, localAddress);
         this.remoteAddress = remoteAddress;
     }
 
@@ -132,7 +130,9 @@ public class UdpChannel extends SocketIoChannel {
      */
     public static UdpChannel createInputChannel(String id, Consumer<MessageBuffer> messageHandler,
             InetSocketAddress localAddress) {
-        return new UdpChannel(id, messageHandler, localAddress);
+        UdpChannel channel = new UdpChannel(id, IoTypeEnum.INPUT_ONLY, localAddress);
+        channel.addMessageListener(messageHandler);
+        return channel;
     }
 
     /**
@@ -144,7 +144,7 @@ public class UdpChannel extends SocketIoChannel {
      * @return a new input only UDP IO Thread
      */
     public static UdpChannel createInputChannel(String id, InetSocketAddress localAddress) {
-        return new UdpChannel(id, (Consumer<MessageBuffer>) null, localAddress);
+        return new UdpChannel(id, IoTypeEnum.INPUT_ONLY, localAddress);
     }
 
     /**
@@ -157,7 +157,7 @@ public class UdpChannel extends SocketIoChannel {
      */
     public static UdpChannel createOutputChannel(String id, InetSocketAddress localAddress,
             InetSocketAddress remoteAddress) {
-        return new UdpChannel(id, localAddress, remoteAddress);
+        return new UdpChannel(id, IoTypeEnum.OUTPUT_ONLY, localAddress, remoteAddress);
     }
 
     /**

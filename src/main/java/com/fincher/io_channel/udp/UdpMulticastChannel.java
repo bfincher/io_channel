@@ -1,6 +1,7 @@
 package com.fincher.io_channel.udp;
 
 import com.fincher.io_channel.ChannelException;
+import com.fincher.io_channel.IoTypeEnum;
 import com.fincher.io_channel.MessageBuffer;
 import com.google.common.base.Preconditions;
 
@@ -28,16 +29,15 @@ public class UdpMulticastChannel extends UdpChannel {
     private final InetAddress multicastAddress;
 
     /**
-     * Constructs a new input only UDP MULTICAST IO Thread
+     * Constructs a new UDP MULTICAST IO Thread
      * 
      * @param id               The ID of this IO Thread
-     * @param messageHandler   Used to notify clients of received data
+     * @param ioType           The input/output status of this channel
      * @param localAddress     The local address to which this socket will be bound.
      * @param multicastAddress The multicast address to which this socket will join
      */
-    protected UdpMulticastChannel(String id, Consumer<MessageBuffer> messageHandler,
-            InetSocketAddress localAddress, InetAddress multicastAddress) {
-        super(id, messageHandler, localAddress);
+    private UdpMulticastChannel(String id, InetSocketAddress localAddress, InetAddress multicastAddress) {
+        super(id, IoTypeEnum.INPUT_ONLY, localAddress);
 
         Preconditions.checkArgument(localAddress != null && localAddress.getPort() != 0,
                 id + " localAddress port must be non zero");
@@ -49,25 +49,16 @@ public class UdpMulticastChannel extends UdpChannel {
 
         socketOptions = new UdpMulticastSocketOptions();
     }
-
-    /**
-     * Constructs a new output only UDP IO Thread
-     * 
-     * @param id               The ID of this IO Thread
-     * @param localAddress     The local address to which this socket will be bound.
-     * @param multicastAddress The remote multicast address to which messages will be sent
-     */
-    protected UdpMulticastChannel(String id, InetSocketAddress localAddress,
-            InetSocketAddress multicastAddress) {
-
-        super(id, localAddress, multicastAddress);
-
-        this.multicastAddress = multicastAddress.getAddress();
+    
+    private UdpMulticastChannel(String id, InetSocketAddress localAddress, InetSocketAddress remoteAddress) {
+        super(id, IoTypeEnum.OUTPUT_ONLY, localAddress, remoteAddress);
+        this.multicastAddress = remoteAddress.getAddress();
+        Preconditions.checkNotNull(localAddress);
+        
+        Preconditions.checkArgument(multicastAddress.isMulticastAddress(),
+                "The multicast address given is not a valid multicast address");
 
         socketOptions = new UdpMulticastSocketOptions();
-
-        Preconditions.checkArgument(multicastAddress.getAddress().isMulticastAddress(),
-                "The multicast address given is not a valid multicast address");
     }
 
     /**
@@ -82,7 +73,9 @@ public class UdpMulticastChannel extends UdpChannel {
     public static UdpMulticastChannel createInputChannel(String id,
             Consumer<MessageBuffer> messageHandler, InetSocketAddress localAddress,
             InetAddress multicastAddress) {
-        return new UdpMulticastChannel(id, messageHandler, localAddress, multicastAddress);
+        UdpMulticastChannel channel = new UdpMulticastChannel(id, localAddress, multicastAddress);
+        channel.addMessageListener(messageHandler);
+        return channel;
     }
 
     /**
@@ -95,7 +88,7 @@ public class UdpMulticastChannel extends UdpChannel {
      */
     public static UdpMulticastChannel createInputChannel(String id, InetSocketAddress localAddress,
             InetAddress multicastAddress) {
-        return new UdpMulticastChannel(id, null, localAddress, multicastAddress);
+        return new UdpMulticastChannel(id, localAddress, multicastAddress);
     }
 
     /**

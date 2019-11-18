@@ -126,7 +126,8 @@ public class TcpTest extends IoChannelTesterBase<MessageBuffer> {
             
             System.out.println("*****************" + server.getSocketIds());
             
-            server.send(new MessageBuffer(streamIo.prePendLength(new String("test").getBytes())), server.getSocketIds().get(0));
+            server.send(new MessageBuffer(streamIo.prePendLength(new String("test").getBytes())), 
+                    server.getSocketIds().get(0));
             Awaitility.await().until(() -> queue1.size() == 12);
             assertEquals(12, queue1.size());
             assertEquals(11, queue2.size());
