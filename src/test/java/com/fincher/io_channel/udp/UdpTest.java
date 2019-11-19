@@ -9,8 +9,6 @@ import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 
 import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -20,23 +18,6 @@ import org.junit.Test;
  *
  */
 public class UdpTest extends IoChannelTesterBase<MessageBuffer> {
-
-    private static InetSocketAddress localAddress0;
-    private static InetSocketAddress localAddress5000;
-    private static InetSocketAddress multicastAddress;
-
-    /**
-     * Method name is self explainatory
-     * 
-     * @throws Exception
-     */
-    @BeforeClass
-    public static void setUp() throws Exception {
-        //      loadConfigMap(SOURCE_UNICAST_CONFIG, DEST_UNICAST_CONFIG, SCHEMA_FILE);
-        localAddress0 = new InetSocketAddress(InetAddress.getByName("localhost"), 0);
-        localAddress5000 = new InetSocketAddress(InetAddress.getByName("0.0.0.0"), 5000);
-        multicastAddress = new InetSocketAddress(InetAddress.getByName("239.1.1.1"), 5000);
-    }
 
     /** Method name is self explainatory */
     @AfterClass
@@ -62,6 +43,10 @@ public class UdpTest extends IoChannelTesterBase<MessageBuffer> {
      */
     @Test
     public void testMulticast() throws UnknownHostException {
+        InetSocketAddress localAddress0 = new InetSocketAddress(InetAddress.getByName("0.0.0.0"), 0);
+        InetSocketAddress localAddress5000 = new InetSocketAddress(InetAddress.getByName("0.0.0.0"), 5000);
+        InetSocketAddress multicastAddress = new InetSocketAddress(InetAddress.getByName("239.1.1.1"), 5000);
+        
         UdpMulticastChannel output = UdpMulticastChannel.createOutputChannel("output", localAddress0,
                 multicastAddress);
 
@@ -77,7 +62,10 @@ public class UdpTest extends IoChannelTesterBase<MessageBuffer> {
      * 
      */
     @Test
-    public void testUnicast() {
+    public void testUnicast() throws Exception {
+        InetSocketAddress localAddress0 = new InetSocketAddress(InetAddress.getByName("0.0.0.0"), 0);
+        InetSocketAddress localAddress5000 = new InetSocketAddress(InetAddress.getByName("localhost"), 5000);
+        
         UdpChannel output = UdpChannel.createOutputChannel("output", localAddress0, localAddress5000);
 
         UdpChannel input = UdpChannel.createInputChannel("input",

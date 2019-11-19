@@ -36,12 +36,13 @@ public class UdpMulticastChannel extends UdpChannel {
      * @param localAddress     The local address to which this socket will be bound.
      * @param multicastAddress The multicast address to which this socket will join
      */
-    private UdpMulticastChannel(String id, InetSocketAddress localAddress, InetAddress multicastAddress) {
+    private UdpMulticastChannel(String id, InetSocketAddress localAddress,
+            InetAddress multicastAddress) {
         super(id, IoTypeEnum.INPUT_ONLY, localAddress);
 
         Preconditions.checkArgument(localAddress != null && localAddress.getPort() != 0,
                 id + " localAddress port must be non zero");
-        
+
         Preconditions.checkArgument(multicastAddress.isMulticastAddress(),
                 "The multicast address given is not a valid multicast address");
 
@@ -49,12 +50,13 @@ public class UdpMulticastChannel extends UdpChannel {
 
         socketOptions = new UdpMulticastSocketOptions();
     }
-    
-    private UdpMulticastChannel(String id, InetSocketAddress localAddress, InetSocketAddress remoteAddress) {
+
+    private UdpMulticastChannel(String id, InetSocketAddress localAddress,
+            InetSocketAddress remoteAddress) {
         super(id, IoTypeEnum.OUTPUT_ONLY, localAddress, remoteAddress);
         this.multicastAddress = remoteAddress.getAddress();
         Preconditions.checkNotNull(localAddress);
-        
+
         Preconditions.checkArgument(multicastAddress.isMulticastAddress(),
                 "The multicast address given is not a valid multicast address");
 
@@ -135,12 +137,15 @@ public class UdpMulticastChannel extends UdpChannel {
      */
     @Override
     protected DatagramSocket createSocket() throws IOException {
-        MulticastSocket socket = new MulticastSocket(getlocalAddress());
+        if (getIoType().isInput()) {
+            MulticastSocket socket = new MulticastSocket(getlocalAddress());
+            UdpMulticastSocketOptions socketOptions = (UdpMulticastSocketOptions) this.socketOptions;
+            socketOptions.applySocketOptions(getId(), socket);
 
-        UdpMulticastSocketOptions socketOptions = (UdpMulticastSocketOptions) this.socketOptions;
-        socketOptions.applySocketOptions(getId(), socket);
+            return socket;
+        }
 
-        return socket;
+        return super.createSocket();
     }
 
 }
