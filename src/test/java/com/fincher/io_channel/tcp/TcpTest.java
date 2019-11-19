@@ -128,9 +128,13 @@ public class TcpTest extends IoChannelTesterBase<MessageBuffer> {
             
             server.send(new MessageBuffer(streamIo.prePendLength(new String("test").getBytes())), 
                     server.getSocketIds().get(0));
+            
+            server.send(new MessageBuffer(streamIo.prePendLength(new String("test").getBytes())), 
+                    server.getSocketIds().get(1));
+            
             Awaitility.await().until(() -> queue1.size() == 12);
             assertEquals(12, queue1.size());
-            assertEquals(11, queue2.size());
+            assertEquals(12, queue2.size());
             
             try {
                 server.send(new MessageBuffer(new byte[0]), "no channel id");
