@@ -4,18 +4,20 @@ plugins {
     id 'checkstyle'
     id "org.sonarqube" version "2.8"
     id 'jacoco'
+    id "net.researchgate.release" version "2.6.0"
 }
 
 group = 'com.fincher'
-version = '1.6.0-SNAPSHOT'
 description = 'Input / Output channels'
 sourceCompatibility = 1.11
 targetCompatibility = 1.11
 
+def baseNexusUrl = "http://192.168.1.2:8082/nexus/content/"
+
 repositories {
     mavenLocal()
     maven {
-        url = 'http://repo.maven.apache.org/maven2'
+        url "${baseNexusUrl}groups/public"
     }
 }
 
@@ -38,13 +40,37 @@ task sourcesJar(type: Jar) {
 
 publishing {
     publications {
-        maven(MavenPublication) {
-            from(components.java)
-            artifact tasks.sourcesJar
+        mavenJava(MavenPublication) {
+	        from components.java
+	        artifact tasks.sourcesJar
+	    }
+    }
+
+    repositories {
+        maven {
+	        credentials {
+	            username = "upload"
+		        password = "upload"
+            }
+		
+	        if (project.version.endsWith('-SNAPSHOT')) {
+	            url "${baseNexusUrl}repositories/snapshots"
+	        } else {
+	            url "${baseNexusUrl}repositories/releases"
+	        }
+            authentication {
+                basic(BasicAuthentication)
+            }
         }
     }
 }
 
 checkstyle {
     configFile file("config/checkstyle/checkstyle.xml")
+}
+
+release {
+    git {
+        requireBranch = ''
+    }
 }
