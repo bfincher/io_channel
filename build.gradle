@@ -25,9 +25,8 @@ dependencies {
     implementation 'org.apache.logging.log4j:log4j-api:2.12.1'
     implementation 'org.apache.logging.log4j:log4j-core:2.12.1'
     implementation 'com.fincher:java-thread:2.1.4'
-    implementation 'com.squareup.okio:okio:0.5.0'
     implementation 'com.google.guava:guava:28.1-jre'
-    testImplementation 'junit:junit:4.10'
+    testImplementation 'junit:junit:4.12'
     testImplementation 'org.awaitility:awaitility:4.0.1'
     testImplementation 'org.mockito:mockito-core:2.1.0'
 }
