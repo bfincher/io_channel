@@ -47,7 +47,7 @@ pipeline {
 		    steps {
 			sh """
 		     ./gradlew sonarqube \
-			-Dsonar.projectKey=java-thread \
+			-Dsonar.projectKey=io-channel \
 		  	-Dsonar.host.url=http://192.168.1.2:9000 \
 			-Dsonar.login=db227be13cdabe1bb512f3d4d01dddf2818783a5 \
 			$gradleOpts
