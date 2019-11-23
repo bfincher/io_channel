@@ -8,7 +8,7 @@ import java.util.concurrent.atomic.AtomicLong;
  * @author Brian Fincher
  *
  */
-public class TransactionIdFactory {
+class TransactionIdFactory {
 
     /** The minimum value for a transaction ID */
     private static long minTID = 0;
@@ -28,7 +28,7 @@ public class TransactionIdFactory {
      * @param minTransactionId The minimum value for a transaction ID
      * @param maxTransactionId The maximum value for a transaction ID
      */
-    public static void init(long minTransactionId, long maxTransactionId) {
+    static void init(long minTransactionId, long maxTransactionId) {
         minTID = minTransactionId;
         maxTID = maxTransactionId;
         nextTID.set(minTID);
@@ -39,7 +39,7 @@ public class TransactionIdFactory {
      * 
      * @return the next Transaction ID
      */
-    public static long getNextTid() {
+    static long getNextTid() {
         long returnValue = nextTID.get();
         if (returnValue == maxTID) {
             nextTID.set(minTID);

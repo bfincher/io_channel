@@ -1,7 +1,7 @@
 package com.fincher.io_channel.udp;
 
 import com.fincher.io_channel.ChannelException;
-import com.fincher.io_channel.IoTypeEnum;
+import com.fincher.io_channel.IoType;
 import com.fincher.io_channel.MessageBuffer;
 import com.google.common.base.Preconditions;
 
@@ -38,7 +38,7 @@ public class UdpMulticastChannel extends UdpChannel {
      */
     private UdpMulticastChannel(String id, InetSocketAddress localAddress,
             InetAddress multicastAddress) {
-        super(id, IoTypeEnum.INPUT_ONLY, localAddress);
+        super(id, IoType.INPUT_ONLY, localAddress);
 
         Preconditions.checkArgument(localAddress != null && localAddress.getPort() != 0,
                 id + " localAddress port must be non zero");
@@ -53,7 +53,7 @@ public class UdpMulticastChannel extends UdpChannel {
 
     private UdpMulticastChannel(String id, InetSocketAddress localAddress,
             InetSocketAddress remoteAddress) {
-        super(id, IoTypeEnum.OUTPUT_ONLY, localAddress, remoteAddress);
+        super(id, IoType.OUTPUT_ONLY, localAddress, remoteAddress);
         this.multicastAddress = remoteAddress.getAddress();
         Preconditions.checkNotNull(localAddress);
 

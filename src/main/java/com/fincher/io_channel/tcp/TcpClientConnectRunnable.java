@@ -36,7 +36,7 @@ class TcpClientConnectRunnable implements MyCallableIfc<Socket> {
      * @param parent        The parent object
      * @param remoteAddress The remote address to which this client is trying to connect
      */
-    public TcpClientConnectRunnable(TcpClientChannel parent, InetSocketAddress remoteAddress) {
+    TcpClientConnectRunnable(TcpClientChannel parent, InetSocketAddress remoteAddress) {
         this.parent = parent;
         this.remoteAddress = remoteAddress;
     }

@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 /** An message in an encoded form */
-public class MessageBuffer implements ExchangeableIfc {
+public class MessageBuffer implements Exchangeable {
 
     private final byte[] bytes;
 

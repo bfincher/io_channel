@@ -23,7 +23,7 @@ public abstract class SocketIoChannel extends IoChannel<MessageBuffer> {
      * @param localAddress The local address to which this socket will be bound. If null "localhost"
      *                     will be used that the OS will choose an available port
      */
-    public SocketIoChannel(String id, IoTypeEnum ioType, InetSocketAddress localAddress) {
+    public SocketIoChannel(String id, IoType ioType, InetSocketAddress localAddress) {
         super(id, ioType);
 
         if (localAddress == null) {
@@ -49,8 +49,8 @@ public abstract class SocketIoChannel extends IoChannel<MessageBuffer> {
      * @return the type of data processed by this IoChannel
      */
     @Override
-    public IoChannelDataTypeEnum getDataType() {
-        return IoChannelDataTypeEnum.RAW_DATA;
+    public IoChannelDataType getDataType() {
+        return IoChannelDataType.RAW_DATA;
     }
 
     /**

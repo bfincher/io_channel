@@ -3,13 +3,22 @@ package com.fincher.io_channel;
 import java.util.List;
 
 /**
- * An object that has transaction IDs and parent transaction IDs
+ * An interface representing messages exchanged between components. This can either be MessageIfc
+ * (internal POJOs) or MessageBuffer (external encoded messages)
  * 
  * @author Brian Fincher
  *
  */
-public interface HasTransactionIdIfc {
-
+public interface Exchangeable {
+    
+    /**
+     * Gets the time at which this message was instantiated
+     * 
+     * @return the time at which this message was instantiated
+     */
+    public long getOriginationTime();
+    
+    
     /**
      * get the transaction ID for this exchangeable
      * 

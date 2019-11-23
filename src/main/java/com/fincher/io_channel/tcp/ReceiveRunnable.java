@@ -11,7 +11,7 @@ import java.net.SocketTimeoutException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class ReceiveRunnable extends AbstractReceiveRunnable {
+class ReceiveRunnable extends AbstractReceiveRunnable {
 
     private static final Logger LOG = LogManager.getLogger();
 
@@ -21,7 +21,7 @@ public class ReceiveRunnable extends AbstractReceiveRunnable {
     /** The length of headers that are used to determine the length of messages */
     private final int headerLength;
 
-    private final StreamIoIfc streamIo;
+    private final StreamIo streamIo;
 
     private final InputStream inputStream;
 
@@ -32,7 +32,7 @@ public class ReceiveRunnable extends AbstractReceiveRunnable {
      * @param socket The TCP Socket
      * @throws ChannelException
      */
-    public ReceiveRunnable(String id, Socket socket, StreamIoIfc streamIo, TcpChannel parent)
+    ReceiveRunnable(String id, Socket socket, StreamIo streamIo, TcpChannel parent)
             throws ChannelException {
         super(id, socket, parent);
         this.streamIo = streamIo;

@@ -10,7 +10,7 @@ import java.util.function.Consumer;
  *
  * @param <T>
  */
-public interface IoChannelIfc<T extends ExchangeableIfc> extends Closeable {
+public interface IoChannelIfc<T extends Exchangeable> extends Closeable {
 
     /**
      * Get the ID of this IO Thread
@@ -65,21 +65,21 @@ public interface IoChannelIfc<T extends ExchangeableIfc> extends Closeable {
      * 
      * @return Is this IO Thread input, output, or both
      */
-    public IoTypeEnum getIoType();
+    public IoType getIoType();
 
     /**
      * Gets the state of this IO Thread
      * 
      * @return The state of this IO Thread
      */
-    public StateEnum getState();
+    public ChannelState getState();
 
     /**
      * Get the type of data processed by this IoChannel
      * 
      * @return the type of data processed by this IoChannel
      */
-    public IoChannelDataTypeEnum getDataType();
+    public IoChannelDataType getDataType();
     
     /** Determine if this channel is capable of receiving messages
      * 

@@ -1,7 +1,7 @@
 package com.fincher.io_channel.tcp;
 
 import com.fincher.io_channel.ChannelException;
-import com.fincher.io_channel.IoTypeEnum;
+import com.fincher.io_channel.IoType;
 import com.fincher.io_channel.MessageBuffer;
 import com.fincher.thread.MyCallableIfc;
 
@@ -28,8 +28,8 @@ public class TcpServerChannel extends TcpChannel {
      * @param localAddress   The local address to which this socket will be bound. If null
      *                       "localhost" will be used
      */
-    protected TcpServerChannel(String id, IoTypeEnum ioType,
-            StreamIoIfc streamIo, InetSocketAddress localAddress) {
+    protected TcpServerChannel(String id, IoType ioType,
+            StreamIo streamIo, InetSocketAddress localAddress) {
         super(id, ioType, localAddress, streamIo);
     }
 
@@ -45,8 +45,8 @@ public class TcpServerChannel extends TcpChannel {
      * @return a new TCP server socket that is capable of both sending and receiving data
      */
     public static TcpServerChannel createChannel(String id,
-            StreamIoIfc streamIo, InetSocketAddress localAddress) {
-        return new TcpServerChannel(id, IoTypeEnum.INPUT_AND_OUTPUT, streamIo, localAddress);
+            StreamIo streamIo, InetSocketAddress localAddress) {
+        return new TcpServerChannel(id, IoType.INPUT_AND_OUTPUT, streamIo, localAddress);
     }
     
     /**
@@ -61,8 +61,8 @@ public class TcpServerChannel extends TcpChannel {
      * @return a new TCP server socket that is capable of both sending and receiving data
      */
     public static TcpServerChannel createChannel(String id, Consumer<MessageBuffer> messageHandler,
-            StreamIoIfc streamIo, InetSocketAddress localAddress) {
-        TcpServerChannel channel = new TcpServerChannel(id, IoTypeEnum.INPUT_AND_OUTPUT, streamIo, localAddress);
+            StreamIo streamIo, InetSocketAddress localAddress) {
+        TcpServerChannel channel = new TcpServerChannel(id, IoType.INPUT_AND_OUTPUT, streamIo, localAddress);
         channel.addMessageListener(messageHandler);
         return channel;
     }
@@ -77,8 +77,8 @@ public class TcpServerChannel extends TcpChannel {
      *                     will be used
      * @return a new TCP server socket that is capable of only sending data
      */
-    public static TcpServerChannel createOutputOnly(String id, StreamIoIfc streamIo, InetSocketAddress localAddress) {
-        return new TcpServerChannel(id, IoTypeEnum.OUTPUT_ONLY, streamIo, localAddress);
+    public static TcpServerChannel createOutputOnly(String id, StreamIo streamIo, InetSocketAddress localAddress) {
+        return new TcpServerChannel(id, IoType.OUTPUT_ONLY, streamIo, localAddress);
     }
 
     /**

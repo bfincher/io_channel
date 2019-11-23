@@ -6,7 +6,7 @@ package com.fincher.io_channel;
  * @author Brian Fincher
  *
  */
-public enum IoChannelDataTypeEnum {
+public enum IoChannelDataType {
 
     /** IOChannels that receive data in some native format */
     RAW_DATA,

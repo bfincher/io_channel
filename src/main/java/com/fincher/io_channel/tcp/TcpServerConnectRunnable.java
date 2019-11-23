@@ -1,7 +1,7 @@
 package com.fincher.io_channel.tcp;
 
 import com.fincher.io_channel.ChannelException;
-import com.fincher.io_channel.StateEnum;
+import com.fincher.io_channel.ChannelState;
 import com.fincher.thread.MyCallableIfc;
 import com.fincher.thread.MyThread;
 
@@ -43,7 +43,7 @@ class TcpServerConnectRunnable implements MyCallableIfc<Socket> {
      * @param tcpServer The parent TCP Server object
      * @throws ChannelException
      */
-    public TcpServerConnectRunnable(TcpServerChannel tcpServer) throws ChannelException {
+    TcpServerConnectRunnable(TcpServerChannel tcpServer) throws ChannelException {
         this.tcpServer = tcpServer;
 
         try {
@@ -91,7 +91,7 @@ class TcpServerConnectRunnable implements MyCallableIfc<Socket> {
         } catch (SocketTimeoutException ste) {
             return null;
         } catch (IOException e) {
-            if (tcpServer.getState() == StateEnum.CLOSED) {
+            if (tcpServer.getState() == ChannelState.CLOSED) {
                 return null;
             } else {
                 LOG.error(tcpServer.getId() + " " + e.getMessage(), e);

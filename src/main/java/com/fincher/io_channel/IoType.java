@@ -6,7 +6,7 @@ package com.fincher.io_channel;
  * @author Brian Fincher
  *
  */
-public enum IoTypeEnum {
+public enum IoType {
 
     /** The IO Thread is only capable of receiving messages */
     INPUT_ONLY,

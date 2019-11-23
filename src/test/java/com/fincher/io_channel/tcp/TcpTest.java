@@ -7,7 +7,7 @@ import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 
 import com.fincher.io_channel.ChannelException;
-import com.fincher.io_channel.IoChannelDataTypeEnum;
+import com.fincher.io_channel.IoChannelDataType;
 import com.fincher.io_channel.IoChannelTesterBase;
 import com.fincher.io_channel.MessageBuffer;
 import com.google.common.io.Closer;
@@ -38,9 +38,9 @@ public class TcpTest extends IoChannelTesterBase<MessageBuffer> {
         
         assertEquals(0, client1.getlocalAddress().getPort());
 
-        SimpleStreamIO streamIo = new SimpleStreamIO();
+        SimpleStreamIo streamIo = new SimpleStreamIo();
 
-        assertEquals(IoChannelDataTypeEnum.RAW_DATA, client1.getDataType());
+        assertEquals(IoChannelDataType.RAW_DATA, client1.getDataType());
         assertTrue(client1.isInput());
         assertTrue(client2.isInput());
         assertTrue(client1.isOutput());
@@ -159,23 +159,23 @@ public class TcpTest extends IoChannelTesterBase<MessageBuffer> {
         InetSocketAddress localAddress0 = new InetSocketAddress(InetAddress.getLocalHost(), 0);
 
         ChannelFactory createServer = (id) -> {
-            return TcpServerChannel.createOutputOnly(id, new SimpleStreamIO(), localAddress5000);
+            return TcpServerChannel.createOutputOnly(id, new SimpleStreamIo(), localAddress5000);
         };
 
-        TcpClientChannel client1 = TcpClientChannel.createChannel("client1", new SimpleStreamIO(),
+        TcpClientChannel client1 = TcpClientChannel.createChannel("client1", new SimpleStreamIo(),
                 localAddress0, remoteAddress);
 
         client1.addMessageListener(queue1::add);
 
         TcpClientChannel client2 = TcpClientChannel.createChannel("client2", queue2::add,
-                new SimpleStreamIO(), null, remoteAddress);
+                new SimpleStreamIo(), null, remoteAddress);
 
         test(client1, client2, createServer);
     }
 
     @Test
     public void testClientSendingToServer() throws Exception {
-        SimpleStreamIO streamIo = new SimpleStreamIO(true);
+        SimpleStreamIo streamIo = new SimpleStreamIo(true);
 
         InetSocketAddress address5001 = new InetSocketAddress(InetAddress.getLocalHost(), 5001);
         InetSocketAddress localAddress0 = new InetSocketAddress(InetAddress.getLocalHost(), 0);
@@ -213,12 +213,12 @@ public class TcpTest extends IoChannelTesterBase<MessageBuffer> {
     @Test
     public void testOffNominal() throws Exception {
         InetSocketAddress address5001 = new InetSocketAddress(InetAddress.getLocalHost(), 5001);
-        TcpServerChannel server = TcpServerChannel.createOutputOnly("server", new SimpleStreamIO(),
+        TcpServerChannel server = TcpServerChannel.createOutputOnly("server", new SimpleStreamIo(),
                 address5001);
         server.connect();
 
         try {
-            ReceiveRunnableFactoryIfc factory = mock(ReceiveRunnableFactoryIfc.class);
+            ReceiveRunnableFactory factory = mock(ReceiveRunnableFactory.class);
             server.setReceiveRunnableFactory(factory);
             fail("Should have got exception");
         } catch (IllegalStateException e) {

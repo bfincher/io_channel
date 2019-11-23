@@ -20,7 +20,7 @@ public class ReceiveRunnableTest {
         Socket socket = mock(Socket.class);
         when(socket.getInputStream()).thenThrow(IOException.class);
         
-        new ReceiveRunnable("id", socket, new SimpleStreamIO(), null);
+        new ReceiveRunnable("id", socket, new SimpleStreamIo(), null);
         try {
             socket.getInputStream();
         } catch (Exception e) {
@@ -31,7 +31,7 @@ public class ReceiveRunnableTest {
     @Test
     public void testGrowBuff() throws IOException, ReflectiveOperationException {
         Socket socket = mock(Socket.class);
-        StreamIoIfc streamIo = mock(StreamIoIfc.class);
+        StreamIo streamIo = mock(StreamIo.class);
         TcpChannel parent = mock(TcpChannel.class);
         InputStream inputStream = mock(InputStream.class);
         

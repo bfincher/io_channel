@@ -1,7 +1,7 @@
 package com.fincher.io_channel.tcp;
 
 import com.fincher.io_channel.ChannelException;
-import com.fincher.io_channel.IoTypeEnum;
+import com.fincher.io_channel.IoType;
 import com.fincher.io_channel.MessageBuffer;
 
 import java.net.InetSocketAddress;
@@ -30,7 +30,7 @@ public class TcpClientChannel extends TcpChannel {
      *                      "localhost" will be used that the OS will choose an available port
      * @param remoteAddress The remote address to which this client is trying to connect
      */
-    private TcpClientChannel(String id, IoTypeEnum ioType, StreamIoIfc streamIo,
+    private TcpClientChannel(String id, IoType ioType, StreamIo streamIo,
             InetSocketAddress localAddress, InetSocketAddress remoteAddress) {
         super(id, ioType, localAddress, streamIo);
         this.remoteAddress = remoteAddress;
@@ -49,8 +49,8 @@ public class TcpClientChannel extends TcpChannel {
      * @return a new TCP client socket that is capable of both sending and receiving data
      */
     public static TcpClientChannel createChannel(String id, Consumer<MessageBuffer> messageHandler,
-            StreamIoIfc streamIo, InetSocketAddress localAddress, InetSocketAddress remoteAddress) {
-        TcpClientChannel channel = new TcpClientChannel(id, IoTypeEnum.INPUT_AND_OUTPUT, streamIo,
+            StreamIo streamIo, InetSocketAddress localAddress, InetSocketAddress remoteAddress) {
+        TcpClientChannel channel = new TcpClientChannel(id, IoType.INPUT_AND_OUTPUT, streamIo,
                 localAddress, remoteAddress);
         channel.addMessageListener(messageHandler);
         return channel;
@@ -67,9 +67,9 @@ public class TcpClientChannel extends TcpChannel {
      * @param remoteAddress The remote address to which this client is trying to connect
      * @return a new TCP client socket that is capable of both sending and receiving data
      */
-    public static TcpClientChannel createChannel(String id, StreamIoIfc streamIo,
+    public static TcpClientChannel createChannel(String id, StreamIo streamIo,
             InetSocketAddress localAddress, InetSocketAddress remoteAddress) {
-        return new TcpClientChannel(id, IoTypeEnum.INPUT_AND_OUTPUT, streamIo, localAddress, remoteAddress);
+        return new TcpClientChannel(id, IoType.INPUT_AND_OUTPUT, streamIo, localAddress, remoteAddress);
     }
 
     /**
@@ -83,9 +83,9 @@ public class TcpClientChannel extends TcpChannel {
      * @param remoteAddress The remote address to which this client is trying to connect
      * @return a new TCP client socket that is capable of only sending data
      */
-    public static TcpClientChannel createOutputOnlyChannel(String id, StreamIoIfc streamIo,
+    public static TcpClientChannel createOutputOnlyChannel(String id, StreamIo streamIo,
             InetSocketAddress localAddress, InetSocketAddress remoteAddress) {
-        return new TcpClientChannel(id, IoTypeEnum.OUTPUT_ONLY, streamIo, localAddress, remoteAddress);
+        return new TcpClientChannel(id, IoType.OUTPUT_ONLY, streamIo, localAddress, remoteAddress);
     }
 
     @Override

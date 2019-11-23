@@ -5,9 +5,9 @@ import com.fincher.thread.MyRunnableIfc;
 
 import java.net.Socket;
 
-public interface ReceiveRunnableFactoryIfc {
+interface ReceiveRunnableFactory {
 
-    public MyRunnableIfc createReceiveRunnable(String id, Socket socket, StreamIoIfc streamIo,
+    MyRunnableIfc createReceiveRunnable(String id, Socket socket, StreamIo streamIo,
             TcpChannel parent) throws ChannelException;
 
 }

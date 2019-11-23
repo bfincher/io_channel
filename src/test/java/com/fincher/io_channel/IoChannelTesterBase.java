@@ -16,7 +16,7 @@ import org.awaitility.Awaitility;
  *
  * @param <T>
  */
-public abstract class IoChannelTesterBase<T extends ExchangeableIfc> {
+public abstract class IoChannelTesterBase<T extends Exchangeable> {
 
     /** The queue used to store retrieved messages */
     protected BlockingQueue<T> messageQueue = new LinkedBlockingQueue<T>();

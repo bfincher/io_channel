@@ -1,10 +1,10 @@
 package com.fincher.io_channel.udp;
 
 import com.fincher.io_channel.ChannelException;
-import com.fincher.io_channel.IoTypeEnum;
+import com.fincher.io_channel.ChannelState;
+import com.fincher.io_channel.IoType;
 import com.fincher.io_channel.MessageBuffer;
 import com.fincher.io_channel.SocketIoChannel;
-import com.fincher.io_channel.StateEnum;
 import com.fincher.thread.MyRunnableIfc;
 import com.fincher.thread.MyThread;
 import com.google.common.base.Preconditions;
@@ -98,7 +98,7 @@ public class UdpChannel extends SocketIoChannel {
      * @param localAddress   The local address to which this socket will be bound. If null
      *                       "localhost" will be used
      */
-    protected UdpChannel(String id, IoTypeEnum ioType, InetSocketAddress localAddress) {
+    protected UdpChannel(String id, IoType ioType, InetSocketAddress localAddress) {
         super(id, ioType, localAddress);
         remoteAddress = null;
     }
@@ -112,7 +112,7 @@ public class UdpChannel extends SocketIoChannel {
      *                      "localhost" will be used
      * @param remoteAddress The remote address to which messages will be sent
      */
-    protected UdpChannel(String id, IoTypeEnum ioType, InetSocketAddress localAddress,
+    protected UdpChannel(String id, IoType ioType, InetSocketAddress localAddress,
             InetSocketAddress remoteAddress) {
 
         super(id, ioType, localAddress);
@@ -130,7 +130,7 @@ public class UdpChannel extends SocketIoChannel {
      */
     public static UdpChannel createInputChannel(String id, Consumer<MessageBuffer> messageHandler,
             InetSocketAddress localAddress) {
-        UdpChannel channel = new UdpChannel(id, IoTypeEnum.INPUT_ONLY, localAddress);
+        UdpChannel channel = new UdpChannel(id, IoType.INPUT_ONLY, localAddress);
         channel.addMessageListener(messageHandler);
         return channel;
     }
@@ -144,7 +144,7 @@ public class UdpChannel extends SocketIoChannel {
      * @return a new input only UDP IO Thread
      */
     public static UdpChannel createInputChannel(String id, InetSocketAddress localAddress) {
-        return new UdpChannel(id, IoTypeEnum.INPUT_ONLY, localAddress);
+        return new UdpChannel(id, IoType.INPUT_ONLY, localAddress);
     }
 
     /**
@@ -157,7 +157,7 @@ public class UdpChannel extends SocketIoChannel {
      */
     public static UdpChannel createOutputChannel(String id, InetSocketAddress localAddress,
             InetSocketAddress remoteAddress) {
-        return new UdpChannel(id, IoTypeEnum.OUTPUT_ONLY, localAddress, remoteAddress);
+        return new UdpChannel(id, IoType.OUTPUT_ONLY, localAddress, remoteAddress);
     }
 
     /**
@@ -166,7 +166,7 @@ public class UdpChannel extends SocketIoChannel {
      * @param socketOptions The TCP socket options
      */
     public void setSocketOptions(UdpSocketOptions socketOptions) {
-        Preconditions.checkState(getState() == StateEnum.INITIAL,
+        Preconditions.checkState(getState() == ChannelState.INITIAL,
                 getId() + " The state must be INITIAL for setSocketOptions");
         this.socketOptions = socketOptions;
     }
@@ -174,7 +174,7 @@ public class UdpChannel extends SocketIoChannel {
     @Override
     /** Connects this UDP IO thread */
     public void connect() throws ChannelException, InterruptedException {
-        Preconditions.checkState(getState() == StateEnum.INITIAL,
+        Preconditions.checkState(getState() == ChannelState.INITIAL,
                 getId() + " Illegal state for connect: " + getState());
 
         boolean socketCreated = false;
@@ -202,7 +202,7 @@ public class UdpChannel extends SocketIoChannel {
                 // no action necessary
                 break;
         }
-        setState(StateEnum.CONNECTED);
+        setState(ChannelState.CONNECTED);
 
         LOG.info(getId() + " Connected to local address " + socket.getLocalAddress() + " "
                 + socket.getLocalPort());
@@ -258,7 +258,7 @@ public class UdpChannel extends SocketIoChannel {
             socket = null;
         }
 
-        setState(StateEnum.CLOSED);
+        setState(ChannelState.CLOSED);
     }
 
     @Override
@@ -268,7 +268,7 @@ public class UdpChannel extends SocketIoChannel {
      * @param message The message to be sent
      */
     public void send(MessageBuffer message) throws ChannelException {
-        Preconditions.checkState(getState() == StateEnum.CONNECTED && getIoType().isOutput(),
+        Preconditions.checkState(getState() == ChannelState.CONNECTED && getIoType().isOutput(),
                 getId() + " Socket state = " + getState() + ", IO Type = " + getIoType());
 
         logSend(LOG, message, "remote address = " + remoteAddress.toString() + " size = "

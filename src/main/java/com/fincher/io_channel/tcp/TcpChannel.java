@@ -1,10 +1,10 @@
 package com.fincher.io_channel.tcp;
 
 import com.fincher.io_channel.ChannelException;
-import com.fincher.io_channel.IoTypeEnum;
+import com.fincher.io_channel.ChannelState;
+import com.fincher.io_channel.IoType;
 import com.fincher.io_channel.MessageBuffer;
 import com.fincher.io_channel.SocketIoChannel;
-import com.fincher.io_channel.StateEnum;
 import com.fincher.thread.MyCallableIfc;
 import com.fincher.thread.MyRunnableIfc;
 import com.fincher.thread.MyThread;
@@ -32,7 +32,7 @@ public abstract class TcpChannel extends SocketIoChannel {
     private static final Logger LOG = LogManager.getLogger();
 
     /** Used to determine how many bytes to read for each message */
-    private final StreamIoIfc streamIo;
+    private final StreamIo streamIo;
 
     /** A map of TCP Sockets that have been connected */
     protected final Map<String, Socket> sockets = new HashMap<>();
@@ -66,10 +66,10 @@ public abstract class TcpChannel extends SocketIoChannel {
     private final List<ConnectionEstablishedListener> connectionEstablishedListeners = Collections
             .synchronizedList(new LinkedList<ConnectionEstablishedListener>());
 
-    private ReceiveRunnableFactoryIfc receiveRunnableFactory = new DefaultReceiveRunnableFactory();
+    private ReceiveRunnableFactory receiveRunnableFactory = new DefaultReceiveRunnableFactory();
 
-    private static final class DefaultReceiveRunnableFactory implements ReceiveRunnableFactoryIfc {
-        public MyRunnableIfc createReceiveRunnable(String id, Socket socket, StreamIoIfc streamIo,
+    private static final class DefaultReceiveRunnableFactory implements ReceiveRunnableFactory {
+        public MyRunnableIfc createReceiveRunnable(String id, Socket socket, StreamIo streamIo,
                 TcpChannel parent) throws ChannelException {
             return new ReceiveRunnable(id, socket, streamIo, parent);
         }
@@ -85,14 +85,14 @@ public abstract class TcpChannel extends SocketIoChannel {
      * @param localAddress   The local address to which this socket will be bound. If null
      *                       "localhost" will be used that the OS will choose an available port
      */
-    protected TcpChannel(String id, IoTypeEnum ioType, InetSocketAddress localAddress, StreamIoIfc streamIo) {
+    protected TcpChannel(String id, IoType ioType, InetSocketAddress localAddress, StreamIo streamIo) {
         super(id, ioType, localAddress);
         this.streamIo = streamIo;
     }
 
 
-    protected void setReceiveRunnableFactory(ReceiveRunnableFactoryIfc factory) {
-        Preconditions.checkState(getState() == StateEnum.INITIAL,
+    protected void setReceiveRunnableFactory(ReceiveRunnableFactory factory) {
+        Preconditions.checkState(getState() == ChannelState.INITIAL,
                 "The state must be INITIAL for setReceiveRunnableFactory");
 
         this.receiveRunnableFactory = factory;
@@ -104,7 +104,7 @@ public abstract class TcpChannel extends SocketIoChannel {
      * @param socketOptions The TCP socket options
      */
     public void setSocketOptions(TcpSocketOptions socketOptions) {
-        Preconditions.checkState(getState() == StateEnum.INITIAL,
+        Preconditions.checkState(getState() == ChannelState.INITIAL,
                 "The state must be INITIAL for setSocketOptions");
 
         this.socketOptions = socketOptions;
@@ -113,7 +113,7 @@ public abstract class TcpChannel extends SocketIoChannel {
     @Override
     /** Connect this socket */
     public final void connect() throws ChannelException, InterruptedException {
-        Preconditions.checkState(getState() == StateEnum.INITIAL,
+        Preconditions.checkState(getState() == ChannelState.INITIAL,
             "Cannot connect when state = " + getState());
 
         performConnect();
@@ -126,7 +126,7 @@ public abstract class TcpChannel extends SocketIoChannel {
      */
     protected void performConnect() throws ChannelException {
         LOG.debug("{} Setting state to CONNECTING", getId());
-        setState(StateEnum.CONNECTING);
+        setState(ChannelState.CONNECTING);
         connectThread = new MyThread(getId() + "ConnectThread", getConnectRunnable());
         connectThread.start();
     }
@@ -142,15 +142,15 @@ public abstract class TcpChannel extends SocketIoChannel {
     @Override
     /** Is this socket connected */
     public boolean isConnected() {
-        LOG.debug("{} isConnected() returning {}", getId(), (getState() == StateEnum.CONNECTED));
-        return getState() == StateEnum.CONNECTED;
+        LOG.debug("{} isConnected() returning {}", getId(), (getState() == ChannelState.CONNECTED));
+        return getState() == ChannelState.CONNECTED;
     }
 
     @Override
     /** Close this socket */
     public void close() throws ChannelException {
         LOG.debug("{} setting state to CLOSED", getId());
-        setState(StateEnum.CLOSED);
+        setState(ChannelState.CLOSED);
 
         if (connectThread != null) {
             connectThread.terminate();
@@ -310,7 +310,7 @@ public abstract class TcpChannel extends SocketIoChannel {
         connectionCount.incrementAndGet();
 
         LOG.debug("{} setting state to CONNECTED", getId());
-        setState(StateEnum.CONNECTED);
+        setState(ChannelState.CONNECTED);
 
         for (ConnectionEstablishedListener listener : connectionEstablishedListeners) {
             listener.connectionEstablished(socketId);
@@ -330,7 +330,7 @@ public abstract class TcpChannel extends SocketIoChannel {
 
         if (count <= 0) {
             LOG.debug("{} setting state to CONNECTING", getId());
-            setState(StateEnum.CONNECTING);
+            setState(ChannelState.CONNECTING);
         }
 
         String socketId = getSocketId(socket);

@@ -8,7 +8,7 @@ import java.io.IOException;
  * @author Brian Fincher
  *
  */
-public interface StreamIoIfc {
+public interface StreamIo {
 
     /**
      * Gets the number of bytes that should be read to determine the length of the message

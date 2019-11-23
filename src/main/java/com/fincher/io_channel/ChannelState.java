@@ -6,7 +6,7 @@ package com.fincher.io_channel;
  * @author Brian Fincher
  *
  */
-public enum StateEnum {
+public enum ChannelState {
     /** The initial state when the object is constructed */
     INITIAL,
 

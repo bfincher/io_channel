@@ -20,7 +20,7 @@ import org.apache.logging.log4j.Logger;
  *
  */
 
-public abstract class IoChannel<T extends ExchangeableIfc> implements IoChannelIfc<T> {
+public abstract class IoChannel<T extends Exchangeable> implements IoChannelIfc<T> {
 
     /** The ID of this IO Thread */
     private final String id;    
@@ -33,10 +33,10 @@ public abstract class IoChannel<T extends ExchangeableIfc> implements IoChannelI
     private final Collection<ListenerEntry> listeners;
 
     /** Is this IO Thread input, output, or both */
-    private final IoTypeEnum ioType;
+    private final IoType ioType;
 
     /** The state of this TCP socket */
-    private StateEnum state = StateEnum.INITIAL;
+    private ChannelState state = ChannelState.INITIAL;
 
     /**
      * Constructs a new IOThread that is capable of only sending data
@@ -44,11 +44,11 @@ public abstract class IoChannel<T extends ExchangeableIfc> implements IoChannelI
      * @param id     The ID of this IO Thread
      * @param ioType Is this IO Thread input, output, or both
      */
-    public IoChannel(String id, IoTypeEnum ioType) {
+    public IoChannel(String id, IoType ioType) {
         this.id = id;
         this.ioType = ioType;
         
-        if (ioType == IoTypeEnum.OUTPUT_ONLY) {
+        if (ioType == IoType.OUTPUT_ONLY) {
             eventBus = null;
             listeners = null;
         } else {
@@ -73,7 +73,7 @@ public abstract class IoChannel<T extends ExchangeableIfc> implements IoChannelI
      * @return Is this IO Thread input, output, or both
      */
     @Override
-    public final IoTypeEnum getIoType() {
+    public final IoType getIoType() {
         return ioType;
     }
 
@@ -83,7 +83,7 @@ public abstract class IoChannel<T extends ExchangeableIfc> implements IoChannelI
      * @return The state of this IO Thread
      */
     @Override
-    public StateEnum getState() {
+    public ChannelState getState() {
         return state;
     }
 
@@ -92,7 +92,7 @@ public abstract class IoChannel<T extends ExchangeableIfc> implements IoChannelI
      * 
      * @param state The state of this IO Thread
      */
-    protected void setState(StateEnum state) {
+    protected void setState(ChannelState state) {
         this.state = state;
     }
 

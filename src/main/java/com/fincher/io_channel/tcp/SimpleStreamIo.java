@@ -7,20 +7,20 @@ package com.fincher.io_channel.tcp;
  * @author s149450 Brian Fincher
  *
  */
-public class SimpleStreamIO implements StreamIoIfc {
+public class SimpleStreamIo implements StreamIo {
     
     private final boolean headerPartOfMessage;
     
-    /** Constructs a new SimpleStreamIO with headerPartOfMessage = false */
-    public SimpleStreamIO() {
+    /** Constructs a new SimpleStreamIo with headerPartOfMessage = false */
+    public SimpleStreamIo() {
         headerPartOfMessage = false;
     }
     
-    /** Constructs a new SimpleStreamIO 
+    /** Constructs a new SimpleStreamIo 
      * 
      * @param headerPartOfMessage Is the header considered a part of the message
      */
-    public SimpleStreamIO(boolean headerPartOfMessage) {
+    public SimpleStreamIo(boolean headerPartOfMessage) {
         this.headerPartOfMessage = headerPartOfMessage;
     }
 
