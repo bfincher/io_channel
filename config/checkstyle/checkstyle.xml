@@ -13,6 +13,10 @@ Checkstyle configuration that checks the Google coding conventions from Google J
   <property name="severity" value="warning"/>
   <property name="charset" value="UTF-8"/>
   <property name="fileExtensions" value="java, properties, xml"/>
+  <module name="LineLength">
+    <property name="ignorePattern" value="^package.*|^import.*|a href|href|http://|https://|ftp://"/>
+    <property name="max" value="120"/>
+  </module>
   <module name="TreeWalker">
     <module name="OuterTypeFilename"/>
     <module name="IllegalTokenText">
@@ -24,10 +28,6 @@ Checkstyle configuration that checks the Google coding conventions from Google J
       <property name="allowEscapesForControlCharacters" value="true"/>
       <property name="allowByTailComment" value="true"/>
       <property name="allowNonPrintableEscapes" value="true"/>
-    </module>
-    <module name="LineLength">
-      <property name="ignorePattern" value="^package.*|^import.*|a href|href|http://|https://|ftp://"/>
-      <property name="max" value="120"/>
     </module>
     <module name="AvoidStarImport"/>
     <module name="OneTopLevelClass"/>
