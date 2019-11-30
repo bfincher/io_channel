@@ -24,7 +24,7 @@ repositories {
 dependencies {
     implementation 'org.apache.logging.log4j:log4j-api:2.12.1'
     implementation 'org.apache.logging.log4j:log4j-core:2.12.1'
-    implementation 'com.fincher:java-thread:2.1.4-SNAPSHOT'
+    implementation 'com.fincher:java-thread:2.2.0'
     implementation 'com.google.guava:guava:28.1-jre'
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.awaitility:awaitility:4.0.1'
