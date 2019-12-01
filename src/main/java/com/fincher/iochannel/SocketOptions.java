@@ -37,6 +37,12 @@ public class SocketOptions {
     public void setSendBufferSize(int sendBufferSize) {
         this.sendBufferSize = OptionalInt.of(sendBufferSize);
     }
+    
+    /** Clears the SO_SNDBUF socket setting */
+    public void clearSendBufferSize() {
+        sendBufferSize = OptionalInt.empty();
+    }
+    
 
     
     /** Gets the SO_RCVBUF socket setting.
@@ -53,6 +59,11 @@ public class SocketOptions {
      */
     public void setReceiveBufferSize(int receiveBufferSize) {
         this.receiveBufferSize = OptionalInt.of(receiveBufferSize);
+    }
+    
+    /** Clears the SO_RCVBUF socket setting */
+    public void clearReceiveBufferSize() {
+        receiveBufferSize = OptionalInt.empty();
     }
 
     /** Gets the SO_REUSEADDR socket setting.
@@ -85,6 +96,11 @@ public class SocketOptions {
      */
     public void setTimeout(int timeout) {
         this.timeout = OptionalInt.of(timeout);
+    }
+    
+    /** Clears the SO_TIMEOUT socket setting */
+    public void clearTimeout() {
+        timeout = OptionalInt.empty();
     }
 
 }

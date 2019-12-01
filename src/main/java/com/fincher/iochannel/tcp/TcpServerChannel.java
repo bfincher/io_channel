@@ -88,13 +88,7 @@ public class TcpServerChannel extends TcpChannel {
 
     @Override
     public InetSocketAddress getlocalAddress() {
-        TcpServerConnectRunnable connectRunnable;
-        if (connectThread.getCallable().isPresent()) {
-            connectRunnable = (TcpServerConnectRunnable)connectThread.getCallable().get();
-        } else {
-            connectRunnable = (TcpServerConnectRunnable)connectThread.getRunnable().get();
-        }
-        
+        TcpServerConnectRunnable connectRunnable = (TcpServerConnectRunnable)connectThread.getCallable().orElseThrow();
         
         ServerSocket socket = connectRunnable.serverSocket;
         if (socket.isBound()) {
