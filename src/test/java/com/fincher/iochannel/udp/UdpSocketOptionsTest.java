@@ -9,18 +9,16 @@ import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 
 import com.fincher.iochannel.ChannelException;
+import com.fincher.iochannel.TestAnswer;
 
 import java.net.DatagramSocket;
 import java.net.SocketException;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Consumer;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Logger;
 import org.junit.Test;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 
 public class UdpSocketOptionsTest {
     
@@ -31,9 +29,9 @@ public class UdpSocketOptionsTest {
         AtomicReference<Object[]> recBufSize = new AtomicReference<>();
         AtomicReference<Object[]> sendBufSize = new AtomicReference<>();
         AtomicReference<Object[]> timeout = new AtomicReference<>();
-        doAnswer(new MyAnswer(o -> recBufSize.set(o))).when(socket).setReceiveBufferSize(anyInt());
-        doAnswer(new MyAnswer(o -> sendBufSize.set(o))).when(socket).setSendBufferSize(anyInt());
-        doAnswer(new MyAnswer(o -> timeout.set(o))).when(socket).setSoTimeout(anyInt());
+        doAnswer(new TestAnswer(o -> recBufSize.set(o))).when(socket).setReceiveBufferSize(anyInt());
+        doAnswer(new TestAnswer(o -> sendBufSize.set(o))).when(socket).setSendBufferSize(anyInt());
+        doAnswer(new TestAnswer(o -> timeout.set(o))).when(socket).setSoTimeout(anyInt());
         
         UdpSocketOptions so = new UdpSocketOptions();
         so.clearReceiveBufferSize();
@@ -60,7 +58,7 @@ public class UdpSocketOptionsTest {
         testArray(timeout, 7);
         
         // testException
-        doAnswer(new MyAnswer(new SocketException())).when(socket).setSoTimeout(anyInt());
+        doAnswer(new TestAnswer(new SocketException())).when(socket).setSoTimeout(anyInt());
         try {
             so.applySocketOptions("id", socket);
             fail("Should have got exception");
@@ -75,33 +73,6 @@ public class UdpSocketOptionsTest {
         assertEquals(1, array.length);
         assertEquals(val, ((Integer)array[0]).intValue());
         
-    }
-    
-    
-    private static class MyAnswer implements Answer<Void> {
-        
-        private final Consumer<Object[]> consumer;
-        private final Exception exception;
-        
-        MyAnswer(Consumer<Object[]> consumer) {
-            this.consumer = consumer;
-            exception = null;
-        }
-        
-        MyAnswer(Exception exception) {
-            this.exception = exception;
-            consumer = null;
-        }
-        
-        @Override
-        public Void answer(InvocationOnMock invocation) throws Exception {
-            if (exception == null) {
-                consumer.accept(invocation.getArguments());
-                return null;
-            } else {
-                throw exception;
-            }
-        }
     }
 
 }

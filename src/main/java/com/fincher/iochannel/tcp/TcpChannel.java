@@ -46,7 +46,7 @@ public abstract class TcpChannel extends SocketIoChannel {
     private final AtomicInteger connectionCount = new AtomicInteger(0);
 
     /** The TCP Socket Options. */
-    protected TcpSocketOptions socketOptions = new TcpSocketOptions();
+    private TcpSocketOptions socketOptions = new TcpSocketOptions();
 
     /**
      * The minimum amount of time between warning messages regarding sending when no sockets are
@@ -384,5 +384,9 @@ public abstract class TcpChannel extends SocketIoChannel {
     @Override
     protected void messageReceived(MessageBuffer mb, Logger logger, String logString) {
         super.messageReceived(mb, logger, logString);
+    }
+    
+    protected TcpSocketOptions getSocketOptions() {
+        return socketOptions;
     }
 }
