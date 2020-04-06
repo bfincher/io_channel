@@ -34,6 +34,23 @@ class TcpServerConnectRunnable implements MyCallableIfc<Socket> {
 
     /** Is the server socket bound locally?. */
     private boolean serverSocketConnected = false;
+    
+    /**
+     * Construct a new TcpServerConnectRunnable.
+     * 
+     * @param tcpServer The parent TCP Server object
+     * @throws ChannelException If an error occurs while creating the socket
+     */
+    TcpServerConnectRunnable(TcpServerChannel tcpServer, ServerSocket serverSocket) throws ChannelException {
+        this.tcpServer = tcpServer;
+        this.serverSocket = serverSocket;
+
+        try {
+            tcpServer.getSocketOptions().applySocketOptions(tcpServer.getId(), serverSocket);
+        } catch (IOException ioe) {
+            throw new ChannelException(tcpServer.getId(), ioe);
+        }
+    }
 
     /**
      * Construct a new TcpServerConnectRunnable.
@@ -41,14 +58,13 @@ class TcpServerConnectRunnable implements MyCallableIfc<Socket> {
      * @param tcpServer The parent TCP Server object
      * @throws ChannelException If an error occurs while creating the socket
      */
-    TcpServerConnectRunnable(TcpServerChannel tcpServer) throws ChannelException {
-        this.tcpServer = tcpServer;
-
+    static TcpServerConnectRunnable create(TcpServerChannel tcpServer) throws ChannelException {
         try {
-            serverSocket = new ServerSocket();
-            tcpServer.socketOptions.applySocketOptions(tcpServer.getId(), serverSocket);
-        } catch (IOException ioe) {
-            throw new ChannelException(tcpServer.getId(), ioe);
+            return new TcpServerConnectRunnable(tcpServer, new ServerSocket());
+        } catch (ChannelException ce) {
+            throw ce;
+        } catch (IOException e) {
+            throw new ChannelException(tcpServer.getId(), e);
         }
     }
 
@@ -99,8 +115,14 @@ class TcpServerConnectRunnable implements MyCallableIfc<Socket> {
             }
         }
     }
+    
+    // This method is here for unit testing purposes
+    protected ServerSocket getServerSocket() {
+        return serverSocket;
+    }
 
-    private boolean connectSocket() throws IOException, InterruptedException {
+    // this method is protected for testing purposes
+    protected boolean connectSocket() throws IOException, InterruptedException {
         try {
             serverSocket.bind(tcpServer.getlocalAddress());
             return true;

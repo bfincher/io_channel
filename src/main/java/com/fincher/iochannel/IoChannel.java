@@ -58,7 +58,7 @@ public abstract class IoChannel<T extends Exchangeable> implements IoChannelIfc<
     }
 
     @Override
-    public final String getId() {
+    public String getId() {
         return id;
     }
 

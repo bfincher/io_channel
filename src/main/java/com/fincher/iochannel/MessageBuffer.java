@@ -41,22 +41,6 @@ public class MessageBuffer implements Exchangeable {
         System.arraycopy(bytes, offset, this.bytes, 0, length);
     }
 
-    /**
-     * Construct a new MessageBuffer from an ASCII hex dump.
-     * 
-     * @param asciiHexDump  The ASCII hex dump
-     */
-    public MessageBuffer(String asciiHexDump) {
-        transactionId = TransactionIdFactory.getNextTid();
-        originationTime = System.currentTimeMillis();
-
-        StringTokenizer tokenizer = new StringTokenizer(asciiHexDump, " ");
-        bytes = new byte[tokenizer.countTokens()];
-
-        for (int i = 0; i < bytes.length; i++) {
-            bytes[i] = (byte) Integer.parseInt(tokenizer.nextToken(), 16);
-        }
-    }
 
     /**
      * Get the encoded bytes.
@@ -118,6 +102,9 @@ public class MessageBuffer implements Exchangeable {
     public static String toHexString(byte[] bytes) {
         StringBuilder sb = new StringBuilder(200);
         for (int i = 0; i < bytes.length; i++) {
+            if (i != 0) {
+                sb.append(' ');
+            }
             String hexStr = Integer.toHexString(bytes[i]);
             int len = hexStr.length();
             if (len == 1) {
@@ -125,7 +112,7 @@ public class MessageBuffer implements Exchangeable {
             } else if (len > 2) {
                 hexStr = hexStr.substring(len - 2, len);
             }
-            sb.append(hexStr + ' ');
+            sb.append(hexStr);
         }
 
         return sb.toString();
@@ -157,9 +144,9 @@ public class MessageBuffer implements Exchangeable {
      * @return A new MessageBuffer
      */
     public static MessageBuffer fromHexString(String str) {
-        int idx = str.indexOf("hex string: ");
+        int idx = str.indexOf("hex dump: ");
         if (idx != -1) {
-            str = str.substring(idx + 12);
+            str = str.substring(idx + 10);
         }
 
         StringTokenizer tokenizer = new StringTokenizer(str, " ");

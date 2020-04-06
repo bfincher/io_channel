@@ -20,7 +20,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -42,24 +41,8 @@ public abstract class TcpChannel extends SocketIoChannel {
     /** The thread used to connect the socket. */
     protected MyThread connectThread;
 
-    /** The number of socket connections. */
-    private final AtomicInteger connectionCount = new AtomicInteger(0);
-
     /** The TCP Socket Options. */
-    protected TcpSocketOptions socketOptions = new TcpSocketOptions();
-
-    /**
-     * The minimum amount of time between warning messages regarding sending when no sockets are
-     * connected.
-     */
-    private double noSocketsSendErrorWarningInterval = Double.parseDouble(
-            System.getProperty("no.sockets.send.error.warning.interval.seconds", "30.0"));
-
-    /**
-     * The last time at which a warning message regarding sending when no sockets are connected was
-     * issued.
-     */
-    private long lastNoSocketsSendError = 0;
+    private TcpSocketOptions socketOptions = new TcpSocketOptions();
 
     private final List<ConnectionEstablishedListener> connectionEstablishedListeners = Collections
             .synchronizedList(new LinkedList<ConnectionEstablishedListener>());
@@ -222,7 +205,7 @@ public abstract class TcpChannel extends SocketIoChannel {
 
         synchronized (sockets) {
             if (sockets.values().isEmpty()) {
-                logNoSocketsSendError();
+                LOG.warn("{} Cannot send due to no sockets connected", getId());
             }
             for (Socket socket : sockets.values()) {
                 try {
@@ -261,19 +244,6 @@ public abstract class TcpChannel extends SocketIoChannel {
         return new ArrayList<>(sockets.keySet());
     }
 
-    private final void logNoSocketsSendError() {
-        long currentTime = System.currentTimeMillis();
-        double durationSecs = (currentTime - lastNoSocketsSendError) / 1000.0;
-
-        String logStr = getId() + " Cannot send due to no sockets connected";
-
-        if (durationSecs > noSocketsSendErrorWarningInterval) {
-            LOG.warn(logStr);
-            lastNoSocketsSendError = currentTime;
-        } else {
-            LOG.info(logStr);
-        }
-    }
 
     /**
      * Builds an ID for a socket.
@@ -319,8 +289,6 @@ public abstract class TcpChannel extends SocketIoChannel {
             receiveThread.start();
         }
 
-        connectionCount.incrementAndGet();
-
         LOG.debug("{} setting state to CONNECTED", getId());
         setState(ChannelState.CONNECTED);
 
@@ -338,21 +306,18 @@ public abstract class TcpChannel extends SocketIoChannel {
     protected synchronized void connectionLost(Socket socket) throws ChannelException {
         LOG.warn("{} {} connection lost", getId(), getSocketId(socket));
 
-        int count = connectionCount.decrementAndGet();
+        String socketId = getSocketId(socket);
+        sockets.remove(socketId);
 
-        if (count <= 0) {
+        if (sockets.isEmpty()) {
             LOG.debug("{} setting state to CONNECTING", getId());
             setState(ChannelState.CONNECTING);
         }
-
-        String socketId = getSocketId(socket);
 
         MyThread receiveThread = receiveThreads.remove(getReceiveThreadId(socketId));
         if (receiveThread != null) {
             receiveThread.terminate();
         }
-
-        sockets.remove(socketId);
 
         try {
             socket.close();
@@ -384,5 +349,9 @@ public abstract class TcpChannel extends SocketIoChannel {
     @Override
     protected void messageReceived(MessageBuffer mb, Logger logger, String logString) {
         super.messageReceived(mb, logger, logString);
+    }
+    
+    protected TcpSocketOptions getSocketOptions() {
+        return socketOptions;
     }
 }

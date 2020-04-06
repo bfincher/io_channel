@@ -83,14 +83,14 @@ public class TcpServerChannel extends TcpChannel {
 
     @Override
     protected MyCallableIfc<Socket> getConnectRunnable() throws ChannelException {
-        return new TcpServerConnectRunnable(this);
+        return TcpServerConnectRunnable.create(this);
     }
 
     @Override
     public InetSocketAddress getlocalAddress() {
         TcpServerConnectRunnable connectRunnable = (TcpServerConnectRunnable)connectThread.getCallable().orElseThrow();
         
-        ServerSocket socket = connectRunnable.serverSocket;
+        ServerSocket socket = connectRunnable.getServerSocket();
         if (socket.isBound()) {
             return new InetSocketAddress(socket.getInetAddress(), socket.getLocalPort());
         } else {
