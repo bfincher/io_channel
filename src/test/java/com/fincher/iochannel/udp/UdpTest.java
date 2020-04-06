@@ -1,26 +1,28 @@
 package com.fincher.iochannel.udp;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import com.fincher.iochannel.ChannelException;
+import com.fincher.iochannel.ChannelState;
 import com.fincher.iochannel.IoChannelTesterBase;
 import com.fincher.iochannel.IoType;
 import com.fincher.iochannel.MessageBuffer;
+import com.fincher.iochannel.QueueAppender;
 import com.fincher.iochannel.TestDataFactoryIfc;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Logger;
-import org.apache.logging.log4j.core.appender.OutputStreamAppender;
-import org.apache.logging.log4j.core.layout.PatternLayout;
+import org.awaitility.Awaitility;
 import org.junit.AfterClass;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -97,17 +99,10 @@ public class UdpTest extends IoChannelTesterBase<MessageBuffer> {
     @Test
     public void testReadThrowsException() throws Exception {
 
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-
-        OutputStreamAppender appender = OutputStreamAppender.createAppender(
-                PatternLayout.createDefaultLayout(), null, // filter
-                bos, "appender", true, // follow
-                false); // ignore
-
-        appender.start();
-
+        
+        LinkedBlockingQueue<String> logQueue = new LinkedBlockingQueue<>();
         Logger logger = (Logger) LogManager.getLogger(UdpChannel.class);
-        logger.addAppender(appender);
+        logger.addAppender(new QueueAppender(logQueue));
 
         String testExceptionText = "!!TEST EXCEPTION TEXT!!";
 
@@ -121,10 +116,17 @@ public class UdpTest extends IoChannelTesterBase<MessageBuffer> {
         }).when(socket).receive(Mockito.any());
 
         channel.connect();
-        Thread.sleep(3000);
+        
+        Awaitility.await().until(() -> {
+            while (true) {
+                String str = logQueue.take();
+                if (str.contains(testExceptionText)) {
+                    return true;
+                }
+            }
+        });
+        
         channel.close();
-
-        assertTrue(new String(bos.toByteArray()).contains(testExceptionText));
     }
 
     @Test(expected = IOException.class)
@@ -151,16 +153,24 @@ public class UdpTest extends IoChannelTesterBase<MessageBuffer> {
         UdpChannel channel = new TestUdpChannel();
         assertFalse(channel.isConnected());
 
+        // test send on a channel not connected
         try {
             channel.send(null);
             fail("Should have got exception");
         } catch (IllegalStateException e) {
-            // expected
+            assertEquals("id Cannot send on a channel that is not connected", e.getMessage());
         }
 
         channel.connect();
         assertTrue(channel.isConnected());
-
+        
+        // test send on an input only channel
+        try {
+            channel.send(null);
+            fail("Should have got exception");
+        } catch (IllegalStateException e) {
+            assertEquals("id Cannot send on an input only channel", e.getMessage());
+        }
         try {
             channel.setSocketOptions(new UdpSocketOptions());
             fail("Should have got exception");
@@ -176,6 +186,13 @@ public class UdpTest extends IoChannelTesterBase<MessageBuffer> {
         }
 
         channel.close();
+    }
+    
+    @Test
+    public void testOffNominal() throws Exception {
+        UdpChannel channel = UdpChannel.createInputChannel("id", null);
+        channel.close();
+        assertEquals(ChannelState.CLOSED, channel.getState());
     }
 
     private static class TestUdpChannel extends UdpChannel {

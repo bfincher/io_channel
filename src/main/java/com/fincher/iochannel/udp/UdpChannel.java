@@ -93,6 +93,7 @@ public class UdpChannel extends SocketIoChannel {
     protected UdpChannel(String id, IoType ioType, InetSocketAddress localAddress) {
         super(id, ioType, localAddress);
         remoteAddress = null;
+        setSocketOptions(new UdpSocketOptions());
     }
 
     /**
@@ -109,6 +110,7 @@ public class UdpChannel extends SocketIoChannel {
 
         super(id, ioType, localAddress);
         this.remoteAddress = remoteAddress;
+        setSocketOptions(new UdpSocketOptions());
     }
 
     /**
@@ -228,14 +230,6 @@ public class UdpChannel extends SocketIoChannel {
             receiveThread.terminate();
         }
 
-        if (receiveThread != null) {
-            try {
-                receiveThread.join();
-            } catch (InterruptedException e) {
-                throw new ChannelException(e);
-            }
-        }
-
         if (socket != null) {
             socket.close();
             socket = null;
@@ -246,8 +240,11 @@ public class UdpChannel extends SocketIoChannel {
 
     @Override
     public void send(MessageBuffer message) throws ChannelException {
-        Preconditions.checkState(getState() == ChannelState.CONNECTED && getIoType().isOutput(),
-                getId() + " Socket state = " + getState() + ", IO Type = " + getIoType());
+        Preconditions.checkState(getState() == ChannelState.CONNECTED,
+                "%s Cannot send on a channel that is not connected", getId());
+        
+        Preconditions.checkState(getIoType().isOutput(),
+                "%s Cannot send on an input only channel", getId());
 
         logSend(LOG, message, "remote address = " + remoteAddress.toString() + " size = "
                 + message.getBytes().length);
