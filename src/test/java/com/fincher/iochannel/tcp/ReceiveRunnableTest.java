@@ -6,11 +6,6 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import com.fincher.iochannel.tcp.ReceiveRunnable;
-import com.fincher.iochannel.tcp.SimpleStreamIo;
-import com.fincher.iochannel.tcp.StreamIo;
-import com.fincher.iochannel.tcp.TcpChannel;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;

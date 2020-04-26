@@ -9,11 +9,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.fincher.iochannel.ChannelException;
-import com.fincher.iochannel.ChannelState;
-
 import java.io.IOException;
-import java.net.BindException;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -21,6 +17,9 @@ import java.net.SocketTimeoutException;
 
 import org.junit.Before;
 import org.junit.Test;
+
+import com.fincher.iochannel.ChannelException;
+import com.fincher.iochannel.ChannelState;
 
 public class TcpServerConnectRunnableTest {
 
@@ -37,24 +36,6 @@ public class TcpServerConnectRunnableTest {
         when(server.getSocketOptions()).thenReturn(socketOptions);
     }
 
-    @Test
-    public void testExceptionOnConstruct() {
-        when(server.getId()).thenThrow(IOException.class).thenReturn("id");
-        try {
-            TcpServerConnectRunnable.create(server);
-            fail("Should have got exception");
-        } catch (ChannelException e) {
-            assertEquals(IOException.class, e.getCause().getClass());
-        }
-        
-        when(server.getId()).thenThrow(ChannelException.class).thenReturn("id");
-        try {
-            TcpServerConnectRunnable.create(server);
-            fail("Should have got exception");
-        } catch (ChannelException e) {
-            // expected
-        }
-    }
 
     @Test
     public void testTerminate() throws Exception {
@@ -109,15 +90,6 @@ public class TcpServerConnectRunnableTest {
         MyImpl tcr = new MyImpl(server, ss);
         tcr.setCallSuperConnectSocket(true);
         assertTrue(tcr.connectSocket());
-        
-        when(server.getlocalAddress()).thenThrow(BindException.class);
-        tcr.setCallSuperConnectSocket(true);
-        try {
-            tcr.connectSocket();
-            fail("Should have got exception");
-        } catch (BindException e) {
-            // expected
-        }
     }
 
     private static class MyImpl extends TcpServerConnectRunnable {
