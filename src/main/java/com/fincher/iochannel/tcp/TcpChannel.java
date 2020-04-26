@@ -25,7 +25,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /** An IO Thread implementation of TCP sockets. */
-public abstract class TcpChannel extends SocketIoChannel {
+public abstract class TcpChannel extends SocketIoChannel implements TcpChannelIfc {
 
     private static final Logger LOG = LogManager.getLogger();
 
@@ -45,7 +45,10 @@ public abstract class TcpChannel extends SocketIoChannel {
     private TcpSocketOptions socketOptions = new TcpSocketOptions();
 
     private final List<ConnectionEstablishedListener> connectionEstablishedListeners = Collections
-            .synchronizedList(new LinkedList<ConnectionEstablishedListener>());
+            .synchronizedList(new LinkedList<>());
+    
+    private final List<ConnectionLostListener> connectionLostListeners = Collections
+            .synchronizedList(new LinkedList<>());
 
     private ReceiveRunnableFactory receiveRunnableFactory = new DefaultReceiveRunnableFactory();
 
@@ -186,6 +189,7 @@ public abstract class TcpChannel extends SocketIoChannel {
      * @param message The data to be sent
      * @throws ChannelException If an error occurs while sending
      */
+    @Override
     public void send(byte[] message) throws ChannelException {
         send(new MessageBuffer(message));
     }
@@ -223,6 +227,7 @@ public abstract class TcpChannel extends SocketIoChannel {
      * @param channelId The ID of the channel on which to send this message.  "*" if sending to all channels
      * @throws ChannelException If an exception occurs while sending or if the channelID does not exist
      */
+    @Override
     public void send(MessageBuffer message, String channelId) throws ChannelException {
         if (channelId.equals("*")) {
             send(message);
@@ -240,6 +245,7 @@ public abstract class TcpChannel extends SocketIoChannel {
         }
     }
     
+    @Override
     public List<String> getSocketIds() {
         return new ArrayList<>(sockets.keySet());
     }
@@ -305,8 +311,10 @@ public abstract class TcpChannel extends SocketIoChannel {
      */
     protected synchronized void connectionLost(Socket socket) throws ChannelException {
         LOG.warn("{} {} connection lost", getId(), getSocketId(socket));
-
+        
         String socketId = getSocketId(socket);
+        connectionLostListeners.forEach(listener -> listener.connectionLost(socketId));
+
         sockets.remove(socketId);
 
         if (sockets.isEmpty()) {
@@ -334,16 +342,29 @@ public abstract class TcpChannel extends SocketIoChannel {
         }
     }
 
+    @Override
     public int getNumConnections() {
         return sockets.size();
     }
 
+    @Override
     public void addConnectionEstablishedListener(ConnectionEstablishedListener listener) {
         connectionEstablishedListeners.add(listener);
     }
 
+    @Override
     public void removeConnectionEstablishedListener(ConnectionEstablishedListener listener) {
         connectionEstablishedListeners.remove(listener);
+    }
+    
+    @Override
+    public void addConnectionLostListener(ConnectionLostListener listener) {
+        connectionLostListeners.add(listener);
+    }
+
+    @Override
+    public void removeConnectionLostListener(ConnectionLostListener listener) {
+        connectionLostListeners.remove(listener);
     }
 
     @Override
