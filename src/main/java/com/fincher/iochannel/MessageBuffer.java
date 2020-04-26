@@ -40,6 +40,29 @@ public class MessageBuffer implements Exchangeable {
         this.bytes = new byte[length];
         System.arraycopy(bytes, offset, this.bytes, 0, length);
     }
+    
+    
+    /** Constructs a new Message Buffer from the given byte arrays
+     * 
+     * @param byteArrays The byte arrays
+     */
+    public MessageBuffer(byte[]...byteArrays) {
+        transactionId = TransactionIdFactory.getNextTid();
+        originationTime = System.currentTimeMillis();
+        
+        int length = 0;
+        for (byte[] byteArray: byteArrays) {
+            length += byteArray.length;
+        }
+        
+        this.bytes = new byte[length];
+        
+        int pos = 0;
+        for (byte[] byteArray: byteArrays) {
+            System.arraycopy(byteArray, 0, this.bytes, pos, byteArray.length);
+            pos += byteArray.length;
+        }
+    }
 
 
     /**
@@ -157,5 +180,12 @@ public class MessageBuffer implements Exchangeable {
         }
 
         return new MessageBuffer(bytes);
+    }
+
+    @Override
+    public String toString() {
+        return "MessageBuffer [transactionId=" + transactionId + ", parentTransactionIds=" + parentTransactionIds
+                + ", originationTime=" + originationTime + ", receivedFromIoChannel=" + receivedFromIoChannel
+                + ", toHexString()=" + toHexString() + "]";
     }
 }

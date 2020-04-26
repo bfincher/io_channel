@@ -8,15 +8,16 @@ package com.fincher.iochannel.tcp;
  *
  */
 public class SimpleStreamIo implements StreamIo {
-    
+
     private final boolean headerPartOfMessage;
-    
+
     /** Constructs a new SimpleStreamIo with headerPartOfMessage = false. */
     public SimpleStreamIo() {
         headerPartOfMessage = false;
     }
-    
-    /** Constructs a new SimpleStreamIo.
+
+    /**
+     * Constructs a new SimpleStreamIo.
      * 
      * @param headerPartOfMessage Is the header considered a part of the message
      */
@@ -51,8 +52,8 @@ public class SimpleStreamIo implements StreamIo {
     }
 
     /**
-     * Creates a 4 byte integer containing the length of the given bytes. This 4 bytes along with
-     * the given bytes are concatenated and returned
+     * Creates a 4 byte integer containing the length of the given bytes. This 4 bytes along with the
+     * given bytes are concatenated and returned
      * 
      * @param bytes message bytes before pre-pending the length
      * @return the original bytes plus the 4 byte length pre-pended
@@ -65,14 +66,22 @@ public class SimpleStreamIo implements StreamIo {
         } else {
             length = origLength;
         }
-        
+
         byte[] toReturn = new byte[origLength + 4];
         System.arraycopy(bytes, 0, toReturn, 4, origLength);
-        toReturn[0] = (byte) ((length >> 24) & 0xff);
-        toReturn[1] = (byte) ((length >> 16) & 0xff);
-        toReturn[2] = (byte) ((length >> 8) & 0xff);
-        toReturn[3] = (byte) (length & 0xff);
+        populateByteArrayWithLength(toReturn, 0, length);
+        return toReturn;
+    }
 
+    /**
+     * Create a byte array containing the bytes of the given integer
+     * 
+     * @param length The integer to encode into a byte array
+     * @return The encoded byte array
+     */
+    public static byte[] createLengthByteArray(int length) {
+        byte[] toReturn = new byte[4];
+        populateByteArrayWithLength(toReturn, 0, length);
         return toReturn;
     }
 
@@ -84,6 +93,13 @@ public class SimpleStreamIo implements StreamIo {
     @Override
     public boolean headerPartOfMessage() {
         return headerPartOfMessage;
+    }
+
+    private static void populateByteArrayWithLength(byte[] bytes, int startPos, int length) {
+        bytes[startPos] = (byte) ((length >> 24) & 0xff);
+        bytes[startPos + 1] = (byte) ((length >> 16) & 0xff);
+        bytes[startPos + 2] = (byte) ((length >> 8) & 0xff);
+        bytes[startPos + 3] = (byte) (length & 0xff);
     }
 
 }
