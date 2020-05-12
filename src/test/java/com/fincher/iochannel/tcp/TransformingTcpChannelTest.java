@@ -20,7 +20,7 @@ public class TransformingTcpChannelTest extends TransformingIoChannelTest {
     }
     
     
-    private static class TestTcpImpl extends TransformingTcpChannel<String> implements DelegatingTcpChannel, TestImplIfc {
+    private static class TestTcpImpl extends TransformingTcpChannel<String, String> implements DelegatingTcpChannel, TestImplIfc {
         
         private final TcpChannelIfc delegate;
         private boolean blowUpOnDecode;

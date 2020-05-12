@@ -1,13 +1,10 @@
 package com.fincher.iochannel;
 
 import com.google.common.base.Preconditions;
-import com.google.common.eventbus.EventBus;
-import com.google.common.eventbus.Subscribe;
 
-import java.util.Collection;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 import org.apache.logging.log4j.Logger;
 
@@ -23,14 +20,9 @@ import org.apache.logging.log4j.Logger;
 public abstract class IoChannel<T extends Exchangeable> implements IoChannelIfc<T> {
 
     /** The ID of this IO Thread. */
-    private final String id;    
+    private final String id;
 
-    /**
-     * The message listeners used to notify clients of received data. Not applicable for output only channels
-     */
-    private final EventBus eventBus;
-    
-    private final Collection<ListenerEntry> listeners;
+    private final Listeners<Consumer<T>, T> listeners;
 
     /** Is this IO Thread input, output, or both. */
     private final IoType ioType;
@@ -47,30 +39,32 @@ public abstract class IoChannel<T extends Exchangeable> implements IoChannelIfc<
     public IoChannel(String id, IoType ioType) {
         this.id = id;
         this.ioType = ioType;
-        
+
         if (ioType == IoType.OUTPUT_ONLY) {
-            eventBus = null;
             listeners = null;
         } else {
-            eventBus = new EventBus();
-            listeners = new LinkedList<>();
+            listeners = new Listeners<>();
         }
     }
+
 
     @Override
     public String getId() {
         return id;
     }
 
+
     @Override
     public final IoType getIoType() {
         return ioType;
     }
 
+
     @Override
     public ChannelState getState() {
         return state;
     }
+
 
     /**
      * Sets the state of this IO Channel.
@@ -81,6 +75,7 @@ public abstract class IoChannel<T extends Exchangeable> implements IoChannelIfc<
         this.state = state;
     }
 
+
     /**
      * Handle a received message.
      * 
@@ -90,50 +85,41 @@ public abstract class IoChannel<T extends Exchangeable> implements IoChannelIfc<
      */
     protected void messageReceived(T mb, Logger logger, String logString) {
         logger.info("Message received on IO Thread {} {} {}", getId(), mb.getTransactionId(), logString);
-        eventBus.post(mb);
+        listeners.getListenersThatMatch(mb).forEach(l -> l.accept(mb));
     }
-    
-    
+
+
     @Override
-    public void addMessageListener(final Consumer<T> listener) {
+    public void addMessageListener(Consumer<T> listener) {
         Preconditions.checkState(ioType.isInput(), "Cannot set a message listener on an output only channel");
         Preconditions.checkNotNull(listener, "Listener cannot be null");
         
-        Object subscriber = new Object() {
-            
-            @Subscribe
-            public void handleMessage(T msg) {
-                listener.accept(msg);
-            }
-        };
-        
-        eventBus.register(subscriber);
-        listeners.add(new ListenerEntry(listener, subscriber));
+        listeners.addListener(listener);
     }
     
     
     @Override
-    public boolean removeMessageListener(Consumer<T> listener) {
-        if (listeners != null) {
-            for (Iterator<ListenerEntry> it = listeners.iterator(); it.hasNext(); ) {
-                ListenerEntry entry = it.next();
-                if (entry.listener == listener) {
-                    it.remove();
-                    eventBus.unregister(entry.subscriber);
-                    return true;
-                }
-            }
-        }
-        return false;
+    public void addMessageListener(Consumer<T> listener, Predicate<T> predicate) {
+        Preconditions.checkState(ioType.isInput(), "Cannot set a message listener on an output only channel");
+        Preconditions.checkNotNull(listener, "Listener cannot be null");
+        Preconditions.checkNotNull(predicate, "predicate cannot be null");
+        
+        listeners.addListener(listener, predicate);
     }
-    
-    
+
+
+    @Override
+    public boolean removeMessageListener(Consumer<T> listener) {
+        return listeners != null && listeners.removeListener(listener);
+    }
+
+
     @Override
     public boolean isInput() {
         return ioType.isInput();
     }
-    
-    
+
+
     @Override
     public boolean isOutput() {
         return ioType.isOutput();
@@ -168,16 +154,6 @@ public abstract class IoChannel<T extends Exchangeable> implements IoChannelIfc<
             }
 
             logger.info(sb.toString());
-        }
-    }
-    
-    private class ListenerEntry {
-        final Consumer<T> listener;
-        final Object subscriber;
-        
-        ListenerEntry(Consumer<T> listener, Object subscriber) {
-            this.listener = listener;
-            this.subscriber = subscriber;
         }
     }
 }

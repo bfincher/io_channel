@@ -68,13 +68,13 @@ public class TransformingIoChannelTest {
     }
     
     
-    public static interface TestImplIfc extends TransformingIoChannelIfc<MessageBuffer, String>{
+    public static interface TestImplIfc extends TransformingIoChannelIfc<MessageBuffer, String, String>{
         void setBlowUpOnDecode(boolean val);
         
         void handleMessage(MessageBuffer mb);
     }
 
-    public static class TestImpl extends TransformingIoChannel<MessageBuffer, String> implements TestImplIfc {
+    public static class TestImpl extends TransformingIoChannel<MessageBuffer, String, String> implements TestImplIfc {
 
         private boolean blowUpOnDecode = false;
 

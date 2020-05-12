@@ -1,6 +1,7 @@
 package com.fincher.iochannel;
 
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 public interface DelegatingIoChannelIfc<T extends Exchangeable> extends IoChannelIfc<T> {
 
@@ -9,6 +10,11 @@ public interface DelegatingIoChannelIfc<T extends Exchangeable> extends IoChanne
 
     default void addMessageListener(Consumer<T> listener) {
         getDelegate().addMessageListener(listener);
+    }
+    
+    
+    default void addMessageListener(Consumer<T> listener, Predicate<T> predicate) {
+        getDelegate().addMessageListener(listener, predicate);
     }
 
 
