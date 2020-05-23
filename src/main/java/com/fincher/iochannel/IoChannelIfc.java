@@ -2,6 +2,7 @@ package com.fincher.iochannel;
 
 import java.io.Closeable;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 /**
  * A representation of a component used to send / receive data.
@@ -18,11 +19,25 @@ public interface IoChannelIfc<T extends Exchangeable> extends Closeable {
      * @return the ID of this IO Thread
      */
     public String getId();
-    
-    /** Adds a listener to be notified of received messages.  Not applicable for output only channels */
+
+    /**
+     * Adds a listener to be notified of received messages. Not applicable for
+     * output only channels
+     */
     public void addMessageListener(Consumer<T> listener);
-    
-    /** Remove a previously registered message listener.
+
+    /**
+     * Adds a listener to be notified of received messages. Not applicable for
+     * output only channels
+     * 
+     * @param listener  The message listener
+     * @param predicate A predicate to be evaluated upon receipt of a message to
+     *                  determine if this listener will be notified
+     */
+    public void addMessageListener(Consumer<T> listener, Predicate<T> predicate);
+
+    /**
+     * Remove a previously registered message listener.
      * 
      * @param listener The listener to remove
      * @return True if a listener was removed
@@ -32,7 +47,7 @@ public interface IoChannelIfc<T extends Exchangeable> extends Closeable {
     /**
      * Connects this IOChannel.
      * 
-     * @throws ChannelException If an exception occurs while connecting
+     * @throws ChannelException     If an exception occurs while connecting
      * @throws InterruptedException If the thread is interrupted
      */
     public void connect() throws ChannelException, InterruptedException;
@@ -47,7 +62,7 @@ public interface IoChannelIfc<T extends Exchangeable> extends Closeable {
     /**
      * Close this IO Channel.
      * 
-     * @throws ChannelException If an error occurs while closing
+     * @throws ChannelException     If an error occurs while closing
      * @throws InterruptedException If the thread is interrupted
      */
     @Override
@@ -81,14 +96,16 @@ public interface IoChannelIfc<T extends Exchangeable> extends Closeable {
      * @return the type of data processed by this IoChannel
      */
     public IoChannelDataType getDataType();
-    
-    /** Determine if this channel is capable of receiving messages.
+
+    /**
+     * Determine if this channel is capable of receiving messages.
      * 
      * @return true if this channel is capable of receiving messages
      */
     public boolean isInput();
-    
-    /** Determine if this channel is capable of sending messages.
+
+    /**
+     * Determine if this channel is capable of sending messages.
      * 
      * @return true if this channel is capable of sending messages
      */

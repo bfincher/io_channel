@@ -3,11 +3,10 @@ package com.fincher.iochannel.tcp;
 import com.fincher.iochannel.ChannelException;
 import com.fincher.iochannel.ChannelState;
 import com.fincher.iochannel.IoType;
+import com.fincher.iochannel.Listeners;
 import com.fincher.iochannel.MessageBuffer;
 import com.fincher.iochannel.SocketIoChannel;
-import com.fincher.thread.MyCallableIfc;
-import com.fincher.thread.MyRunnableIfc;
-import com.fincher.thread.MyThread;
+
 import com.google.common.base.Preconditions;
 
 import java.io.IOException;
@@ -15,14 +14,16 @@ import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import com.fincher.thread.MyCallableIfc;
+import com.fincher.thread.MyRunnableIfc;
+import com.fincher.thread.MyThread;
 
 /** An IO Thread implementation of TCP sockets. */
 public abstract class TcpChannel extends SocketIoChannel implements TcpChannelIfc {
@@ -44,11 +45,9 @@ public abstract class TcpChannel extends SocketIoChannel implements TcpChannelIf
     /** The TCP Socket Options. */
     private TcpSocketOptions socketOptions = new TcpSocketOptions();
 
-    private final List<ConnectionEstablishedListener> connectionEstablishedListeners = Collections
-            .synchronizedList(new LinkedList<>());
+    private final Listeners<ConnectionEstablishedListener, String> connectionEstablishedListeners = new Listeners<>();
     
-    private final List<ConnectionLostListener> connectionLostListeners = Collections
-            .synchronizedList(new LinkedList<>());
+    private final Listeners<ConnectionLostListener, String> connectionLostListeners = new Listeners<>();
 
     private ReceiveRunnableFactory receiveRunnableFactory = new DefaultReceiveRunnableFactory();
 
@@ -298,9 +297,7 @@ public abstract class TcpChannel extends SocketIoChannel implements TcpChannelIf
         LOG.debug("{} setting state to CONNECTED", getId());
         setState(ChannelState.CONNECTED);
 
-        for (ConnectionEstablishedListener listener : connectionEstablishedListeners) {
-            listener.connectionEstablished(socketId);
-        }
+        connectionEstablishedListeners.getListeners().forEach(listener -> listener.connectionEstablished(socketId));
     }
 
     /**
@@ -313,7 +310,7 @@ public abstract class TcpChannel extends SocketIoChannel implements TcpChannelIf
         LOG.warn("{} {} connection lost", getId(), getSocketId(socket));
         
         String socketId = getSocketId(socket);
-        connectionLostListeners.forEach(listener -> listener.connectionLost(socketId));
+        connectionLostListeners.getListeners().forEach(listener -> listener.connectionLost(socketId));
 
         sockets.remove(socketId);
 
@@ -349,22 +346,22 @@ public abstract class TcpChannel extends SocketIoChannel implements TcpChannelIf
 
     @Override
     public void addConnectionEstablishedListener(ConnectionEstablishedListener listener) {
-        connectionEstablishedListeners.add(listener);
+        connectionEstablishedListeners.addListener(listener);
     }
 
     @Override
     public void removeConnectionEstablishedListener(ConnectionEstablishedListener listener) {
-        connectionEstablishedListeners.remove(listener);
+        connectionEstablishedListeners.removeListener(listener);
     }
     
     @Override
     public void addConnectionLostListener(ConnectionLostListener listener) {
-        connectionLostListeners.add(listener);
+        connectionLostListeners.addListener(listener);
     }
 
     @Override
     public void removeConnectionLostListener(ConnectionLostListener listener) {
-        connectionLostListeners.remove(listener);
+        connectionLostListeners.removeListener(listener);
     }
 
     @Override

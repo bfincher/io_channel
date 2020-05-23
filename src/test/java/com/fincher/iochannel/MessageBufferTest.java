@@ -34,10 +34,10 @@ public class MessageBufferTest {
         
         mb = new MessageBuffer(bytes);
         assertArrayEquals(bytes, mb.getBytes());
-        assertEquals(1, mb.getTransactionId());
+        assertTrue(mb.getTransactionId() != 0);
         assertEquals(0, mb.getParentTransactionIds().size());
         
-        String expectedHexDump = "1, " + mb.getOriginationTime() + ", hex dump: 0a 0b 0c 0d 0e 14";
+        String expectedHexDump = mb.getTransactionId() + ", " + mb.getOriginationTime() + ", hex dump: 0a 0b 0c 0d 0e 14";
         assertEquals(expectedHexDump, mb.toHexString());
         
         MessageBuffer mb2 = MessageBuffer.fromHexString(mb.toHexString());
@@ -45,8 +45,21 @@ public class MessageBufferTest {
         
         assertEquals("0a 0b 0c 0d 0e 14", MessageBuffer.toHexString(bytes));
         mb2 = MessageBuffer.fromHexString(MessageBuffer.toHexString(bytes));
-        assertArrayEquals(bytes, mb2.getBytes());
+        assertArrayEquals(bytes, mb2.getBytes());   
+    }
+    
+    
+    @Test
+    public void testConstructMultipleArrays() {
+        byte[] bytes1 = {1, 2, 3};
+        byte[] bytes2 = {4, 5, 6};
+        MessageBuffer mb = new MessageBuffer(bytes1, bytes2);
         
+        byte[] bytes = mb.getBytes();
+        assertEquals(6, bytes.length);
+        
+        byte[] expected = {1, 2, 3, 4, 5, 6};
+        assertArrayEquals(expected, bytes);
     }
 
 }
