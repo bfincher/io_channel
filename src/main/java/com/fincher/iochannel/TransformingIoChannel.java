@@ -11,14 +11,15 @@ import org.apache.logging.log4j.Logger;
  * @author bfincher
  *
  * @param <T> The type of data exchanged on the wire.
- * @param <U> The type of data exchanged via this channel
+ * @param <S> The type of data sent via this channel.
+ * @param <R> The type of data received via this channel.
  */
-public abstract class TransformingIoChannel<T extends Exchangeable, SendType, ReceiveType>
-        implements DelegatingIoChannelIfc<T>, TransformingIoChannelIfc<T, SendType, ReceiveType> {
+public abstract class TransformingIoChannel<T extends Exchangeable, S, R>
+        implements DelegatingIoChannelIfc<T>, TransformingIoChannelIfc<T, S, R> {
 
     private static final Logger LOG = LogManager.getLogger();
 
-    private final Listeners<Consumer<ReceiveType>, ReceiveType> listeners = new Listeners<>();
+    private final Listeners<Consumer<R>, R> listeners = new Listeners<>();
     private final IoChannelIfc<T> delegate;
     private final String id;
 
@@ -47,37 +48,37 @@ public abstract class TransformingIoChannel<T extends Exchangeable, SendType, Re
 
 
     @Override
-    public void addTransformedMessageListener(Consumer<ReceiveType> listener) {
+    public void addTransformedMessageListener(Consumer<R> listener) {
         listeners.addListener(listener);
     }
     
     
     @Override
-    public void addTransformedMessageListener(Consumer<ReceiveType> listener, Predicate<ReceiveType> predicate) {
+    public void addTransformedMessageListener(Consumer<R> listener, Predicate<R> predicate) {
         listeners.addListener(listener, predicate);
     }
 
 
     @Override
-    public boolean removeTransformedMessageListener(Consumer<ReceiveType> listener) {
+    public boolean removeTransformedMessageListener(Consumer<R> listener) {
         return listeners.removeListener(listener);
     }
 
 
     @Override
-    public void send(SendType data) throws ChannelException {
+    public void send(S data) throws ChannelException {
         delegate.send(encode(data));
     }
 
 
-    protected abstract ReceiveType decode(T msg) throws ChannelException;
+    protected abstract R decode(T msg) throws ChannelException;
 
-    protected abstract T encode(SendType msg) throws ChannelException;
+    protected abstract T encode(S msg) throws ChannelException;
 
 
     protected void handleMessage(T msg) {
         try {
-            ReceiveType decoded = decode(msg);
+            R decoded = decode(msg);
             listeners.getListenersThatMatch(decoded).forEach(listener -> listener.accept(decoded));
         } catch (ChannelException e) {
             LOG.error(e.getMessage(), e);

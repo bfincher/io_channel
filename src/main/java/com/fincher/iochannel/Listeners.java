@@ -5,45 +5,75 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-public class Listeners<ListenerType, DataType> {
+/** An abstraction of registered listeners
+ * 
+ * @author bfincher
+ *
+ * @param <L> The listener type
+ * @param <D> The type of data the listener is registering for
+ */
+public class Listeners<L, D> {
 
     private final List<ListenerEntry> listeners = new LinkedList<>();
 
-    public void addListener(ListenerType listener) {
+    /** Add a listener
+     * 
+     * @param listener The lisener
+     */
+    public void addListener(L listener) {
         listeners.add(new ListenerEntry(listener));
     }
 
 
-    public void addListener(ListenerType listener, Predicate<DataType> predicate) {
+    /** Add a listener
+     * 
+     * @param listener The listener
+     * @param predicate A predicate such that the listener will only be notified if the predicate matches
+     */
+    public void addListener(L listener, Predicate<D> predicate) {
         listeners.add(new ListenerEntry(listener, predicate));
     }
 
 
-    public boolean removeListener(ListenerType listener) {
+    /** Remove a listener
+     * 
+     * @param listener The listener to be removed
+     * @return true if a listener was removed
+     */
+    public boolean removeListener(L listener) {
         return listeners.removeIf(entry -> entry.listener.equals(listener));
     }
 
 
-    public Stream<ListenerType> getListenersThatMatch(DataType data) {
+    /** Get all listeners that match the predicate.  If there is not a predicate, all listeners 
+     * will be returned
+     * @param data The data to be matched by the predicate
+     * @return listeners that match the predicate.  If there is not a predicate, all listeners
+     */
+    public Stream<L> getListenersThatMatch(D data) {
         return listeners.stream().filter(l -> l.predicate.test(data)).map(l -> l.listener);
     }
 
 
-    public Stream<ListenerType> getListeners() {
+    /** Get all listeners
+     * 
+     * @return all listeners
+     */
+    public Stream<L> getListeners() {
         return listeners.stream().map(l -> l.listener);
     }
 
     private class ListenerEntry {
-        private final ListenerType listener;
-        private final Predicate<DataType> predicate;
+        private final L listener;
+        private final Predicate<D> predicate;
 
-        ListenerEntry(ListenerType listener, Predicate<DataType> predicate) {
+        ListenerEntry(L listener, Predicate<D> predicate) {
             this.listener = listener;
             this.predicate = predicate;
         }
 
 
-        ListenerEntry(ListenerType listener) {
+        ListenerEntry(L listener) {
             this(listener, t -> true);
         }
     }
