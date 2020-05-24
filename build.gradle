@@ -12,12 +12,14 @@ description = 'Input / Output channels'
 sourceCompatibility = 1.11
 targetCompatibility = 1.11
 
-def baseNexusUrl = "http://192.168.1.2:8082/nexus/content/"
-
 repositories {
     mavenLocal()
-    maven {
-        url "${baseNexusUrl}groups/public"
+    if (project.hasProperty('localNexus')) {
+        maven {
+            url "${localNexus}"
+        }
+    } else {
+        mavenCentral()
     }
 }
 
@@ -48,14 +50,14 @@ publishing {
     repositories {
         maven {
 	        credentials {
-	            username = "upload"
-		        password = "upload"
+	            username = "${publishUsername}"
+		    password = "${publishPassword}"
             }
 		
 	        if (project.version.endsWith('-SNAPSHOT')) {
-	            url "${baseNexusUrl}repositories/snapshots"
+	            url "${publishSnapshotUrl}"
 	        } else {
-	            url "${baseNexusUrl}repositories/releases"
+	            url "${publishReleaseUrl}repositories/releases"
 	        }
             authentication {
                 basic(BasicAuthentication)
