@@ -57,7 +57,7 @@ publishing {
 	        if (project.version.endsWith('-SNAPSHOT')) {
 	            url "${publishSnapshotUrl}"
 	        } else {
-	            url "${publishReleaseUrl}repositories/releases"
+	            url "${publishReleaseUrl}"
 	        }
             authentication {
                 basic(BasicAuthentication)
