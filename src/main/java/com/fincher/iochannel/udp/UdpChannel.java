@@ -1,14 +1,5 @@
 package com.fincher.iochannel.udp;
 
-import com.fincher.iochannel.ChannelException;
-import com.fincher.iochannel.ChannelState;
-import com.fincher.iochannel.IoType;
-import com.fincher.iochannel.MessageBuffer;
-import com.fincher.iochannel.SocketIoChannel;
-import com.fincher.thread.MyRunnableIfc;
-import com.fincher.thread.MyThread;
-import com.google.common.base.Preconditions;
-
 import java.io.IOException;
 import java.net.BindException;
 import java.net.DatagramPacket;
@@ -19,6 +10,15 @@ import java.util.function.Consumer;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import com.fincher.iochannel.ChannelException;
+import com.fincher.iochannel.ChannelState;
+import com.fincher.iochannel.IoType;
+import com.fincher.iochannel.MessageBuffer;
+import com.fincher.iochannel.SocketIoChannel;
+import com.fincher.thread.MyRunnableIfc;
+import com.fincher.thread.MyThread;
+import com.google.common.base.Preconditions;
 
 /**
  * A UDP Unicast representation of a Socket IO Thread.

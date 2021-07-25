@@ -1,9 +1,9 @@
 package com.fincher.iochannel.tcp;
 
+import java.net.Socket;
+
 import com.fincher.iochannel.ChannelException;
 import com.fincher.thread.MyRunnableIfc;
-
-import java.net.Socket;
 
 interface ReceiveRunnableFactory {
 

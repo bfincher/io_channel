@@ -1,12 +1,12 @@
 package com.fincher.iochannel;
 
-import com.google.common.base.Preconditions;
-
 import java.util.Iterator;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 import org.apache.logging.log4j.Logger;
+
+import com.google.common.base.Preconditions;
 
 /**
  * An abstract class used to send / receive data.

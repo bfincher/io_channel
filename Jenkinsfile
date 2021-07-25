@@ -37,7 +37,7 @@ pipeline {
 		
 		stage('Build') {
 			steps {
-				sh './gradlew clean build checkstyleMain checkstyleTest ' + gradleOpts
+				sh './gradlew clean build checkstyleMain ' + gradleOpts
 			}
 		}
 		

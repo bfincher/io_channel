@@ -1,13 +1,13 @@
 package com.fincher.iochannel.tcp;
 
-import com.fincher.iochannel.ChannelException;
-import com.fincher.iochannel.MessageBuffer;
-import com.fincher.thread.MyRunnableIfc;
-
 import java.net.Socket;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import com.fincher.iochannel.ChannelException;
+import com.fincher.iochannel.MessageBuffer;
+import com.fincher.thread.MyRunnableIfc;
 
 abstract class AbstractReceiveRunnable implements MyRunnableIfc {
 

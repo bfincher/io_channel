@@ -1,9 +1,5 @@
 package com.fincher.iochannel.tcp;
 
-import com.fincher.iochannel.ChannelException;
-import com.fincher.iochannel.ChannelState;
-import com.fincher.thread.MyCallableIfc;
-
 import java.io.IOException;
 import java.net.BindException;
 import java.net.ServerSocket;
@@ -12,6 +8,10 @@ import java.net.SocketTimeoutException;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import com.fincher.iochannel.ChannelException;
+import com.fincher.iochannel.ChannelState;
+import com.fincher.thread.MyCallableIfc;
 
 /**
  * Used to connect a TCP Server socket.

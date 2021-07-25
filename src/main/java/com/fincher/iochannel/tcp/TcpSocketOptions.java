@@ -1,8 +1,5 @@
 package com.fincher.iochannel.tcp;
 
-import com.fincher.iochannel.ChannelException;
-import com.fincher.iochannel.SocketOptions;
-
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -10,6 +7,9 @@ import java.net.SocketException;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import com.fincher.iochannel.ChannelException;
+import com.fincher.iochannel.SocketOptions;
 
 /** Socket options for TCP Sockets. */
 public class TcpSocketOptions extends SocketOptions {
