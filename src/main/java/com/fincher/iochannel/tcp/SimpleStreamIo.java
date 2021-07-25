@@ -3,7 +3,7 @@ package com.fincher.iochannel.tcp;
 /**
  * Uses a simple scheme of prepending a 4 byte integer containing the length of the message before
  * sending.
- * 
+ *
  * @author Brian Fincher
  *
  */
@@ -18,7 +18,7 @@ public class SimpleStreamIo implements StreamIo {
 
     /**
      * Constructs a new SimpleStreamIo.
-     * 
+     *
      * @param headerPartOfMessage Is the header considered a part of the message
      */
     public SimpleStreamIo(boolean headerPartOfMessage) {

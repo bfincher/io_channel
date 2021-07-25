@@ -1,10 +1,5 @@
 package com.fincher.iochannel.udp;
 
-import com.fincher.iochannel.ChannelException;
-import com.fincher.iochannel.IoType;
-import com.fincher.iochannel.MessageBuffer;
-import com.google.common.base.Preconditions;
-
 import java.io.IOException;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -14,6 +9,11 @@ import java.util.function.Consumer;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import com.fincher.iochannel.ChannelException;
+import com.fincher.iochannel.IoType;
+import com.fincher.iochannel.MessageBuffer;
+import com.google.common.base.Preconditions;
 
 /**
  * A UDP Multicast representation of a Socket IO Channel.

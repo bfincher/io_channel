@@ -1,7 +1,5 @@
 package com.fincher.iochannel.tcp;
 
-import com.fincher.iochannel.ChannelException;
-
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,6 +8,8 @@ import java.net.SocketTimeoutException;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import com.fincher.iochannel.ChannelException;
 
 class ReceiveRunnable extends AbstractReceiveRunnable {
 

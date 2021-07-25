@@ -1,14 +1,14 @@
 package com.fincher.iochannel.tcp;
 
-import com.fincher.iochannel.ChannelException;
-import com.fincher.iochannel.IoType;
-import com.fincher.iochannel.MessageBuffer;
-import com.fincher.thread.MyCallableIfc;
-
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.function.Consumer;
+
+import com.fincher.iochannel.ChannelException;
+import com.fincher.iochannel.IoType;
+import com.fincher.iochannel.MessageBuffer;
+import com.fincher.thread.MyCallableIfc;
 
 /**
  * A TCPIOThread implementation for TCP Server sockets.

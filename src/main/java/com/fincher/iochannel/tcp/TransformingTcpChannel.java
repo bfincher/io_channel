@@ -9,10 +9,9 @@ import com.fincher.iochannel.TransformingIoChannel;
  * 
  * @author bfincher
  *
- * @param <U> {@link TransformingIoChannel}
  */
-public abstract class TransformingTcpChannel<SendType, ReceiveType>
-        extends TransformingIoChannel<MessageBuffer, SendType, ReceiveType>
+public abstract class TransformingTcpChannel<SendTypeT, ReceiveTypeT>
+        extends TransformingIoChannel<MessageBuffer, SendTypeT, ReceiveTypeT>
         implements DelegatingTcpChannel {
 
     private final TcpChannelIfc delegate;
@@ -29,7 +28,7 @@ public abstract class TransformingTcpChannel<SendType, ReceiveType>
     }
     
     
-    public void send(SendType msg, String channelId) throws ChannelException {
+    public void send(SendTypeT msg, String channelId) throws ChannelException {
         delegate.send(encode(msg), channelId);
     }
 

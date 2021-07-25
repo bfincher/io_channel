@@ -1,13 +1,13 @@
 package com.fincher.iochannel.udp;
 
-import com.fincher.iochannel.ChannelException;
-import com.fincher.iochannel.SocketOptions;
-
 import java.net.DatagramSocket;
 import java.net.SocketException;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import com.fincher.iochannel.ChannelException;
+import com.fincher.iochannel.SocketOptions;
 
 /** Options for UDP Unicast sockets. */
 public class UdpSocketOptions extends SocketOptions {

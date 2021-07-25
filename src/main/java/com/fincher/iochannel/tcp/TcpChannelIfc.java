@@ -1,10 +1,10 @@
 package com.fincher.iochannel.tcp;
 
+import java.util.List;
+
 import com.fincher.iochannel.ChannelException;
 import com.fincher.iochannel.IoChannelIfc;
 import com.fincher.iochannel.MessageBuffer;
-
-import java.util.List;
 
 public interface TcpChannelIfc extends IoChannelIfc<MessageBuffer> {
     
