@@ -1,6 +1,7 @@
 package com.fincher.iochannel.tcp;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.fail;
 
 import com.fincher.iochannel.ChannelException;
@@ -14,6 +15,8 @@ import java.net.Socket;
 
 import org.junit.Test;
 import org.mockito.Mockito;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 public class TcpChannelTest {
     
@@ -73,6 +76,22 @@ public class TcpChannelTest {
         }
         
         impl.close();
+    }
+    
+    @Test
+    public void testCloseWithException() throws IOException {
+        TestImpl impl = new TestImpl();
+        
+        Socket socket = Mockito.mock(Socket.class);
+        Mockito.doAnswer(new Answer<Void>() {
+            public Void answer(InvocationOnMock inv) throws IOException {
+                throw new IOException();
+            }
+        }).when(socket).close();
+        
+        impl.addSocket("bla", socket);
+        
+        assertThrows(ChannelException.class, () -> impl.close());
     }
     
     class TestImpl extends TcpChannel {
