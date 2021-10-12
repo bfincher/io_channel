@@ -8,17 +8,14 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 
-import com.fincher.iochannel.ChannelException;
-import com.fincher.iochannel.TestAnswer;
-
 import java.net.DatagramSocket;
 import java.net.SocketException;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.core.Logger;
 import org.junit.Test;
+
+import com.fincher.iochannel.ChannelException;
+import com.fincher.iochannel.TestAnswer;
 
 public class UdpSocketOptionsTest {
     
@@ -42,10 +39,6 @@ public class UdpSocketOptionsTest {
         assertNull(recBufSize.get());
         assertNull(sendBufSize.get());
         assertNull(timeout.get());
-        
-        
-        Logger logger = (Logger)LogManager.getLogger(UdpSocketOptions.class);
-        logger.setLevel(Level.OFF);
         
         // test real values
         so.setReceiveBufferSize(5);

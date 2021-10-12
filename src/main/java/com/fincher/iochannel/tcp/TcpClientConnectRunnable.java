@@ -4,9 +4,9 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
 
+import com.fincher.iochannel.Utilities;
 import com.fincher.thread.MyCallableIfc;
 
 /**
@@ -17,7 +17,7 @@ import com.fincher.thread.MyCallableIfc;
  */
 class TcpClientConnectRunnable implements MyCallableIfc<Socket> {
 
-    private static final Logger LOG = LogManager.getLogger();
+    private static final Logger LOG = Utilities.getInstance().getLogger(TcpClientConnectRunnable.class);
 
     /** Should this thread continue to execute. */
     private boolean continueExecution = true;

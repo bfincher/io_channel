@@ -2,7 +2,7 @@ package com.fincher.iochannel;
 
 import java.net.InetSocketAddress;
 
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
 
 /**
  * An IO Thread that is implemented for network socket communication.

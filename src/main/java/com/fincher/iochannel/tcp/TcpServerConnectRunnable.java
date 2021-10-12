@@ -5,12 +5,13 @@ import java.net.BindException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
+import java.util.function.Supplier;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
 
 import com.fincher.iochannel.ChannelException;
 import com.fincher.iochannel.ChannelState;
+import com.fincher.iochannel.Utilities;
 import com.fincher.thread.MyCallableIfc;
 
 /**
@@ -21,7 +22,26 @@ import com.fincher.thread.MyCallableIfc;
  */
 class TcpServerConnectRunnable implements MyCallableIfc<Socket> {
 
-    private static final Logger LOG = LogManager.getLogger();
+    private static final Logger LOG = Utilities.getInstance().getLogger(TcpServerConnectRunnable.class);
+    
+    @FunctionalInterface
+    interface CheckedSupplier extends Supplier<ServerSocket> {
+        
+        ServerSocket checkedGet() throws IOException;
+        
+        default ServerSocket get() {
+            try {
+                return checkedGet();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+    
+    static final CheckedSupplier DEFAULT_SERVER_SOCKET_FACTORY = () -> new ServerSocket();
+    
+    // This factory is only used for unit testing purposes
+    static CheckedSupplier serverSocketFactory = DEFAULT_SERVER_SOCKET_FACTORY;
 
     /** Should this thread continue to execute. */
     private boolean continueExecution = true;
@@ -60,7 +80,7 @@ class TcpServerConnectRunnable implements MyCallableIfc<Socket> {
      */
     static TcpServerConnectRunnable create(TcpServerChannel tcpServer) throws ChannelException {
         try {
-            return new TcpServerConnectRunnable(tcpServer, new ServerSocket());
+            return new TcpServerConnectRunnable(tcpServer, serverSocketFactory.checkedGet());
         } catch (ChannelException ce) {
             throw ce;
         } catch (IOException e) {

@@ -2,14 +2,18 @@ package com.fincher.iochannel.tcp;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
+import java.net.BindException;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -17,25 +21,89 @@ import java.net.SocketTimeoutException;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 import com.fincher.iochannel.ChannelException;
 import com.fincher.iochannel.ChannelState;
 
 public class TcpServerConnectRunnableTest {
 
+    @Mock
     private TcpServerChannel server;
+
+    @Mock
     private ServerSocket ss;
+
+    @Mock
     private TcpSocketOptions socketOptions;
 
     @Before
     public void before() {
-        server = mock(TcpServerChannel.class);
-        ss = mock(ServerSocket.class);
+        MockitoAnnotations.initMocks(this);
         socketOptions = mock(TcpSocketOptions.class);
         when(server.getId()).thenReturn("id");
         when(server.getSocketOptions()).thenReturn(socketOptions);
+        TcpServerConnectRunnable.serverSocketFactory = TcpServerConnectRunnable.DEFAULT_SERVER_SOCKET_FACTORY;
     }
 
+    @Test
+    public void testConstruct() throws ChannelException {
+        new TcpServerConnectRunnable(server, ss);
+        verify(socketOptions).applySocketOptions(eq("id"), eq(ss));
+
+        // test with exception
+        Mockito.doAnswer(new Answer<Void>() {
+            @Override
+            public Void answer(InvocationOnMock inv) throws ChannelException {
+                throw new ChannelException("");
+            }
+        }).when(socketOptions).applySocketOptions(any(String.class), any(ServerSocket.class));
+
+        assertThrows(ChannelException.class, () -> new TcpServerConnectRunnable(server, ss));
+    }
+
+    @Test
+    public void testCreate() throws ChannelException {
+        TcpServerConnectRunnable.create(server);
+        verify(socketOptions).applySocketOptions(eq("id"), any(ServerSocket.class));
+    }
+
+    @Test
+    public void testCreateWithChannelException() throws Exception {
+
+        // test with Channel Exception
+        Mockito.doAnswer(new Answer<Void>() {
+            @Override
+            public Void answer(InvocationOnMock inv) throws ChannelException {
+                throw new ChannelException("");
+            }
+        }).when(socketOptions).applySocketOptions(any(String.class), any(ServerSocket.class));
+
+        assertThrows(ChannelException.class, () -> TcpServerConnectRunnable.create(server));
+    }
+
+    @Test
+    public void testCreateWithIoException() throws Exception {
+        TcpServerConnectRunnable.serverSocketFactory = () -> { throw new IOException();};
+
+        assertThrows(IOException.class, () -> TcpServerConnectRunnable.create(server));
+    }
+
+    @Test
+    public void testConnectSocketWithException() throws IOException {
+        Mockito.doAnswer(new Answer<Void>() {
+            @Override
+            public Void answer(InvocationOnMock inv) throws IOException {
+                throw new BindException();
+            }
+        }).when(ss).bind(any());
+
+        assertThrows(BindException.class, () -> new TcpServerConnectRunnable(server, ss).connectSocket());
+    }
 
     @Test
     public void testTerminate() throws Exception {
@@ -44,13 +112,13 @@ public class TcpServerConnectRunnableTest {
         tcr.terminate();
         verify(ss).close();
     }
-    
+
     @Test
     public void testTerminateServerSocketNull() throws Exception {
         MyImpl tcr = new MyImpl(server, null);
         tcr.terminate();
     }
-    
+
     @Test
     public void testCloseThrowsException() throws Exception {
         doThrow(new IOException()).when(ss).close();
@@ -83,13 +151,22 @@ public class TcpServerConnectRunnableTest {
         when(server.getState()).thenReturn(ChannelState.CLOSED);
         assertNull(tcr.call());
     }
-    
+
     @Test
     public void testConnectSocket() throws Exception {
         when(server.getlocalAddress()).thenReturn(InetSocketAddress.createUnresolved("localhost", 0));
         MyImpl tcr = new MyImpl(server, ss);
         tcr.setCallSuperConnectSocket(true);
         assertTrue(tcr.connectSocket());
+    }
+    
+    @Test
+    public void testCheckedSupplier() {
+        TcpServerConnectRunnable.CheckedSupplier supplier1 = () -> null;
+        assertNull(supplier1.get());
+                
+        TcpServerConnectRunnable.CheckedSupplier supplier2 = () -> {throw new IOException();};
+        assertThrows(RuntimeException.class, () -> supplier2.get());
     }
 
     private static class MyImpl extends TcpServerConnectRunnable {
@@ -106,7 +183,7 @@ public class TcpServerConnectRunnableTest {
         protected ServerSocket getServerSocket() {
             return ss;
         }
-        
+
         public void setCallSuperConnectSocket(boolean val) {
             callSuperConnectSocket = val;
         }
