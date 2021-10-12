@@ -1,6 +1,7 @@
 package com.fincher.iochannel.tcp;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.mock;
@@ -11,21 +12,16 @@ import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.net.Socket;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ReceiveRunnableTest {
     
-    @Test(expected = IOException.class)
+    @Test
     public void testConstructorThrowsException() throws IOException {
         Socket socket = mock(Socket.class);
         when(socket.getInputStream()).thenThrow(IOException.class);
         
-        new ReceiveRunnable("id", socket, new SimpleStreamIo(), null);
-        try {
-            socket.getInputStream();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        assertThrows(IOException.class, () -> new ReceiveRunnable("id", socket, new SimpleStreamIo(), null));
     }
     
     @Test

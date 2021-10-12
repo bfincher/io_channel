@@ -1,22 +1,22 @@
 package com.fincher.iochannel.tcp;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.fail;
+
+import java.io.IOException;
+import java.net.Socket;
+
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 import com.fincher.iochannel.ChannelException;
 import com.fincher.iochannel.ChannelState;
 import com.fincher.iochannel.IoType;
 import com.fincher.iochannel.MessageBuffer;
 import com.fincher.thread.MyCallableIfc;
-
-import java.io.IOException;
-import java.net.Socket;
-
-import org.junit.Test;
-import org.mockito.Mockito;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 
 public class TcpChannelTest {
     

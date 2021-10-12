@@ -1,11 +1,11 @@
 package com.fincher.iochannel;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class MessageBufferTest {
     
@@ -22,7 +22,7 @@ public class MessageBufferTest {
         assertEquals(10, mb.getTransactionId());
         assertEquals(0, mb.getParentTransactionIds().size());
         long delta = mb.getOriginationTime() - time;
-        assertTrue("time delta is " + delta, delta <= 100);
+        assertTrue(delta <= 100, "time delta is " + delta);
         assertNull(mb.getReceivedFromChannelId());
         mb.setReceivedFromIoChannelId("bla");
         assertEquals("bla", mb.getReceivedFromChannelId());

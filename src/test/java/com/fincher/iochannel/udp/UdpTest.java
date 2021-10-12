@@ -1,9 +1,10 @@
 package com.fincher.iochannel.udp;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.IOException;
 import java.net.DatagramSocket;
@@ -13,8 +14,8 @@ import java.net.UnknownHostException;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.awaitility.Awaitility;
-import org.junit.AfterClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -38,7 +39,7 @@ import com.fincher.iochannel.Utilities;
 public class UdpTest extends IoChannelTesterBase<MessageBuffer> {
 
 	/** Method name is self explainatory */
-	@AfterClass
+	@AfterAll
 	public static void tearDown() {
 		// DEST_UNICAST_CONFIG.delete();
 	}
@@ -131,7 +132,7 @@ public class UdpTest extends IoChannelTesterBase<MessageBuffer> {
 		}
 	}
 
-	@Test(expected = IOException.class)
+	@Test
 	public void testSendThrowsException() throws Exception {
 
 		TestUdpChannel channel = new TestUdpChannel("id", IoType.OUTPUT_ONLY, new InetSocketAddress(1000),
@@ -146,7 +147,7 @@ public class UdpTest extends IoChannelTesterBase<MessageBuffer> {
 		}).when(socket).send(Mockito.any());
 
 		channel.connect();
-		channel.send(new MessageBuffer(new byte[0]));
+		assertThrows(IOException.class, () -> channel.send(new MessageBuffer(new byte[0])));
 		channel.close();
 	}
 
