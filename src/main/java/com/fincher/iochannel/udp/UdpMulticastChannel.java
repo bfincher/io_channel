@@ -35,8 +35,7 @@ public class UdpMulticastChannel extends UdpChannel {
      * @param localAddress     The local address to which this socket will be bound.
      * @param multicastAddress The multicast address to which this socket will join
      */
-    private UdpMulticastChannel(String id, InetSocketAddress localAddress,
-            InetAddress multicastAddress) {
+    private UdpMulticastChannel(String id, InetSocketAddress localAddress, InetAddress multicastAddress) {
         super(id, IoType.INPUT_ONLY, localAddress);
 
         Preconditions.checkArgument(localAddress != null && localAddress.getPort() != 0,
@@ -50,8 +49,7 @@ public class UdpMulticastChannel extends UdpChannel {
         socketOptions = new UdpMulticastSocketOptions();
     }
 
-    private UdpMulticastChannel(String id, InetSocketAddress localAddress,
-            InetSocketAddress remoteAddress) {
+    private UdpMulticastChannel(String id, InetSocketAddress localAddress, InetSocketAddress remoteAddress) {
         super(id, IoType.OUTPUT_ONLY, localAddress, remoteAddress);
         this.multicastAddress = remoteAddress.getAddress();
         Preconditions.checkNotNull(localAddress);
@@ -71,9 +69,8 @@ public class UdpMulticastChannel extends UdpChannel {
      * @param multicastAddress The multicast address to which this socket will join
      * @return a new input only UDP MULTICAST IO Channel
      */
-    public static UdpMulticastChannel createInputChannel(String id,
-            Consumer<MessageBuffer> messageHandler, InetSocketAddress localAddress,
-            InetAddress multicastAddress) {
+    public static UdpMulticastChannel createInputChannel(String id, Consumer<MessageBuffer> messageHandler,
+            InetSocketAddress localAddress, InetAddress multicastAddress) {
         UdpMulticastChannel channel = new UdpMulticastChannel(id, localAddress, multicastAddress);
         channel.addMessageListener(messageHandler);
         return channel;
@@ -97,7 +94,8 @@ public class UdpMulticastChannel extends UdpChannel {
      * 
      * @param id               The ID of this IO Channel
      * @param localAddress     The local address to which this socket will be bound.
-     * @param multicastAddress The remote multicast address to which messages will be sent
+     * @param multicastAddress The remote multicast address to which messages will
+     *                         be sent
      * @return Creates a new output only UDP IO Channel
      */
     public static UdpMulticastChannel createOutputChannel(String id, InetSocketAddress localAddress,
@@ -110,19 +108,18 @@ public class UdpMulticastChannel extends UdpChannel {
         super.connect();
 
         switch (getIoType()) {
-            case INPUT_ONLY:
-            case INPUT_AND_OUTPUT:
-                try {
-                    ((MulticastSocket) socket).joinGroup(multicastAddress);
-                    LOG.info(getId() + " joined multicast group "
-                            + multicastAddress.getHostAddress());
-                } catch (IOException se) {
-                    throw new ChannelException(getId(), se);
-                }
-                break;
+        case INPUT_ONLY:
+        case INPUT_AND_OUTPUT:
+            try {
+                ((MulticastSocket) socket).joinGroup(multicastAddress);
+                LOG.info(getId() + " joined multicast group " + multicastAddress.getHostAddress());
+            } catch (IOException se) {
+                throw new ChannelException(getId(), se);
+            }
+            break;
 
-            case OUTPUT_ONLY:
-                // no action necessary
+        case OUTPUT_ONLY:
+            // no action necessary
         }
     }
 
