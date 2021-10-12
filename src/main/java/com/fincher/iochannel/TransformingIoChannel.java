@@ -3,8 +3,7 @@ package com.fincher.iochannel;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
 
 /** An IO Channel that transforms data by encoding U typed data to T before sending and transforming
  * T data to U when receiving
@@ -17,7 +16,7 @@ import org.apache.logging.log4j.Logger;
 public abstract class TransformingIoChannel<T extends Exchangeable, S, R>
         implements DelegatingIoChannelIfc<T>, TransformingIoChannelIfc<T, S, R> {
 
-    private static final Logger LOG = LogManager.getLogger();
+    private static final Logger LOG = Utilities.getInstance().getLogger(TransformingIoChannel.class);
 
     private final Listeners<Consumer<R>, R> listeners = new Listeners<>();
     private final IoChannelIfc<T> delegate;

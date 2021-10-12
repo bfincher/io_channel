@@ -6,14 +6,14 @@ import java.io.InputStream;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
 
 import com.fincher.iochannel.ChannelException;
+import com.fincher.iochannel.Utilities;
 
 class ReceiveRunnable extends AbstractReceiveRunnable {
 
-    private static final Logger LOG = LogManager.getLogger();
+    private static final Logger LOG = Utilities.getInstance().getLogger(ReceiveRunnable.class);
 
     /** The byte array used to receive data. */
     private byte[] buf = new byte[4096];

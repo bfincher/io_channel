@@ -2,16 +2,16 @@ package com.fincher.iochannel.tcp;
 
 import java.net.Socket;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
 
 import com.fincher.iochannel.ChannelException;
 import com.fincher.iochannel.MessageBuffer;
+import com.fincher.iochannel.Utilities;
 import com.fincher.thread.MyRunnableIfc;
 
 abstract class AbstractReceiveRunnable implements MyRunnableIfc {
 
-    private static final Logger LOGGER = LogManager.getLogger();
+    private static final Logger LOGGER = Utilities.getInstance().getLogger(AbstractReceiveRunnable.class);
 
     /** Should this thread continue to execute. */
     private boolean continueExecution = true;

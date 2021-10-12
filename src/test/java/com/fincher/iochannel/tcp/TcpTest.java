@@ -2,7 +2,6 @@ package com.fincher.iochannel.tcp;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
@@ -11,22 +10,19 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.awaitility.Awaitility;
 import org.junit.Test;
+import org.mockito.Mockito;
+import org.slf4j.Logger;
 
 import com.fincher.iochannel.ChannelException;
 import com.fincher.iochannel.IoChannelDataType;
 import com.fincher.iochannel.IoChannelTesterBase;
 import com.fincher.iochannel.IoType;
 import com.fincher.iochannel.MessageBuffer;
-import com.fincher.iochannel.QueueAppender;
 import com.google.common.io.Closer;
 
 /** A JUnit tester for TCP sockets */
@@ -252,9 +248,8 @@ public class TcpTest extends IoChannelTesterBase<MessageBuffer> {
     public void testLogSend() throws Exception {
         TestChannel channel = new TestChannel();
 
-        org.apache.logging.log4j.core.Logger logger = (org.apache.logging.log4j.core.Logger) LogManager.getLogger();
-        BlockingQueue<String> queue = new LinkedBlockingQueue<>();
-        logger.addAppender(new QueueAppender(queue));
+        Logger logger = Mockito.mock(Logger.class);
+        Mockito.when(logger.isInfoEnabled()).thenReturn(true);
 
         MessageBuffer mb = new MessageBuffer(new byte[0]);
         mb.setTransactionId(5);
@@ -262,20 +257,17 @@ public class TcpTest extends IoChannelTesterBase<MessageBuffer> {
         mb.addParentTransactionId(7);
 
         channel.logSend(logger, mb, "testLogString");
-        Awaitility.await().until(() -> !queue.isEmpty());
-        assertEquals("Sending TID 5 on IoChannel testId PTID = [6, 7] testLogString", queue.take());
+        Mockito.verify(logger).info(Mockito.eq("Sending TID 5 on IoChannel testId PTID = [6, 7] testLogString"));
 
         channel.logSend(logger, mb, null);
-        Awaitility.await().until(() -> !queue.isEmpty());
-        assertEquals("Sending TID 5 on IoChannel testId PTID = [6, 7]", queue.take());
+        Mockito.verify(logger).info(Mockito.eq("Sending TID 5 on IoChannel testId PTID = [6, 7]"));
 
         channel.logSend(logger, mb, "");
-        Awaitility.await().until(() -> !queue.isEmpty());
-        assertEquals("Sending TID 5 on IoChannel testId PTID = [6, 7]", queue.take());
+        Mockito.verify(logger, Mockito.times(2)).info(Mockito.eq("Sending TID 5 on IoChannel testId PTID = [6, 7]"));
 
-        logger.setLevel(Level.FATAL);
+        logger = Mockito.mock(Logger.class);
         channel.logSend(logger, mb, "testLogString");
-        assertNull(queue.poll(1, TimeUnit.SECONDS));
+        Mockito.verify(logger, Mockito.never()).info(Mockito.anyString());
 
         channel.close();
     }

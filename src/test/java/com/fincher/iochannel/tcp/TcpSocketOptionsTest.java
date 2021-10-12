@@ -4,18 +4,15 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import com.fincher.iochannel.ChannelException;
-import com.fincher.iochannel.SocketOptionsTest;
-
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.core.Logger;
 import org.junit.Test;
 import org.mockito.Mockito;
+
+import com.fincher.iochannel.ChannelException;
+import com.fincher.iochannel.SocketOptionsTest;
 
 public class TcpSocketOptionsTest extends SocketOptionsTest {
 
@@ -64,11 +61,6 @@ public class TcpSocketOptionsTest extends SocketOptionsTest {
         tcpSo.applySocketOptions("id", ss);
         Mockito.verify(ss, Mockito.times(1)).setReceiveBufferSize(1);
 
-        // test again with logger turned off
-        Logger log = (Logger) LogManager.getLogger(TcpSocketOptions.class);
-        log.setLevel(Level.OFF);
-        tcpSo.applySocketOptions("id", ss);
-
         // test with exception
         Mockito.doAnswer(inv -> {
             throw new ChannelException("test");
@@ -104,11 +96,6 @@ public class TcpSocketOptionsTest extends SocketOptionsTest {
         Mockito.verify(s, Mockito.times(1)).setReceiveBufferSize(2);
         Mockito.verify(s, Mockito.times(1)).setSendBufferSize(1);
         Mockito.verify(s, Mockito.times(1)).setSoTimeout(3);
-
-        // test again with logger turned off
-        Logger log = (Logger) LogManager.getLogger(TcpSocketOptions.class);
-        log.setLevel(Level.OFF);
-        tcpSo.applySocketOptions("id", s);
 
         // test with exception
         Mockito.doAnswer(inv -> {

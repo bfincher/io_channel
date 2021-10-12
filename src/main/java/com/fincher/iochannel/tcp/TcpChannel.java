@@ -9,8 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
 
 import com.fincher.iochannel.ChannelException;
 import com.fincher.iochannel.ChannelState;
@@ -18,6 +17,7 @@ import com.fincher.iochannel.IoType;
 import com.fincher.iochannel.Listeners;
 import com.fincher.iochannel.MessageBuffer;
 import com.fincher.iochannel.SocketIoChannel;
+import com.fincher.iochannel.Utilities;
 import com.fincher.thread.MyCallableIfc;
 import com.fincher.thread.MyRunnableIfc;
 import com.fincher.thread.MyThread;
@@ -26,7 +26,7 @@ import com.google.common.base.Preconditions;
 /** An IO Thread implementation of TCP sockets. */
 public abstract class TcpChannel extends SocketIoChannel implements TcpChannelIfc {
 
-    private static final Logger LOG = LogManager.getLogger();
+    private static final Logger LOG = Utilities.getInstance().getLogger(TcpChannel.class);
 
     /** Used to determine how many bytes to read for each message. */
     private final StreamIo streamIo;

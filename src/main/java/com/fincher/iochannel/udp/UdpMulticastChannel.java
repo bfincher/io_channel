@@ -7,12 +7,12 @@ import java.net.InetSocketAddress;
 import java.net.MulticastSocket;
 import java.util.function.Consumer;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
 
 import com.fincher.iochannel.ChannelException;
 import com.fincher.iochannel.IoType;
 import com.fincher.iochannel.MessageBuffer;
+import com.fincher.iochannel.Utilities;
 import com.google.common.base.Preconditions;
 
 /**
@@ -23,7 +23,7 @@ import com.google.common.base.Preconditions;
  */
 public class UdpMulticastChannel extends UdpChannel {
 
-    private static final Logger LOG = LogManager.getLogger();
+    private static final Logger LOG = Utilities.getInstance().getLogger(UdpMulticastChannel.class);
 
     private final InetAddress multicastAddress;
 
