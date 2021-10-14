@@ -17,6 +17,7 @@ repositories {
     if (project.hasProperty('localNexus')) {
         maven {
             url "${localNexus}"
+            allowInsecureProtocol = true
         }
     } else {
         mavenCentral()
@@ -52,16 +53,19 @@ publishing {
 
     repositories {
         maven {
-	        credentials {
-	            username = "${publishUsername}"
-		    password = "${publishPassword}"
+            credentials {
+                username = "${publishUsername}"
+                password = "${publishPassword}"
             }
 		
-	        if (project.version.endsWith('-SNAPSHOT')) {
-	            url "${publishSnapshotUrl}"
-	        } else {
-	            url "${publishReleaseUrl}repositories/releases"
-	        }
+            if (project.version.endsWith('-SNAPSHOT')) {
+                url "${publishSnapshotUrl}"
+            } else {
+                url "${publishReleaseUrl}repositories/releases"
+            }
+
+            allowInsecureProtocol = true
+
             authentication {
                 basic(BasicAuthentication)
             }
