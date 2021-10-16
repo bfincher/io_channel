@@ -176,23 +176,16 @@ public class UdpChannel extends SocketIoChannel {
                 socketCreated = true;
             } catch (BindException be) {
                 logger.warn("{} {} ", getId(), be.getMessage());
-                Thread.sleep(2000);
+                Thread.sleep(getBindExceptionSleepTimeMillis());
             } catch (IOException se) {
                 throw new ChannelException(getId(), se);
             }
 
         }
-
-        switch (getIoType()) {
-        case INPUT_ONLY:
-        case INPUT_AND_OUTPUT:
+        
+        if (getIoType().isInput()) {
             receiveThread = new MyThread(getId() + "ReceiveThread", new ReceiveRunnable());
             receiveThread.start();
-            break;
-
-        case OUTPUT_ONLY:
-            // no action necessary
-            break;
         }
         setState(ChannelState.CONNECTED);
 
@@ -203,6 +196,10 @@ public class UdpChannel extends SocketIoChannel {
         } else {
             logger.info("{} Remote address = {}", getId(), remoteAddress);
         }
+    }
+    
+    protected long getBindExceptionSleepTimeMillis() {
+        return 2000;
     }
 
     /**

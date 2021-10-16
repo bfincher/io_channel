@@ -28,15 +28,18 @@ dependencies {
     implementation 'org.slf4j:slf4j-api:2.0.0-alpha5'
     implementation 'com.fincher:java-thread:2.2.4'
     implementation 'com.google.guava:guava:29.0-jre'
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.1'
+    testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.7.1'
     testImplementation 'org.awaitility:awaitility:4.0.1'
     testImplementation 'org.mockito:mockito-core:3.3.3'
+    testRuntimeOnly 'org.slf4j:slf4j-log4j12:2.0.0-alpha5'
 }
 
 test {
     useJUnitPlatform()
 }
+
+test.finalizedBy jacocoTestReport
 
 task sourcesJar(type: Jar) {
     from sourceSets.main.allJava
