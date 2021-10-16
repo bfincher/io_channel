@@ -35,7 +35,7 @@ public class UdpMulticastChannel extends UdpChannel {
      * @param localAddress     The local address to which this socket will be bound.
      * @param multicastAddress The multicast address to which this socket will join
      */
-    private UdpMulticastChannel(String id, InetSocketAddress localAddress, InetAddress multicastAddress) {
+    UdpMulticastChannel(String id, InetSocketAddress localAddress, InetAddress multicastAddress) {
         super(id, IoType.INPUT_ONLY, localAddress);
 
         Preconditions.checkArgument(localAddress != null && localAddress.getPort() != 0,
@@ -107,19 +107,13 @@ public class UdpMulticastChannel extends UdpChannel {
     public void connect() throws ChannelException, InterruptedException {
         super.connect();
 
-        switch (getIoType()) {
-        case INPUT_ONLY:
-        case INPUT_AND_OUTPUT:
+        if (getIoType().isInput()) {
             try {
                 ((MulticastSocket) socket).joinGroup(multicastAddress);
                 LOG.info(getId() + " joined multicast group " + multicastAddress.getHostAddress());
             } catch (IOException se) {
                 throw new ChannelException(getId(), se);
             }
-            break;
-
-        case OUTPUT_ONLY:
-            // no action necessary
         }
     }
 

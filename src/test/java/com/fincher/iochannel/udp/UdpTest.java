@@ -5,18 +5,24 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.io.IOException;
+import java.net.BindException;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
-import java.net.UnknownHostException;
+import java.time.Duration;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.slf4j.Logger;
@@ -38,182 +44,206 @@ import com.fincher.iochannel.Utilities;
  */
 public class UdpTest extends IoChannelTesterBase<MessageBuffer> {
 
-	/** Method name is self explainatory */
-	@AfterAll
-	public static void tearDown() {
-		// DEST_UNICAST_CONFIG.delete();
-	}
+    /** Method name is self explainatory */
+    @AfterAll
+    public static void tearDown() {
+        // DEST_UNICAST_CONFIG.delete();
+    }
 
-	private static class TestDataFactory implements TestDataFactoryIfc<MessageBuffer> {
-		@Override
-		public String toString(MessageBuffer data) {
-			return new String(data.getBytes());
-		}
+    static class TestDataFactory implements TestDataFactoryIfc<MessageBuffer> {
+        @Override
+        public String toString(MessageBuffer data) {
+            return new String(data.getBytes());
+        }
 
-		@Override
-		public MessageBuffer getTestData(int iteration) {
-			return new MessageBuffer(new String("Hello World " + iteration).getBytes());
-		}
-	}
+        @Override
+        public MessageBuffer getTestData(int iteration) {
+            return new MessageBuffer(new String("Hello World " + iteration).getBytes());
+        }
+    }
 
-	/**
-	 * Method name is self explainatory
-	 * 
-	 */
-	@Test
-	public void testMulticast() throws UnknownHostException {
-		InetSocketAddress localAddress0 = new InetSocketAddress(InetAddress.getByName("0.0.0.0"), 0);
-		InetSocketAddress localAddress5000 = new InetSocketAddress(InetAddress.getByName("0.0.0.0"), 5000);
-		InetSocketAddress multicastAddress = new InetSocketAddress(InetAddress.getByName("239.1.1.1"), 5000);
+    @Test
+    public void testUnicast() throws Exception {
+        InetSocketAddress localAddress0 = new InetSocketAddress(InetAddress.getByName("0.0.0.0"), 0);
+        InetSocketAddress localAddress5000 = new InetSocketAddress(InetAddress.getByName("localhost"), 5000);
 
-		UdpMulticastChannel output = UdpMulticastChannel.createOutputChannel("output", localAddress0, multicastAddress);
+        UdpChannel output = UdpChannel.createOutputChannel("output", localAddress0, localAddress5000);
 
-		UdpMulticastChannel input = UdpMulticastChannel.createInputChannel("input", messageQueue::add, localAddress5000,
-				multicastAddress.getAddress());
+        UdpChannel input = UdpChannel.createInputChannel("input", messageQueue::add, localAddress5000);
+        test(input, output, new TestDataFactory());
+    }
 
-		test(input, output, new TestDataFactory());
-	}
+    @Test
+    public void testConnectThrowsIOException() throws Exception {
+        TestUdpChannel channel = new TestUdpChannel();
+        channel.createSocketThrowsIOException = true;
+        assertThrows(ChannelException.class, () -> channel.connect());
+        channel.close();
+    }
 
-	/**
-	 * Method name is self explanatory
-	 * 
-	 */
-	@Test
-	public void testUnicast() throws Exception {
-		InetSocketAddress localAddress0 = new InetSocketAddress(InetAddress.getByName("0.0.0.0"), 0);
-		InetSocketAddress localAddress5000 = new InetSocketAddress(InetAddress.getByName("localhost"), 5000);
+    @Test
+    public void testConnectThrowsBindException() throws Exception {
+        TestUdpChannel channel = new TestUdpChannel();
+        channel.createSocketThrowsBindException = true;
 
-		UdpChannel output = UdpChannel.createOutputChannel("output", localAddress0, localAddress5000);
+        CompletableFuture.runAsync(() -> {
+            try {
+                Thread.sleep(channel.bindExceptionSleepTimeMillis * 4 + 100);
+                channel.createSocketThrowsBindException = false;
+            } catch (InterruptedException ie) {
+                throw new RuntimeException(ie);
+            }
+        });
 
-		UdpChannel input = UdpChannel.createInputChannel("input", messageQueue::add, localAddress5000);
-		test(input, output, new TestDataFactory());
-	}
+        Awaitility.await().atLeast(Duration.ofMillis(channel.bindExceptionSleepTimeMillis * 4))
+                .atMost(Duration.ofMillis(channel.bindExceptionSleepTimeMillis * 4 + 1000)).until(() -> {
+                    channel.connect();
+                    return true;
+                });
 
-	@SuppressWarnings("deprecation")
-	@Test
-	public void testReadThrowsException() throws Exception {
+        channel.close();
+    }
 
-		Utilities origUtilities = Utilities.getInstance();
-		try {
-			Utilities.setInstanceForTesting(new TestUtilities());
-			Logger logger = Utilities.getInstance().getLogger(UdpChannel.class);
-			Mockito.when(logger.isInfoEnabled()).thenReturn(true);
+    @SuppressWarnings("deprecation")
+    @Test
+    public void testReadThrowsException() throws Exception {
 
-			String testExceptionText = "!!TEST EXCEPTION TEXT!!";
+        Utilities origUtilities = Utilities.getInstance();
+        try {
+            Utilities.setInstanceForTesting(new TestUtilities());
+            Logger logger = Utilities.getInstance().getLogger(UdpChannel.class);
+            when(logger.isInfoEnabled()).thenReturn(true);
 
-			TestUdpChannel channel = new TestUdpChannel();
-			DatagramSocket socket = channel.createSocket();
-			Mockito.doAnswer(new Answer<Void>() {
-				@Override
-				public Void answer(InvocationOnMock invocation) throws IOException {
-					throw new IOException(testExceptionText);
-				}
-			}).when(socket).receive(Mockito.any());
-			
-			AtomicReference<IOException> loggedException = new AtomicReference<>();
+            String testExceptionText = "!!TEST EXCEPTION TEXT!!";
 
-			Mockito.doAnswer(new Answer<Void>() {
-				@Override
-				public Void answer(InvocationOnMock invocation) {
-					loggedException.set(invocation.getArgument(1, IOException.class));
-					return null;
-				}
-			}).when(logger).error(Mockito.anyString(), Mockito.any(IOException.class));
+            TestUdpChannel channel = new TestUdpChannel();
+            DatagramSocket socket = channel.createSocket();
+            doAnswer(new Answer<Void>() {
+                @Override
+                public Void answer(InvocationOnMock invocation) throws IOException {
+                    throw new IOException(testExceptionText);
+                }
+            }).when(socket).receive(any());
 
-			channel.connect();
-			
-			Awaitility.await().until(() -> loggedException.get() != null);
+            AtomicReference<IOException> loggedException = new AtomicReference<>();
 
-			assertTrue(loggedException.get().getMessage().contains(testExceptionText));
+            doAnswer(new Answer<Void>() {
+                @Override
+                public Void answer(InvocationOnMock invocation) {
+                    loggedException.set(invocation.getArgument(1, IOException.class));
+                    return null;
+                }
+            }).when(logger).error(anyString(), any(IOException.class));
 
-			channel.close();
-		} finally {
-			Utilities.setInstanceForTesting(origUtilities);
-		}
-	}
+            channel.connect();
 
-	@Test
-	public void testSendThrowsException() throws Exception {
+            Awaitility.await().until(() -> loggedException.get() != null);
 
-		TestUdpChannel channel = new TestUdpChannel("id", IoType.OUTPUT_ONLY, new InetSocketAddress(1000),
-				new InetSocketAddress(1001));
+            assertTrue(loggedException.get().getMessage().contains(testExceptionText));
 
-		DatagramSocket socket = channel.createSocket();
-		Mockito.doAnswer(new Answer<Void>() {
-			@Override
-			public Void answer(InvocationOnMock invocation) throws IOException {
-				throw new IOException();
-			}
-		}).when(socket).send(Mockito.any());
+            channel.close();
+        } finally {
+            Utilities.setInstanceForTesting(origUtilities);
+        }
+    }
 
-		channel.connect();
-		assertThrows(IOException.class, () -> channel.send(new MessageBuffer(new byte[0])));
-		channel.close();
-	}
+    @Test
+    public void testSendThrowsException() throws Exception {
 
-	@Test
-	public void testIllegalStates() throws ChannelException, InterruptedException {
-		UdpChannel channel = new TestUdpChannel();
-		assertFalse(channel.isConnected());
+        TestUdpChannel channel = new TestUdpChannel("id", IoType.OUTPUT_ONLY, new InetSocketAddress(1000),
+                new InetSocketAddress(1001));
 
-		// test send on a channel not connected
-		try {
-			channel.send(null);
-			fail("Should have got exception");
-		} catch (IllegalStateException e) {
-			assertEquals("id Cannot send on a channel that is not connected", e.getMessage());
-		}
+        DatagramSocket socket = channel.createSocket();
+        doAnswer(new Answer<Void>() {
+            @Override
+            public Void answer(InvocationOnMock invocation) throws IOException {
+                throw new IOException();
+            }
+        }).when(socket).send(any());
 
-		channel.connect();
-		assertTrue(channel.isConnected());
+        channel.connect();
+        assertThrows(IOException.class, () -> channel.send(new MessageBuffer(new byte[0])));
+        channel.close();
+    }
 
-		// test send on an input only channel
-		try {
-			channel.send(null);
-			fail("Should have got exception");
-		} catch (IllegalStateException e) {
-			assertEquals("id Cannot send on an input only channel", e.getMessage());
-		}
-		try {
-			channel.setSocketOptions(new UdpSocketOptions());
-			fail("Should have got exception");
-		} catch (IllegalStateException e) {
-			// expected
-		}
+    @Test
+    public void testIllegalStates() throws ChannelException, InterruptedException {
+        UdpChannel channel = new TestUdpChannel();
+        assertFalse(channel.isConnected());
 
-		try {
-			channel.connect();
-			fail("Should have got exception");
-		} catch (IllegalStateException e) {
-			// expected
-		}
+        // test send on a channel not connected
+        try {
+            channel.send(null);
+            fail("Should have got exception");
+        } catch (IllegalStateException e) {
+            assertEquals("id Cannot send on a channel that is not connected", e.getMessage());
+        }
 
-		channel.close();
-	}
+        channel.connect();
+        assertTrue(channel.isConnected());
 
-	@Test
-	public void testOffNominal() throws Exception {
-		UdpChannel channel = UdpChannel.createInputChannel("id", null);
-		channel.close();
-		assertEquals(ChannelState.CLOSED, channel.getState());
-	}
+        // test send on an input only channel
+        try {
+            channel.send(null);
+            fail("Should have got exception");
+        } catch (IllegalStateException e) {
+            assertEquals("id Cannot send on an input only channel", e.getMessage());
+        }
+        try {
+            channel.setSocketOptions(new UdpSocketOptions());
+            fail("Should have got exception");
+        } catch (IllegalStateException e) {
+            // expected
+        }
 
-	private static class TestUdpChannel extends UdpChannel {
+        try {
+            channel.connect();
+            fail("Should have got exception");
+        } catch (IllegalStateException e) {
+            // expected
+        }
 
-		final DatagramSocket socket;
+        channel.close();
+    }
 
-		public TestUdpChannel(String id, IoType ioType, InetSocketAddress local, InetSocketAddress remote) {
-			super(id, ioType, local, remote);
-			socket = Mockito.mock(DatagramSocket.class);
-		}
+    @Test
+    public void testOffNominal() throws Exception {
+        UdpChannel channel = UdpChannel.createInputChannel("id", null);
+        channel.close();
+        assertEquals(ChannelState.CLOSED, channel.getState());
+    }
 
-		public TestUdpChannel() {
-			this("id", IoType.INPUT_ONLY, null, null);
-		}
+    private static class TestUdpChannel extends UdpChannel {
 
-		@Override
-		protected DatagramSocket createSocket() {
-			return socket;
-		}
-	}
+        final DatagramSocket socket;
+
+        boolean createSocketThrowsIOException = false;
+        boolean createSocketThrowsBindException = false;
+        long bindExceptionSleepTimeMillis = 100;
+
+        public TestUdpChannel(String id, IoType ioType, InetSocketAddress local, InetSocketAddress remote) {
+            super(id, ioType, local, remote);
+            socket = mock(DatagramSocket.class);
+        }
+
+        public TestUdpChannel() {
+            this("id", IoType.INPUT_ONLY, null, null);
+        }
+
+        @Override
+        protected DatagramSocket createSocket() throws IOException {
+            if (createSocketThrowsIOException) {
+                throw new IOException();
+            }
+            if (createSocketThrowsBindException) {
+                throw new BindException();
+            }
+            return socket;
+        }
+
+        @Override
+        protected long getBindExceptionSleepTimeMillis() {
+            return bindExceptionSleepTimeMillis;
+        }
+    }
 }
