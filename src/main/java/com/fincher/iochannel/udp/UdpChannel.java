@@ -147,6 +147,7 @@ public class UdpChannel extends SocketIoChannel {
      * @param localAddress  The local address to which this socket will be bound. If
      *                      null "localhost" will be used
      * @param remoteAddress The remote address to which messages will be sent
+     * @return The newly created channel
      */
     public static UdpChannel createOutputChannel(String id, InetSocketAddress localAddress,
             InetSocketAddress remoteAddress) {

@@ -29,6 +29,7 @@ class TcpServerConnectRunnable implements MyCallableIfc<Socket> {
         
         ServerSocket checkedGet() throws IOException;
         
+        @Override
         default ServerSocket get() {
             try {
                 return checkedGet();
@@ -38,7 +39,7 @@ class TcpServerConnectRunnable implements MyCallableIfc<Socket> {
         }
     }
     
-    static final CheckedSupplier DEFAULT_SERVER_SOCKET_FACTORY = () -> new ServerSocket();
+    static final CheckedSupplier DEFAULT_SERVER_SOCKET_FACTORY = ServerSocket::new;
     
     // This factory is only used for unit testing purposes
     static CheckedSupplier serverSocketFactory = DEFAULT_SERVER_SOCKET_FACTORY;

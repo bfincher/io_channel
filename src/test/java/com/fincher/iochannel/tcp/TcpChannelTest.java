@@ -9,13 +9,12 @@ import java.net.Socket;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 
 import com.fincher.iochannel.ChannelException;
 import com.fincher.iochannel.ChannelState;
 import com.fincher.iochannel.IoType;
 import com.fincher.iochannel.MessageBuffer;
+import com.fincher.iochannel.TestAnswer;
 import com.fincher.thread.MyCallableIfc;
 
 public class TcpChannelTest {
@@ -83,11 +82,7 @@ public class TcpChannelTest {
         TestImpl impl = new TestImpl();
         
         Socket socket = Mockito.mock(Socket.class);
-        Mockito.doAnswer(new Answer<Void>() {
-            public Void answer(InvocationOnMock inv) throws IOException {
-                throw new IOException();
-            }
-        }).when(socket).close();
+        Mockito.doAnswer(new TestAnswer(new IOException())).when(socket).close();
         
         impl.addSocket("bla", socket);
         

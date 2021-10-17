@@ -10,25 +10,37 @@ import com.fincher.iochannel.TransformingIoChannel;
  * @author bfincher
  *
  */
-public abstract class TransformingTcpChannel<SendTypeT, ReceiveTypeT>
-        extends TransformingIoChannel<MessageBuffer, SendTypeT, ReceiveTypeT>
-        implements DelegatingTcpChannel {
+public abstract class TransformingTcpChannel<S, R>
+        extends TransformingIoChannel<MessageBuffer, S, R> implements DelegatingTcpChannel {
 
     private final TcpChannelIfc delegate;
 
-    public TransformingTcpChannel(String id, TcpChannelIfc delegate) {
+    /**
+     * Construct a new TransformingTcpChannel
+     * 
+     * @param id       The ID of this channel
+     * @param delegate The delegate channel which will execute the channel
+     *                 operations
+     */
+    protected TransformingTcpChannel(String id, TcpChannelIfc delegate) {
         super(id, delegate);
         this.delegate = delegate;
     }
-
 
     @Override
     public TcpChannelIfc getDelegate() {
         return delegate;
     }
-    
-    
-    public void send(SendTypeT msg, String channelId) throws ChannelException {
+
+    /**
+     * Send the message on the channel with the specified ID by first transforming
+     * the message
+     * 
+     * @param msg       The message to be transformed and sent
+     * @param channelId The channel on which the message should be sent
+     * @throws ChannelException If an exception occurs while transforming or sending
+     */
+    public void send(S msg, String channelId) throws ChannelException {
         delegate.send(encode(msg), channelId);
     }
 

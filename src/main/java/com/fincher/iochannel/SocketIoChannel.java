@@ -23,7 +23,7 @@ public abstract class SocketIoChannel extends IoChannel<MessageBuffer> {
      * @param localAddress The local address to which this socket will be bound. If null "localhost"
      *                     will be used that the OS will choose an available port
      */
-    public SocketIoChannel(String id, IoType ioType, InetSocketAddress localAddress) {
+    protected SocketIoChannel(String id, IoType ioType, InetSocketAddress localAddress) {
         super(id, ioType);
 
         if (localAddress == null) {

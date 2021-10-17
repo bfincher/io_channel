@@ -36,7 +36,7 @@ public abstract class IoChannel<T extends Exchangeable> implements IoChannelIfc<
      * @param id     The ID of this IO Thread
      * @param ioType Is this IO Thread input, output, or both
      */
-    public IoChannel(String id, IoType ioType) {
+    protected IoChannel(String id, IoType ioType) {
         this.id = id;
         this.ioType = ioType;
 

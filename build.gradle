@@ -39,6 +39,12 @@ test {
     useJUnitPlatform()
 }
 
+jacocoTestReport {
+    reports {
+        xml.enabled true
+    }
+}
+
 test.finalizedBy jacocoTestReport
 
 task sourcesJar(type: Jar) {

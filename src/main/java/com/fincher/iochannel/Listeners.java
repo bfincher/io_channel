@@ -14,14 +14,14 @@ import java.util.stream.Stream;
  */
 public class Listeners<L, D> {
 
-    private final List<ListenerEntry> listeners = new LinkedList<>();
+    private final List<ListenerEntry> listenerList = new LinkedList<>();
 
     /** Add a listener
      * 
      * @param listener The lisener
      */
     public void addListener(L listener) {
-        listeners.add(new ListenerEntry(listener));
+        listenerList.add(new ListenerEntry(listener));
     }
 
 
@@ -31,7 +31,7 @@ public class Listeners<L, D> {
      * @param predicate A predicate such that the listener will only be notified if the predicate matches
      */
     public void addListener(L listener, Predicate<D> predicate) {
-        listeners.add(new ListenerEntry(listener, predicate));
+        listenerList.add(new ListenerEntry(listener, predicate));
     }
 
 
@@ -41,7 +41,7 @@ public class Listeners<L, D> {
      * @return true if a listener was removed
      */
     public boolean removeListener(L listener) {
-        return listeners.removeIf(entry -> entry.listener.equals(listener));
+        return listenerList.removeIf(entry -> entry.listener.equals(listener));
     }
 
 
@@ -51,7 +51,7 @@ public class Listeners<L, D> {
      * @return listeners that match the predicate.  If there is not a predicate, all listeners
      */
     public Stream<L> getListenersThatMatch(D data) {
-        return listeners.stream().filter(l -> l.predicate.test(data)).map(l -> l.listener);
+        return listenerList.stream().filter(l -> l.predicate.test(data)).map(l -> l.listener);
     }
 
 
@@ -60,7 +60,7 @@ public class Listeners<L, D> {
      * @return all listeners
      */
     public Stream<L> getListeners() {
-        return listeners.stream().map(l -> l.listener);
+        return listenerList.stream().map(l -> l.listener);
     }
 
     private class ListenerEntry {
