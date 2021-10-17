@@ -30,7 +30,7 @@ abstract class AbstractReceiveRunnable implements MyRunnableIfc {
      * @param socket The TCP socket
      * @param parent The parent TCPChannel
      */
-    public AbstractReceiveRunnable(String id, Socket socket, TcpChannel parent) {
+    AbstractReceiveRunnable(String id, Socket socket, TcpChannel parent) {
         this.id = id;
         this.socket = socket;
         this.parent = parent;

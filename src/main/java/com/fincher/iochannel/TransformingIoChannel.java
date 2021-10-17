@@ -27,7 +27,7 @@ public abstract class TransformingIoChannel<T extends Exchangeable, S, R>
      * @param id The ID of the channel
      * @param delegate The delegate to actually send/receive data
      */
-    public TransformingIoChannel(String id, IoChannelIfc<T> delegate) {
+    protected TransformingIoChannel(String id, IoChannelIfc<T> delegate) {
         this.delegate = delegate;
         this.id = id;
         delegate.addMessageListener(this::handleMessage);

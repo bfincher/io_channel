@@ -8,6 +8,11 @@ public class Utilities {
 
     private static Utilities instance = new Utilities();
 
+    /**
+     * Get the singleton utilities instance
+     * 
+     * @return The singleton instance
+     */
     public static Utilities getInstance() {
         return instance;
     }
@@ -17,7 +22,6 @@ public class Utilities {
      * 
      * @param testInstance The test instance
      */
-    @Deprecated
     public static void setInstanceForTesting(Utilities testInstance) {
         instance = testInstance;
     }

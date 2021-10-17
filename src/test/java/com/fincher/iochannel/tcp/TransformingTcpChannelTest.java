@@ -9,12 +9,14 @@ import org.mockito.Mockito;
 
 public class TransformingTcpChannelTest extends TransformingIoChannelTest {
     
+    @Override
     public IoChannelIfc<MessageBuffer> getDelegate() {
         TcpChannelIfc delegate = Mockito.mock(TcpChannelIfc.class);
         return delegate;
     }
     
     
+    @Override
     public TestImplIfc getTestImpl(String id, IoChannelIfc<MessageBuffer> delegate) {
         return new TestTcpImpl(id, (TcpChannelIfc)delegate);
     }

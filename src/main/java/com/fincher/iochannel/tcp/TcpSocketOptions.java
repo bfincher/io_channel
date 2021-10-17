@@ -57,8 +57,7 @@ public class TcpSocketOptions extends SocketOptions {
             logString.append(", reuseAddress = " + socket.getReuseAddress());
             logString.append(", timeout = " + socket.getSoTimeout());
             logString.append(", tcpNoDelay = " + socket.getTcpNoDelay());
-
-            LOG.info(logString.toString());
+            LOG.atInfo().addArgument(logString::toString).log("{}");
         } catch (SocketException se) {
             throw new ChannelException(socketId, se);
         }
@@ -91,7 +90,7 @@ public class TcpSocketOptions extends SocketOptions {
             logString.append(", reuseAddress = " + socket.getReuseAddress());
             logString.append(", timeout = " + socket.getSoTimeout());
 
-            LOG.info(logString.toString());
+            LOG.atInfo().addArgument(logString::toString).log("{}");
         } catch (IOException e) {
             throw new ChannelException(e);
         }
@@ -117,6 +116,8 @@ public class TcpSocketOptions extends SocketOptions {
 
     /**
      * Sets the TCP_NODELAY socket setting.
+     * 
+     * @param val The TCP_NODELAY socket setting
      * 
      */
     public void setTcpNoDelay(boolean val) {

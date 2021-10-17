@@ -23,6 +23,8 @@ public interface IoChannelIfc<T extends Exchangeable> extends Closeable {
     /**
      * Adds a listener to be notified of received messages. Not applicable for
      * output only channels
+     * 
+     * @param listener The listener
      */
     public void addMessageListener(Consumer<T> listener);
 
