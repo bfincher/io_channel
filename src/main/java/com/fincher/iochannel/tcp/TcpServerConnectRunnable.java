@@ -10,6 +10,7 @@ import java.util.function.Supplier;
 import org.slf4j.Logger;
 
 import com.fincher.iochannel.ChannelException;
+import com.fincher.iochannel.ChannelRuntimeException;
 import com.fincher.iochannel.ChannelState;
 import com.fincher.iochannel.Utilities;
 import com.fincher.thread.MyCallableIfc;
@@ -34,7 +35,7 @@ class TcpServerConnectRunnable implements MyCallableIfc<Socket> {
             try {
                 return checkedGet();
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                throw new ChannelRuntimeException(e);
             }
         }
     }
@@ -129,9 +130,7 @@ class TcpServerConnectRunnable implements MyCallableIfc<Socket> {
                 return null;
             } else {
                 LOG.error(tcpServer.getId() + " " + e.getMessage(), e);
-                synchronized (this) {
-                    wait(2000);
-                }
+                Utilities.sleep(this, tcpServer.getSocketSleepTime());
                 throw new ChannelException(e);
             }
         }
@@ -149,9 +148,7 @@ class TcpServerConnectRunnable implements MyCallableIfc<Socket> {
             return true;
         } catch (BindException be) {
             LOG.warn("{} {} ", tcpServer.getId(), be.getMessage());
-            synchronized (this) {
-                wait(2000);
-            }
+            Utilities.sleep(this, tcpServer.getSocketSleepTime());
             throw be;
         }
     }

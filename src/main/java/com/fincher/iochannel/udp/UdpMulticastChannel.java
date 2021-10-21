@@ -110,7 +110,7 @@ public class UdpMulticastChannel extends UdpChannel {
         if (getIoType().isInput()) {
             try {
                 ((MulticastSocket) socket).joinGroup(multicastAddress);
-                LOG.info(getId() + " joined multicast group " + multicastAddress.getHostAddress());
+                LOG.info("{} joined multicast group {}", getId(), multicastAddress.getHostAddress());
             } catch (IOException se) {
                 throw new ChannelException(getId(), se);
             }

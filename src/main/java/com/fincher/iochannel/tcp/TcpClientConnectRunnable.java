@@ -58,9 +58,7 @@ class TcpClientConnectRunnable implements MyCallableIfc<Socket> {
             return socket;
         } catch (IOException ioe) {
             LOG.error(parent.getId() + " " + ioe.getMessage(), ioe);
-            synchronized (this) {
-                wait(2000);
-            }
+            Utilities.sleep(this, parent.getSocketSleepTime());
             throw ioe;
         }
     }

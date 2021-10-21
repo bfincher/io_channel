@@ -45,15 +45,17 @@ public class MulticastTest extends IoChannelTesterBase<MessageBuffer> {
     }
 
     @Test
-    public void testConstructors() {
-        assertThrows(IllegalArgumentException.class,
-                () -> new UdpMulticastChannel("", null, InetAddress.getByName("230.0.0.0")));
+    public void testConstructors() throws UnknownHostException {
+        InetAddress mcAddr = InetAddress.getByName("230.0.0.0");
+        InetAddress localhost = InetAddress.getByName("127.0.0.1");
+        InetSocketAddress localAddr0 = InetSocketAddress.createUnresolved("0.0.0.0", 0);
+        InetSocketAddress localAddr1234 = InetSocketAddress.createUnresolved("0.0.0.0", 1234);
 
-        assertThrows(IllegalArgumentException.class, () -> new UdpMulticastChannel("",
-                InetSocketAddress.createUnresolved("0.0.0.0", 0), InetAddress.getByName("230.0.0.0")));
-        
-        assertThrows(IllegalArgumentException.class, () -> new UdpMulticastChannel("",
-                InetSocketAddress.createUnresolved("0.0.0.0", 1234), InetAddress.getByName("127.0.0.1")));
+        assertThrows(IllegalArgumentException.class, () -> new UdpMulticastChannel("", null, mcAddr));
+
+        assertThrows(IllegalArgumentException.class, () -> new UdpMulticastChannel("", localAddr0, mcAddr));
+
+        assertThrows(IllegalArgumentException.class, () -> new UdpMulticastChannel("", localAddr1234, localhost));
     }
 
     private static class TestChannel extends UdpMulticastChannel {

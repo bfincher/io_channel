@@ -104,7 +104,6 @@ public class UdpTest extends IoChannelTesterBase<MessageBuffer> {
         channel.close();
     }
 
-    @SuppressWarnings("deprecation")
     @Test
     public void testReadThrowsException() throws Exception {
 

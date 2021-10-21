@@ -2,6 +2,7 @@ package com.fincher.iochannel.tcp;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.mock;
@@ -79,7 +80,7 @@ public class TcpTest extends IoChannelTesterBase<MessageBuffer> {
 
             Awaitility.await().until(() -> client1.isConnected() && client2.isConnected());
 
-            assertFalse(client1.getlocalAddress().getPort() == 0);
+            assertNotEquals(0, client1.getlocalAddress().getPort());
 
             assertTrue(client1Connected.get());
             assertTrue(client2Connected.get());

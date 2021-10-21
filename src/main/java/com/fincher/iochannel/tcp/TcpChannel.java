@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -41,7 +42,7 @@ public abstract class TcpChannel extends SocketIoChannel implements TcpChannelIf
     protected MyThread connectThread;
 
     /** The TCP Socket Options. */
-    private TcpSocketOptions socketOptions = new TcpSocketOptions();
+    private TcpSocketOptions socketOptions = new TcpSocketOptions();    
 
     private final Listeners<ConnectionEstablishedListener, String> connectionEstablishedListeners = new Listeners<>();
 
@@ -328,9 +329,9 @@ public abstract class TcpChannel extends SocketIoChannel implements TcpChannelIf
         } catch (IOException e) {
             LOG.error(e.getMessage(), e);
         } finally {
-            // wait 3 seconds to give threads time to close
+            // wait to give threads time to close
             try {
-                wait(3000);
+                Utilities.sleep(this, getSocketSleepTime().plus(Duration.ofSeconds(1)));
             } catch (InterruptedException ie) {
                 LOG.warn(getId() + " " + ie.getMessage(), ie);
                 Thread.currentThread().interrupt();
@@ -370,5 +371,9 @@ public abstract class TcpChannel extends SocketIoChannel implements TcpChannelIf
 
     protected TcpSocketOptions getSocketOptions() {
         return socketOptions;
+    }
+    
+    protected Duration getSocketSleepTime() {
+        return Duration.ofMillis(socketOptions.getTimeout().orElse(0));
     }
 }

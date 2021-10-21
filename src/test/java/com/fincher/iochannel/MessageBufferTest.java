@@ -2,6 +2,7 @@ package com.fincher.iochannel;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -34,7 +35,7 @@ public class MessageBufferTest {
         
         mb = new MessageBuffer(bytes);
         assertArrayEquals(bytes, mb.getBytes());
-        assertTrue(mb.getTransactionId() != 0);
+        assertNotEquals(0, mb.getTransactionId());
         assertEquals(0, mb.getParentTransactionIds().size());
         
         String expectedHexDump = mb.getTransactionId() + ", " + mb.getOriginationTime() + ", hex dump: 0a 0b 0c 0d 0e 14";

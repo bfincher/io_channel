@@ -18,6 +18,7 @@ import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
+import java.time.Duration;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -47,6 +48,7 @@ public class TcpServerConnectRunnableTest {
         socketOptions = mock(TcpSocketOptions.class);
         when(server.getId()).thenReturn("id");
         when(server.getSocketOptions()).thenReturn(socketOptions);
+        when(server.getSocketSleepTime()).thenReturn(Duration.ofMillis(100));
         TcpServerConnectRunnable.serverSocketFactory = TcpServerConnectRunnable.DEFAULT_SERVER_SOCKET_FACTORY;
     }
 
