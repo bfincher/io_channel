@@ -1,3 +1,23 @@
+buildscript {
+    repositories {
+        mavenLocal()
+        if (project.hasProperty('localNexus')) {
+            println("has local nexus ${localNexus}")
+            maven {
+                url "${localNexus}"
+                allowInsecureProtocol = true
+            }
+        } else {
+            mavenCentral()
+        }
+    }
+
+    dependencies {
+        classpath 'fincher.java.eclipse:fincher.java.eclipse.gradle.plugin:0.0.1'
+    }
+}
+
+
 plugins {
     id 'java'
     id 'maven-publish'
@@ -6,6 +26,8 @@ plugins {
     id 'jacoco'
     id "net.researchgate.release" version "2.6.0"
 }
+
+apply plugin: com.fincher.gradle.eclipse.EclipseSettings
 
 group = 'com.fincher'
 description = 'Input / Output channels'
