@@ -48,16 +48,18 @@ public class TcpSocketOptions extends SocketOptions {
 
             socket.setTcpNoDelay(tcpNoDelay);
 
-            StringBuilder logString = new StringBuilder();
-            logString.append(socketId);
-            logString.append(" actual socket options: receiveBufferSize = " + socket.getReceiveBufferSize());
+            if (LOG.isInfoEnabled()) {
+                StringBuilder logString = new StringBuilder();
+                logString.append(socketId);
+                logString.append(" actual socket options: receiveBufferSize = " + socket.getReceiveBufferSize());
 
-            logString.append(", sendBufferSize = " + socket.getSendBufferSize());
-            logString.append(", keepAlive = " + socket.getKeepAlive());
-            logString.append(", reuseAddress = " + socket.getReuseAddress());
-            logString.append(", timeout = " + socket.getSoTimeout());
-            logString.append(", tcpNoDelay = " + socket.getTcpNoDelay());
-            LOG.atInfo().addArgument(logString::toString).log("{}");
+                logString.append(", sendBufferSize = " + socket.getSendBufferSize());
+                logString.append(", keepAlive = " + socket.getKeepAlive());
+                logString.append(", reuseAddress = " + socket.getReuseAddress());
+                logString.append(", timeout = " + socket.getSoTimeout());
+                logString.append(", tcpNoDelay = " + socket.getTcpNoDelay());
+                LOG.info(logString.toString());
+            }
         } catch (SocketException se) {
             throw new ChannelException(socketId, se);
         }
@@ -83,14 +85,16 @@ public class TcpSocketOptions extends SocketOptions {
                 socket.setSoTimeout(getTimeout().getAsInt());
             }
 
-            StringBuilder logString = new StringBuilder();
-            logString.append(socketId);
-            logString.append(" actual socket options: receiveBufferSize = " + socket.getReceiveBufferSize());
+            if (LOG.isInfoEnabled()) {
+                StringBuilder logString = new StringBuilder();
+                logString.append(socketId);
+                logString.append(" actual socket options: receiveBufferSize = " + socket.getReceiveBufferSize());
 
-            logString.append(", reuseAddress = " + socket.getReuseAddress());
-            logString.append(", timeout = " + socket.getSoTimeout());
+                logString.append(", reuseAddress = " + socket.getReuseAddress());
+                logString.append(", timeout = " + socket.getSoTimeout());
 
-            LOG.atInfo().addArgument(logString::toString).log("{}");
+                LOG.info(logString.toString());
+            }
         } catch (IOException e) {
             throw new ChannelException(e);
         }

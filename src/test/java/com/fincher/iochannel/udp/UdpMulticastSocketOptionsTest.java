@@ -8,6 +8,7 @@ import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
 import java.net.MulticastSocket;
+import java.net.StandardSocketOptions;
 
 import org.junit.jupiter.api.Test;
 
@@ -32,7 +33,7 @@ public class UdpMulticastSocketOptionsTest {
     
     private void verifyOptions(MulticastSocket socket, UdpMulticastSocketOptions options) throws IOException {
         verify(socket).setTimeToLive(eq(options.getTimeToLive()));
-        verify(socket).setLoopbackMode(eq(options.isLoopbackDisabled()));
+        verify(socket).setOption(StandardSocketOptions.IP_MULTICAST_LOOP, options.isLoopbackDisabled());
         verify(socket).setReuseAddress(options.isReuseAddress());
         
         if (options.getSendBufferSize().isPresent()) {

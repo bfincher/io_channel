@@ -23,6 +23,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.slf4j.Logger;
@@ -63,6 +64,7 @@ public class UdpTest extends IoChannelTesterBase<MessageBuffer> {
     }
 
     @Test
+    @Timeout(value = 10)
     public void testUnicast() throws Exception {
         InetSocketAddress localAddress0 = new InetSocketAddress(InetAddress.getByName("0.0.0.0"), 0);
         InetSocketAddress localAddress5000 = new InetSocketAddress(InetAddress.getByName("localhost"), 5000);
@@ -74,6 +76,7 @@ public class UdpTest extends IoChannelTesterBase<MessageBuffer> {
     }
 
     @Test
+    @Timeout(value = 10)
     public void testConnectThrowsIOException() throws Exception {
         TestUdpChannel channel = new TestUdpChannel();
         channel.createSocketThrowsIOException = true;
@@ -82,6 +85,7 @@ public class UdpTest extends IoChannelTesterBase<MessageBuffer> {
     }
 
     @Test
+    @Timeout(value = 10)
     public void testConnectThrowsBindException() throws Exception {
         TestUdpChannel channel = new TestUdpChannel();
         channel.createSocketThrowsBindException = true;
@@ -105,6 +109,7 @@ public class UdpTest extends IoChannelTesterBase<MessageBuffer> {
     }
 
     @Test
+    @Timeout(value = 10)
     public void testReadThrowsException() throws Exception {
 
         Utilities origUtilities = Utilities.getInstance();
@@ -147,6 +152,7 @@ public class UdpTest extends IoChannelTesterBase<MessageBuffer> {
     }
 
     @Test
+    @Timeout(value = 10)
     public void testSendThrowsException() throws Exception {
 
         TestUdpChannel channel = new TestUdpChannel("id", IoType.OUTPUT_ONLY, new InetSocketAddress(1000),
@@ -166,6 +172,7 @@ public class UdpTest extends IoChannelTesterBase<MessageBuffer> {
     }
 
     @Test
+    @Timeout(value = 10)
     public void testIllegalStates() throws ChannelException, InterruptedException {
         UdpChannel channel = new TestUdpChannel();
         assertFalse(channel.isConnected());
@@ -206,6 +213,7 @@ public class UdpTest extends IoChannelTesterBase<MessageBuffer> {
     }
 
     @Test
+    @Timeout(value = 10)
     public void testOffNominal() throws Exception {
         UdpChannel channel = UdpChannel.createInputChannel("id", null);
         channel.close();

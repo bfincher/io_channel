@@ -42,7 +42,7 @@ public abstract class IoChannelTesterBase<T extends Exchangeable> {
                 output.send(testDataFactory.getTestData(i));
             }
             
-            Awaitility.await().atMost(1, TimeUnit.SECONDS).until(() -> messageQueue.size() == 5);
+            Awaitility.await().atMost(10, TimeUnit.SECONDS).until(() -> messageQueue.size() == 5);
 
             System.out.println("messages: ");
             for (T data : messageQueue) {

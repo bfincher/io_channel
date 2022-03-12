@@ -2,6 +2,7 @@ package com.fincher.iochannel.udp;
 
 import java.io.IOException;
 import java.net.MulticastSocket;
+import java.net.StandardSocketOptions;
 
 import org.slf4j.Logger;
 
@@ -65,7 +66,7 @@ public class UdpMulticastSocketOptions extends UdpSocketOptions {
     public void applySocketOptions(String socketId, MulticastSocket socket) throws IOException {
         super.applySocketOptions(socketId, socket);
         socket.setTimeToLive(timeToLive);
-        socket.setLoopbackMode(loopbackDisabled);
+        socket.setOption(StandardSocketOptions.IP_MULTICAST_LOOP, false);
 
         LOG.info("{} timeToLive = {}.  loopbackDisabled = {}", socketId, socket.getTimeToLive(), loopbackDisabled);
     }

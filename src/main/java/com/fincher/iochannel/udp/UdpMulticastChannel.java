@@ -5,6 +5,7 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.MulticastSocket;
+import java.net.NetworkInterface;
 import java.util.function.Consumer;
 
 import org.slf4j.Logger;
@@ -26,6 +27,7 @@ public class UdpMulticastChannel extends UdpChannel {
     private static final Logger LOG = Utilities.getInstance().getLogger(UdpMulticastChannel.class);
 
     private final InetAddress multicastAddress;
+    private final NetworkInterface networkInterface;
 
     /**
      * Constructs a new UDP MULTICAST IO Channel.
@@ -34,17 +36,23 @@ public class UdpMulticastChannel extends UdpChannel {
      * @param ioType           The input/output status of this channel
      * @param localAddress     The local address to which this socket will be bound.
      * @param multicastAddress The multicast address to which this socket will join
+     * @param networkInterface The network interface on which to join the multicast
+     *                         group.
      */
-    UdpMulticastChannel(String id, InetSocketAddress localAddress, InetAddress multicastAddress) {
+    UdpMulticastChannel(String id, InetSocketAddress localAddress, InetAddress multicastAddress,
+            NetworkInterface networkInterface) {
         super(id, IoType.INPUT_ONLY, localAddress);
 
         Preconditions.checkArgument(localAddress != null && localAddress.getPort() != 0,
                 id + " localAddress port must be non zero");
 
+        Preconditions.checkNotNull(networkInterface);
+
         Preconditions.checkArgument(multicastAddress.isMulticastAddress(),
                 "The multicast address given is not a valid multicast address");
 
         this.multicastAddress = multicastAddress;
+        this.networkInterface = networkInterface;
 
         socketOptions = new UdpMulticastSocketOptions();
     }
@@ -58,6 +66,7 @@ public class UdpMulticastChannel extends UdpChannel {
                 "The multicast address given is not a valid multicast address");
 
         socketOptions = new UdpMulticastSocketOptions();
+        networkInterface = null;
     }
 
     /**
@@ -67,11 +76,13 @@ public class UdpMulticastChannel extends UdpChannel {
      * @param messageHandler   Used to notify clients of received data
      * @param localAddress     The local address to which this socket will be bound.
      * @param multicastAddress The multicast address to which this socket will join
+     * @param networkInterface The network interface on which to join the multicast
+     *                         group.
      * @return a new input only UDP MULTICAST IO Channel
      */
     public static UdpMulticastChannel createInputChannel(String id, Consumer<MessageBuffer> messageHandler,
-            InetSocketAddress localAddress, InetAddress multicastAddress) {
-        UdpMulticastChannel channel = new UdpMulticastChannel(id, localAddress, multicastAddress);
+            InetSocketAddress localAddress, InetAddress multicastAddress, NetworkInterface networkInterface) {
+        UdpMulticastChannel channel = new UdpMulticastChannel(id, localAddress, multicastAddress, networkInterface);
         channel.addMessageListener(messageHandler);
         return channel;
     }
@@ -82,11 +93,13 @@ public class UdpMulticastChannel extends UdpChannel {
      * @param id               The ID of this IO Channel
      * @param localAddress     The local address to which this socket will be bound.
      * @param multicastAddress The multicast address to which this socket will join
+     * @param networkInterface The network interface on which to join the multicast
+     *                         group.
      * @return a new input only UDP MULTICAST IO Channel
      */
     public static UdpMulticastChannel createInputChannel(String id, InetSocketAddress localAddress,
-            InetAddress multicastAddress) {
-        return new UdpMulticastChannel(id, localAddress, multicastAddress);
+            InetAddress multicastAddress, NetworkInterface networkInterface) {
+        return new UdpMulticastChannel(id, localAddress, multicastAddress, networkInterface);
     }
 
     /**
@@ -109,7 +122,8 @@ public class UdpMulticastChannel extends UdpChannel {
 
         if (getIoType().isInput()) {
             try {
-                ((MulticastSocket) socket).joinGroup(multicastAddress);
+                ((MulticastSocket) socket).joinGroup(
+                        new InetSocketAddress(multicastAddress, getlocalAddress().getPort()), networkInterface);
                 LOG.info("{} joined multicast group {}", getId(), multicastAddress.getHostAddress());
             } catch (IOException se) {
                 throw new ChannelException(getId(), se);
@@ -119,15 +133,11 @@ public class UdpMulticastChannel extends UdpChannel {
 
     @Override
     protected DatagramSocket createSocket() throws IOException {
-        if (getIoType().isInput()) {
-            MulticastSocket socket = new MulticastSocket(getlocalAddress());
-            UdpMulticastSocketOptions socketOptions = (UdpMulticastSocketOptions) this.socketOptions;
-            socketOptions.applySocketOptions(getId(), socket);
+        MulticastSocket socket = new MulticastSocket(getlocalAddress());
+        UdpMulticastSocketOptions socketOptions = (UdpMulticastSocketOptions) this.socketOptions;
+        socketOptions.applySocketOptions(getId(), socket);
 
-            return socket;
-        }
-
-        return super.createSocket();
+        return socket;
     }
 
 }
