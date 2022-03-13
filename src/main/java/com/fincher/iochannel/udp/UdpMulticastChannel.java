@@ -133,7 +133,7 @@ public class UdpMulticastChannel extends UdpChannel {
 
     @Override
     protected DatagramSocket createSocket() throws IOException {
-        MulticastSocket socket = new MulticastSocket(getlocalAddress());
+        MulticastSocket socket = new MulticastSocket(getlocalAddress().getPort());
         UdpMulticastSocketOptions socketOptions = (UdpMulticastSocketOptions) this.socketOptions;
         socketOptions.applySocketOptions(getId(), socket);
 

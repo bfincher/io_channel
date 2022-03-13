@@ -20,8 +20,7 @@ public class UdpMulticastSocketOptionsTest {
         UdpMulticastSocketOptions options = new UdpMulticastSocketOptions();
         options.applySocketOptions("", socket);
         verifyOptions(socket, options);
-        
-        
+
         socket = mock(MulticastSocket.class);
         options.clearReceiveBufferSize();
         options.clearSendBufferSize();
@@ -29,31 +28,34 @@ public class UdpMulticastSocketOptionsTest {
         options.applySocketOptions("", socket);
         verifyOptions(socket, options);
     }
-    
-    
+
     private void verifyOptions(MulticastSocket socket, UdpMulticastSocketOptions options) throws IOException {
         verify(socket).setTimeToLive(eq(options.getTimeToLive()));
-        verify(socket).setOption(StandardSocketOptions.IP_MULTICAST_LOOP, options.isLoopbackDisabled());
-        verify(socket).setReuseAddress(options.isReuseAddress());
-        
-        if (options.getSendBufferSize().isPresent()) {
-            verify(socket).setSendBufferSize(eq(options.getSendBufferSize().getAsInt()));    
-        } else {
-            verify(socket, never()).setSendBufferSize(anyInt());    
+
+        if (options.getLoopbackDisabled().isPresent()) {
+            verify(socket).setOption(StandardSocketOptions.IP_MULTICAST_LOOP, options.getLoopbackDisabled().get());
         }
-        
+
+        verify(socket).setReuseAddress(options.isReuseAddress());
+
+        if (options.getSendBufferSize().isPresent()) {
+            verify(socket).setSendBufferSize(eq(options.getSendBufferSize().getAsInt()));
+        } else {
+            verify(socket, never()).setSendBufferSize(anyInt());
+        }
+
         if (options.getReceiveBufferSize().isPresent()) {
             verify(socket).setReceiveBufferSize(eq(options.getReceiveBufferSize().getAsInt()));
         } else {
             verify(socket, never()).setReceiveBufferSize(anyInt());
         }
-        
+
         if (options.getTimeout().isPresent()) {
             verify(socket).setSoTimeout(eq(options.getTimeout().getAsInt()));
         } else {
             verify(socket, never()).setSoTimeout(anyInt());
         }
-        
+
     }
 
 }
