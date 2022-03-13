@@ -31,8 +31,8 @@ apply plugin: com.fincher.gradle.eclipse.EclipseSettings
 
 group = 'com.fincher'
 description = 'Input / Output channels'
-sourceCompatibility = 1.11
-targetCompatibility = 1.11
+sourceCompatibility = 1.17
+targetCompatibility = 1.17
 
 repositories {
     mavenLocal()
@@ -47,14 +47,13 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.slf4j:slf4j-api:2.0.0-alpha5'
     implementation 'com.fincher:java-thread:2.2.4'
     implementation 'com.google.guava:guava:29.0-jre'
+    implementation 'org.apache.logging.log4j:log4j-slf4j-impl:2.17.2'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.1'
     testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.7.1'
     testImplementation 'org.awaitility:awaitility:4.0.1'
     testImplementation 'org.mockito:mockito-core:3.3.3'
-    testRuntimeOnly 'org.slf4j:slf4j-log4j12:2.0.0-alpha5'
 }
 
 test {
@@ -63,7 +62,7 @@ test {
 
 jacocoTestReport {
     reports {
-        xml.enabled true
+        xml.required=true
     }
 }
 
