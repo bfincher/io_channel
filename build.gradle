@@ -2,7 +2,6 @@ buildscript {
     repositories {
         mavenLocal()
         if (project.hasProperty('localNexus')) {
-            println("has local nexus ${localNexus}")
             maven {
                 url "${localNexus}"
                 allowInsecureProtocol = true
@@ -13,7 +12,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'fincher.java.eclipse:fincher.java.eclipse.gradle.plugin:0.0.1'
+        classpath 'fincher.java.eclipse:fincher.java.eclipse.gradle.plugin:0.0.2'
     }
 }
 
@@ -48,12 +47,12 @@ repositories {
 
 dependencies {
     implementation 'com.fincher:java-thread:2.2.4'
-    implementation 'com.google.guava:guava:29.0-jre'
+    implementation 'com.google.guava:guava:31.1-jre'
     implementation 'org.apache.logging.log4j:log4j-slf4j-impl:2.17.2'
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.1'
-    testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.7.1'
-    testImplementation 'org.awaitility:awaitility:4.0.1'
-    testImplementation 'org.mockito:mockito-core:3.3.3'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
+    testImplementation 'org.awaitility:awaitility:4.2.0'
+    testImplementation 'org.mockito:mockito-core:4.4.0'
 }
 
 test {
