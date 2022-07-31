@@ -7,9 +7,9 @@ import org.slf4j.Logger;
 import com.fincher.iochannel.ChannelException;
 import com.fincher.iochannel.MessageBuffer;
 import com.fincher.iochannel.Utilities;
-import com.fincher.thread.MyRunnableIfc;
+import com.fincher.thread.RunnableTask;
 
-abstract class AbstractReceiveRunnable implements MyRunnableIfc {
+abstract class AbstractReceiveRunnable implements RunnableTask {
 
     private static final Logger LOGGER = Utilities.getInstance().getLogger(AbstractReceiveRunnable.class);
 

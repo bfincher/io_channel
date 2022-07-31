@@ -8,7 +8,7 @@ import java.util.function.Consumer;
 import com.fincher.iochannel.ChannelException;
 import com.fincher.iochannel.IoType;
 import com.fincher.iochannel.MessageBuffer;
-import com.fincher.thread.MyCallableIfc;
+import com.fincher.thread.CallableTask;
 
 /**
  * A TCPIOThread implementation for TCP Server sockets.
@@ -82,13 +82,13 @@ public class TcpServerChannel extends TcpChannel {
     }
 
     @Override
-    protected MyCallableIfc<Socket> getConnectRunnable() throws ChannelException {
+    protected CallableTask<Socket> getConnectRunnable() throws ChannelException {
         return TcpServerConnectRunnable.create(this);
     }
 
     @Override
     public InetSocketAddress getlocalAddress() {
-        TcpServerConnectRunnable connectRunnable = (TcpServerConnectRunnable)connectThread.getCallable().orElseThrow();
+        TcpServerConnectRunnable connectRunnable = (TcpServerConnectRunnable)connectTask;
         
         ServerSocket socket = connectRunnable.getServerSocket();
         if (socket.isBound()) {

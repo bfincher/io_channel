@@ -15,7 +15,7 @@ import com.fincher.iochannel.ChannelState;
 import com.fincher.iochannel.IoType;
 import com.fincher.iochannel.MessageBuffer;
 import com.fincher.iochannel.TestAnswer;
-import com.fincher.thread.MyCallableIfc;
+import com.fincher.thread.CallableTask;
 
 public class TcpChannelTest {
     
@@ -101,7 +101,7 @@ public class TcpChannelTest {
         }
         
         @Override
-        protected MyCallableIfc<Socket> getConnectRunnable() {
+        protected CallableTask<Socket> getConnectRunnable() {
             return null;
         }
         

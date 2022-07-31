@@ -7,7 +7,7 @@ import java.net.Socket;
 import org.slf4j.Logger;
 
 import com.fincher.iochannel.Utilities;
-import com.fincher.thread.MyCallableIfc;
+import com.fincher.thread.CallableTask;
 
 /**
  * Used to connect a TCP Client socket.
@@ -15,7 +15,7 @@ import com.fincher.thread.MyCallableIfc;
  * @author Brian Fincher
  *
  */
-class TcpClientConnectRunnable implements MyCallableIfc<Socket> {
+class TcpClientConnectRunnable implements CallableTask<Socket> {
 
     private static final Logger LOG = Utilities.getInstance().getLogger(TcpClientConnectRunnable.class);
 
