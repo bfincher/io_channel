@@ -49,12 +49,12 @@ public class TcpServerConnectRunnableTest {
         when(server.getId()).thenReturn("id");
         when(server.getSocketOptions()).thenReturn(socketOptions);
         when(server.getSocketSleepTime()).thenReturn(Duration.ofMillis(100));
-        TcpServerConnectRunnable.serverSocketFactory = TcpServerConnectRunnable.DEFAULT_SERVER_SOCKET_FACTORY;
+        TcpServerConnectTask.serverSocketFactory = TcpServerConnectTask.DEFAULT_SERVER_SOCKET_FACTORY;
     }
 
     @Test
     public void testConstruct() throws ChannelException {
-        new TcpServerConnectRunnable(server, ss);
+        new TcpServerConnectTask(server, ss);
         verify(socketOptions).applySocketOptions(eq("id"), eq(ss));
 
         // test with exception
@@ -65,12 +65,12 @@ public class TcpServerConnectRunnableTest {
             }
         }).when(socketOptions).applySocketOptions(any(String.class), any(ServerSocket.class));
 
-        assertThrows(ChannelException.class, () -> new TcpServerConnectRunnable(server, ss));
+        assertThrows(ChannelException.class, () -> new TcpServerConnectTask(server, ss));
     }
 
     @Test
     public void testCreate() throws ChannelException {
-        TcpServerConnectRunnable.create(server);
+        TcpServerConnectTask.create(server);
         verify(socketOptions).applySocketOptions(eq("id"), any(ServerSocket.class));
     }
 
@@ -85,14 +85,14 @@ public class TcpServerConnectRunnableTest {
             }
         }).when(socketOptions).applySocketOptions(any(String.class), any(ServerSocket.class));
 
-        assertThrows(ChannelException.class, () -> TcpServerConnectRunnable.create(server));
+        assertThrows(ChannelException.class, () -> TcpServerConnectTask.create(server));
     }
 
     @Test
     public void testCreateWithIoException() throws Exception {
-        TcpServerConnectRunnable.serverSocketFactory = () -> { throw new IOException();};
+        TcpServerConnectTask.serverSocketFactory = () -> { throw new IOException();};
 
-        assertThrows(IOException.class, () -> TcpServerConnectRunnable.create(server));
+        assertThrows(IOException.class, () -> TcpServerConnectTask.create(server));
     }
 
     @Test
@@ -104,13 +104,13 @@ public class TcpServerConnectRunnableTest {
             }
         }).when(ss).bind(any());
 
-        assertThrows(BindException.class, () -> new TcpServerConnectRunnable(server, ss).connectSocket());
+        assertThrows(BindException.class, () -> new TcpServerConnectTask(server, ss).connectSocket());
     }
 
     @Test
     public void testTerminate() throws Exception {
         // test nominal
-        TcpServerConnectRunnable tcr = new MyImpl(server, ss);
+        TcpServerConnectTask tcr = new MyImpl(server, ss);
         tcr.terminate();
         verify(ss).close();
     }
@@ -124,7 +124,7 @@ public class TcpServerConnectRunnableTest {
     @Test
     public void testCloseThrowsException() throws Exception {
         doThrow(new IOException()).when(ss).close();
-        TcpServerConnectRunnable tcr = new MyImpl(server, ss);
+        TcpServerConnectTask tcr = new MyImpl(server, ss);
         tcr.terminate();
     }
 
@@ -164,14 +164,14 @@ public class TcpServerConnectRunnableTest {
     
     @Test
     public void testCheckedSupplier() {
-        TcpServerConnectRunnable.CheckedSupplier supplier1 = () -> null;
+        TcpServerConnectTask.CheckedSupplier supplier1 = () -> null;
         assertNull(supplier1.get());
                 
-        TcpServerConnectRunnable.CheckedSupplier supplier2 = () -> {throw new IOException();};
+        TcpServerConnectTask.CheckedSupplier supplier2 = () -> {throw new IOException();};
         assertThrows(RuntimeException.class, () -> supplier2.get());
     }
 
-    private static class MyImpl extends TcpServerConnectRunnable {
+    private static class MyImpl extends TcpServerConnectTask {
 
         ServerSocket ss;
         boolean callSuperConnectSocket = false;

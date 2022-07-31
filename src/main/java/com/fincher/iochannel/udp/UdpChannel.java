@@ -22,15 +22,15 @@ import com.fincher.thread.RunnableTask;
 import com.google.common.base.Preconditions;
 
 /**
- * A UDP Unicast representation of a Socket IO Thread.
+ * A UDP Unicast representation of a Socket IO Channel.
  * 
  * @author Brian Fincher
  * 
  */
 public class UdpChannel extends SocketIoChannel {
 
-    /** Used by a thread to receive messages. */
-    private class ReceiveRunnable implements RunnableTask {
+    /** Used by a task to receive messages. */
+    private class ReceiveTask implements RunnableTask {
 
         /** The byte array used to store received messages. */
         private final byte[] buf;
@@ -38,8 +38,8 @@ public class UdpChannel extends SocketIoChannel {
         /** The Datagram Packet used to receive messages. */
         private final DatagramPacket packet;
 
-        /** Constructs a new ReceiveRunnable. */
-        public ReceiveRunnable() {
+        /** Constructs a new ReceiveTask. */
+        public ReceiveTask() {
             buf = new byte[64 * 1024];
             packet = new DatagramPacket(buf, buf.length);
         }
@@ -85,7 +85,7 @@ public class UdpChannel extends SocketIoChannel {
     /**
      * Constructs a new input only UDP IO Channel.
      * 
-     * @param id           The ID of this IO Thread
+     * @param id           The ID of this IO Channel
      * @param ioType       The input/output status of this channel
      * @param localAddress The local address to which this socket will be bound. If
      *                     null "localhost" will be used
@@ -99,7 +99,7 @@ public class UdpChannel extends SocketIoChannel {
     /**
      * Constructs a new output only UDP IO Channel.
      * 
-     * @param id            The ID of this IO Thread
+     * @param id            The ID of this IO Channel
      * @param ioType        The input/output status of this channel
      * @param localAddress  The local address to which this socket will be bound. If
      *                      null "localhost" will be used
@@ -115,11 +115,11 @@ public class UdpChannel extends SocketIoChannel {
     /**
      * Creates a new input only UDP IO Channel.
      * 
-     * @param id             The ID of this IO Thread
+     * @param id             The ID of this IO Channel
      * @param messageHandler Used to notify clients of received data
      * @param localAddress   The local address to which this socket will be bound.
      *                       If null "localhost" will be used
-     * @return a new input only UDP IO Thread
+     * @return a new input only UDP IO Channel
      */
     public static UdpChannel createInputChannel(String id, Consumer<MessageBuffer> messageHandler,
             InetSocketAddress localAddress) {
@@ -129,21 +129,21 @@ public class UdpChannel extends SocketIoChannel {
     }
 
     /**
-     * Creates a new input only UDP IO Thread.
+     * Creates a new input only UDP IO Channel.
      * 
-     * @param id           The ID of this IO Thread
+     * @param id           The ID of this IO Channel
      * @param localAddress The local address to which this socket will be bound. If
      *                     null "localhost" will be used
-     * @return a new input only UDP IO Thread
+     * @return a new input only UDP IO Channel
      */
     public static UdpChannel createInputChannel(String id, InetSocketAddress localAddress) {
         return new UdpChannel(id, IoType.INPUT_ONLY, localAddress);
     }
 
     /**
-     * Constructs a new output only UDP IO Thread.
+     * Constructs a new output only UDP IO Channel.
      * 
-     * @param id            The ID of this IO Thread
+     * @param id            The ID of this IO Channel
      * @param localAddress  The local address to which this socket will be bound. If
      *                      null "localhost" will be used
      * @param remoteAddress The remote address to which messages will be sent
@@ -185,7 +185,7 @@ public class UdpChannel extends SocketIoChannel {
         }
         
         if (getIoType().isInput()) {
-            receiveFuture = LongLivedTask.create(getId() + "ReceiveThread", new ReceiveRunnable()).start();
+            receiveFuture = LongLivedTask.create(getId() + "ReceiveTask", new ReceiveTask()).start();
         }
         setState(ChannelState.CONNECTED);
 

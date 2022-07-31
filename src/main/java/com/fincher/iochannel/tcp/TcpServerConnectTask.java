@@ -21,9 +21,9 @@ import com.fincher.thread.CallableTask;
  * @author Brian Fincher
  *
  */
-class TcpServerConnectRunnable implements CallableTask<Socket> {
+class TcpServerConnectTask implements CallableTask<Socket> {
 
-    private static final Logger LOG = Utilities.getInstance().getLogger(TcpServerConnectRunnable.class);
+    private static final Logger LOG = Utilities.getInstance().getLogger(TcpServerConnectTask.class);
     
     @FunctionalInterface
     interface CheckedSupplier extends Supplier<ServerSocket> {
@@ -45,7 +45,7 @@ class TcpServerConnectRunnable implements CallableTask<Socket> {
     // This factory is only used for unit testing purposes
     static CheckedSupplier serverSocketFactory = DEFAULT_SERVER_SOCKET_FACTORY;
 
-    /** Should this thread continue to execute. */
+    /** Should this task continue to execute. */
     private boolean continueExecution = true;
 
     /** The parent TCP Server object. */
@@ -58,12 +58,12 @@ class TcpServerConnectRunnable implements CallableTask<Socket> {
     private boolean serverSocketConnected = false;
     
     /**
-     * Construct a new TcpServerConnectRunnable.
+     * Construct a new TcpServerConnectTask.
      * 
      * @param tcpServer The parent TCP Server object
      * @throws ChannelException If an error occurs while creating the socket
      */
-    TcpServerConnectRunnable(TcpServerChannel tcpServer, ServerSocket serverSocket) throws ChannelException {
+    TcpServerConnectTask(TcpServerChannel tcpServer, ServerSocket serverSocket) throws ChannelException {
         this.tcpServer = tcpServer;
         this.serverSocket = serverSocket;
 
@@ -75,14 +75,14 @@ class TcpServerConnectRunnable implements CallableTask<Socket> {
     }
 
     /**
-     * Construct a new TcpServerConnectRunnable.
+     * Construct a new TcpServerConnectTask.
      * 
      * @param tcpServer The parent TCP Server object
      * @throws ChannelException If an error occurs while creating the socket
      */
-    static TcpServerConnectRunnable create(TcpServerChannel tcpServer) throws ChannelException {
+    static TcpServerConnectTask create(TcpServerChannel tcpServer) throws ChannelException {
         try {
-            return new TcpServerConnectRunnable(tcpServer, serverSocketFactory.checkedGet());
+            return new TcpServerConnectTask(tcpServer, serverSocketFactory.checkedGet());
         } catch (ChannelException ce) {
             throw ce;
         } catch (IOException e) {
@@ -91,7 +91,7 @@ class TcpServerConnectRunnable implements CallableTask<Socket> {
     }
 
     /**
-     * Should this thread continue to execute.
+     * Should this task continue to execute.
      * 
      * @return true if execution should continue
      */
@@ -100,7 +100,7 @@ class TcpServerConnectRunnable implements CallableTask<Socket> {
         return continueExecution;
     }
 
-    /** Called when the parent thread is terminating. */
+    /** Called when the parent task is terminating. */
     @Override
     public void terminate() {
         if (serverSocket != null) {

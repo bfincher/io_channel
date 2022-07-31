@@ -90,8 +90,8 @@ public class TcpClientChannel extends TcpChannel {
 
     /** Gets the Runnable used to create a connect thread. */
     @Override
-    protected TcpClientConnectRunnable getConnectRunnable() {
-        return new TcpClientConnectRunnable(this, remoteAddress);
+    protected TcpClientConnectTask getConnectTask() {
+        return new TcpClientConnectTask(this, remoteAddress);
     }
 
     /**
