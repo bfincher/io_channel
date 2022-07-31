@@ -1,33 +1,35 @@
 buildscript {
-    repositories {
-        mavenLocal()
-        if (project.hasProperty('localNexus')) {
-            maven {
-                url "${localNexus}"
-                allowInsecureProtocol = true
-            }
-        } else {
-            mavenCentral()
-        }
+  repositories {
+    mavenLocal()
+    if (project.hasProperty('localNexus')) {
+      maven {
+        url "${localNexus}"
+      }
+    } else {
+      mavenCentral()
     }
+  }
 
-    dependencies {
-        classpath 'fincher.java.eclipse:fincher.java.eclipse.gradle.plugin:0.0.3'
-        classpath 'fincher.java.checkstyle:fincher.java.checkstyle.gradle.plugin:0.0.1'
-    }
+  dependencies {
+    classpath 'com.fincher:gradle-utilities:0.1.2-SNAPSHOT'
+    classpath 'com.fincher:gradle-release:0.1.1'
+  }
 }
 
+import com.fincher.gradle.jenkinsfile.CreateJenkinsfileTask
 
 plugins {
-    id 'java'
-    id 'maven-publish'
-    id "org.sonarqube" version "2.8"
-    id 'jacoco'
-    id "net.researchgate.release" version "2.6.0"
+  id 'java'
+  id 'maven-publish'
+  id 'jacoco'
+  id 'eclipse'
+  id "com.diffplug.spotless" version "6.7.2"
+  id 'checkstyle'
 }
 
-apply plugin: com.fincher.gradle.eclipse.EclipseSettings
-apply plugin: com.fincher.gradle.checkstyle.CheckstyleConfigPlugin
+apply plugin: 'com.fincher.java.eclipse'
+apply plugin: 'com.fincher.java.checkstyle'
+apply plugin: 'com.fincher.release'
 
 group = 'com.fincher'
 description = 'Input / Output channels'
@@ -35,82 +37,88 @@ sourceCompatibility = 1.17
 targetCompatibility = 1.17
 
 repositories {
-    mavenLocal()
-    if (project.hasProperty('localNexus')) {
-        maven {
-            url "${localNexus}"
-            allowInsecureProtocol = true
-        }
-    } else {
-        mavenCentral()
+  mavenLocal()
+  if (project.hasProperty('localNexus')) {
+    maven {
+      url "${localNexus}"
     }
+  } else {
+    mavenCentral()
+  }
 }
 
 dependencies {
-    implementation 'com.fincher:java-thread:3.0.0'
-    implementation 'com.google.guava:guava:31.1-jre'
-    implementation 'org.apache.logging.log4j:log4j-slf4j-impl:2.17.2'
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
-    testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
-    testImplementation 'org.awaitility:awaitility:4.2.0'
-    testImplementation 'org.mockito:mockito-core:4.4.0'
+  implementation 'com.fincher:java-thread:4.1.0'
+  implementation 'com.google.guava:guava:31.1-jre'
+  implementation 'org.apache.logging.log4j:log4j-slf4j-impl:2.18.0'
+  testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
+  testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
+  testImplementation 'org.awaitility:awaitility:4.2.0'
+  testImplementation 'org.mockito:mockito-core:4.4.0'
 }
 
 test {
-    useJUnitPlatform()
+  useJUnitPlatform()
 }
 
 jacocoTestReport {
-    reports {
-        xml.required=true
-    }
+  reports {
+    xml.required=true
+  }
 }
 
 test.finalizedBy jacocoTestReport
 
 task sourcesJar(type: Jar) {
-    from sourceSets.main.allJava
-    archiveClassifier.set("sources")
+  from sourceSets.main.allJava
+  archiveClassifier.set("sources")
 }
 
-publishing {
+if (project.hasProperty("publishUsername") && 
+    project.hasProperty("publishPassword") &&
+    project.hasProperty("publishSnapshotUrl") &&
+    project.hasProperty("publishReleaseUrl")) {
+  publishing {
     publications {
-        mavenJava(MavenPublication) {
-	        from components.java
-	        artifact tasks.sourcesJar
-	    }
+      mavenJava(MavenPublication) {
+        from components.java
+	    artifact tasks.sourcesJar
+	  }
     }
 
     repositories {
-        maven {
-            credentials {
-                username = "${publishUsername}"
-                password = "${publishPassword}"
-            }
-		
-            if (project.version.endsWith('-SNAPSHOT')) {
-                url "${publishSnapshotUrl}"
-            } else {
-                url "${publishReleaseUrl}repositories/releases"
-            }
-
-            allowInsecureProtocol = true
-
-            authentication {
-                basic(BasicAuthentication)
-            }
+      maven {
+        if (project.hasProperty("publishUsername") && project.hasProperty("publishPassword")) { 
+          credentials {
+            username = "${publishUsername}"
+            password = "${publishPassword}"
+          }
         }
+		
+       if (project.version.endsWith('-SNAPSHOT')) {
+	     url "${publishSnapshotUrl}"
+	    } else {
+	      url "${publishReleaseUrl}"
+	    }
+        authentication {
+          basic(BasicAuthentication)
+        }
+      }
     }
+  }
 }
 
 tasks.checkstyleMain.dependsOn("copyCheckstyleConfig")
 
 checkstyle {
-    configDirectory = "${buildDir}/generated/checkstyleConfig" as File
+  configDirectory = "${buildDir}/generated/checkstyleConfig" as File
 }
 
 release {
-    git {
-        requireBranch = ''
-    }
+  if (project.hasProperty('sshKeyFile')) {
+    gitRepositorySshPrivateKeyFile = file("${sshKeyFile}")
+  }
+}
+
+tasks.register('generateJenkinsfile', CreateJenkinsfileTask) {
 }
