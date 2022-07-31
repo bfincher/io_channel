@@ -12,8 +12,8 @@ buildscript {
     }
 
     dependencies {
-        classpath 'fincher.java.eclipse:fincher.java.eclipse.gradle.plugin:0.0.3'
-        classpath 'fincher.java.checkstyle:fincher.java.checkstyle.gradle.plugin:0.0.1'
+//        classpath 'fincher.java.eclipse:fincher.java.eclipse.gradle.plugin:0.0.3'
+//        classpath 'fincher.java.checkstyle:fincher.java.checkstyle.gradle.plugin:0.0.1'
     }
 }
 
@@ -26,8 +26,8 @@ plugins {
     id "net.researchgate.release" version "2.6.0"
 }
 
-apply plugin: com.fincher.gradle.eclipse.EclipseSettings
-apply plugin: com.fincher.gradle.checkstyle.CheckstyleConfigPlugin
+//apply plugin: com.fincher.gradle.eclipse.EclipseSettings
+//apply plugin: com.fincher.gradle.checkstyle.CheckstyleConfigPlugin
 
 group = 'com.fincher'
 description = 'Input / Output channels'
@@ -47,7 +47,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.fincher:java-thread:3.0.0'
+    implementation 'com.fincher:java-thread:4.1.0'
     implementation 'com.google.guava:guava:31.1-jre'
     implementation 'org.apache.logging.log4j:log4j-slf4j-impl:2.17.2'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
@@ -103,11 +103,11 @@ publishing {
     }
 }
 
-tasks.checkstyleMain.dependsOn("copyCheckstyleConfig")
+//tasks.checkstyleMain.dependsOn("copyCheckstyleConfig")
 
-checkstyle {
-    configDirectory = "${buildDir}/generated/checkstyleConfig" as File
-}
+//checkstyle {
+//    configDirectory = "${buildDir}/generated/checkstyleConfig" as File
+//}
 
 release {
     git {

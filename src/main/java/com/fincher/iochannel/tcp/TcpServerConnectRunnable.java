@@ -13,7 +13,7 @@ import com.fincher.iochannel.ChannelException;
 import com.fincher.iochannel.ChannelRuntimeException;
 import com.fincher.iochannel.ChannelState;
 import com.fincher.iochannel.Utilities;
-import com.fincher.thread.MyCallableIfc;
+import com.fincher.thread.CallableTask;
 
 /**
  * Used to connect a TCP Server socket.
@@ -21,7 +21,7 @@ import com.fincher.thread.MyCallableIfc;
  * @author Brian Fincher
  *
  */
-class TcpServerConnectRunnable implements MyCallableIfc<Socket> {
+class TcpServerConnectRunnable implements CallableTask<Socket> {
 
     private static final Logger LOG = Utilities.getInstance().getLogger(TcpServerConnectRunnable.class);
     

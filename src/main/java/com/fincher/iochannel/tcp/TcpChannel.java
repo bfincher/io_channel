@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Future;
 
 import org.slf4j.Logger;
 
@@ -19,9 +20,9 @@ import com.fincher.iochannel.Listeners;
 import com.fincher.iochannel.MessageBuffer;
 import com.fincher.iochannel.SocketIoChannel;
 import com.fincher.iochannel.Utilities;
-import com.fincher.thread.MyCallableIfc;
-import com.fincher.thread.MyRunnableIfc;
-import com.fincher.thread.MyThread;
+import com.fincher.thread.CallableTask;
+import com.fincher.thread.LongLivedTask;
+import com.fincher.thread.RunnableTask;
 import com.google.common.base.Preconditions;
 
 /** An IO Thread implementation of TCP sockets. */
@@ -36,10 +37,11 @@ public abstract class TcpChannel extends SocketIoChannel implements TcpChannelIf
     protected final Map<String, Socket> sockets = new HashMap<>();
 
     /** A map of receive threads. */
-    private final Map<String, MyThread> receiveThreads = new HashMap<>();
+    private final Map<String, Future<?>> receiveThreads = new HashMap<>();
 
-    /** The thread used to connect the socket. */
-    protected MyThread connectThread;
+    protected Future<Socket> connectThreadFuture;
+    
+    protected CallableTask<Socket> connectTask;
 
     /** The TCP Socket Options. */
     private TcpSocketOptions socketOptions = new TcpSocketOptions();    
@@ -52,7 +54,7 @@ public abstract class TcpChannel extends SocketIoChannel implements TcpChannelIf
 
     private static final class DefaultReceiveRunnableFactory implements ReceiveRunnableFactory {
         @Override
-        public MyRunnableIfc createReceiveRunnable(String id, Socket socket, StreamIo streamIo, TcpChannel parent)
+        public RunnableTask createReceiveRunnable(String id, Socket socket, StreamIo streamIo, TcpChannel parent)
                 throws ChannelException {
             return new ReceiveRunnable(id, socket, streamIo, parent);
         }
@@ -114,8 +116,9 @@ public abstract class TcpChannel extends SocketIoChannel implements TcpChannelIf
     protected void performConnect() throws ChannelException {
         LOG.debug("{} Setting state to CONNECTING", getId());
         setState(ChannelState.CONNECTING);
-        connectThread = new MyThread(getId() + "ConnectThread", getConnectRunnable());
-        connectThread.start();
+        
+        connectTask = getConnectRunnable();
+        connectThreadFuture = LongLivedTask.create(getId() + "ConnectThread", connectTask).start();
     }
 
     /**
@@ -125,7 +128,7 @@ public abstract class TcpChannel extends SocketIoChannel implements TcpChannelIf
      * @throws ChannelException If an error occurs while building the connect
      *                          runnable
      */
-    protected abstract MyCallableIfc<Socket> getConnectRunnable() throws ChannelException;
+    protected abstract CallableTask<Socket> getConnectRunnable() throws ChannelException;
 
     /**
      * Is this socket connected.
@@ -144,13 +147,11 @@ public abstract class TcpChannel extends SocketIoChannel implements TcpChannelIf
         LOG.debug("{} setting state to CLOSED", getId());
         setState(ChannelState.CLOSED);
 
-        if (connectThread != null) {
-            connectThread.terminate();
+        if (connectThreadFuture != null) {
+            connectThreadFuture.cancel(true);
         }
 
-        for (MyThread receiveThread : receiveThreads.values()) {
-            receiveThread.terminate();
-        }
+        receiveThreads.values().forEach(future -> future.cancel(true));
 
         synchronized (sockets) {
             for (Socket socket : sockets.values()) {
@@ -286,11 +287,10 @@ public abstract class TcpChannel extends SocketIoChannel implements TcpChannelIf
 
         if (getIoType().isInput()) {
             String receiveThreadId = socketId;
-            MyRunnableIfc receiveRunnable = receiveRunnableFactory.createReceiveRunnable(receiveThreadId, socket,
+            RunnableTask receiveRunnable = receiveRunnableFactory.createReceiveRunnable(receiveThreadId, socket,
                     streamIo, this);
-            MyThread receiveThread = new MyThread(receiveThreadId, receiveRunnable);
-            receiveThreads.put(socketId, receiveThread);
-            receiveThread.start();
+            Future<Void> receiveTask = LongLivedTask.create(receiveThreadId, receiveRunnable).start();
+            receiveThreads.put(socketId, receiveTask);
         }
 
         LOG.debug("{} setting state to CONNECTED", getId());
@@ -319,9 +319,9 @@ public abstract class TcpChannel extends SocketIoChannel implements TcpChannelIf
             setState(ChannelState.CONNECTING);
         }
 
-        MyThread receiveThread = receiveThreads.remove(getReceiveThreadId(socketId));
+        Future<?> receiveThread = receiveThreads.remove(getReceiveThreadId(socketId));
         if (receiveThread != null) {
-            receiveThread.terminate();
+            receiveThread.cancel(true);
         }
 
         try {

@@ -44,7 +44,7 @@ public class TcpServerConnectRunnableTest {
 
     @BeforeEach
     public void before() {
-        MockitoAnnotations.initMocks(this);
+        MockitoAnnotations.openMocks(this);
         socketOptions = mock(TcpSocketOptions.class);
         when(server.getId()).thenReturn("id");
         when(server.getSocketOptions()).thenReturn(socketOptions);

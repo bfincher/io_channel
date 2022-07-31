@@ -6,6 +6,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetSocketAddress;
 import java.net.SocketTimeoutException;
+import java.util.concurrent.Future;
 import java.util.function.Consumer;
 
 import org.slf4j.Logger;
@@ -16,8 +17,8 @@ import com.fincher.iochannel.IoType;
 import com.fincher.iochannel.MessageBuffer;
 import com.fincher.iochannel.SocketIoChannel;
 import com.fincher.iochannel.Utilities;
-import com.fincher.thread.MyRunnableIfc;
-import com.fincher.thread.MyThread;
+import com.fincher.thread.LongLivedTask;
+import com.fincher.thread.RunnableTask;
 import com.google.common.base.Preconditions;
 
 /**
@@ -29,7 +30,7 @@ import com.google.common.base.Preconditions;
 public class UdpChannel extends SocketIoChannel {
 
     /** Used by a thread to receive messages. */
-    private class ReceiveRunnable implements MyRunnableIfc {
+    private class ReceiveRunnable implements RunnableTask {
 
         /** The byte array used to store received messages. */
         private final byte[] buf;
@@ -76,8 +77,7 @@ public class UdpChannel extends SocketIoChannel {
     /** The underlying UDP socket. */
     protected DatagramSocket socket;
 
-    /** The thread used to receive messages. */
-    private MyThread receiveThread;
+    private Future<?> receiveFuture;
 
     /** The UDP Socket Options. */
     protected UdpSocketOptions socketOptions = new UdpSocketOptions();
@@ -185,8 +185,7 @@ public class UdpChannel extends SocketIoChannel {
         }
         
         if (getIoType().isInput()) {
-            receiveThread = new MyThread(getId() + "ReceiveThread", new ReceiveRunnable());
-            receiveThread.start();
+            receiveFuture = LongLivedTask.create(getId() + "ReceiveThread", new ReceiveRunnable()).start();
         }
         setState(ChannelState.CONNECTED);
 
@@ -222,8 +221,8 @@ public class UdpChannel extends SocketIoChannel {
 
     @Override
     public void close() throws ChannelException {
-        if (receiveThread != null) {
-            receiveThread.terminate();
+        if (receiveFuture != null) {
+            receiveFuture.cancel(true);
         }
 
         if (socket != null) {
