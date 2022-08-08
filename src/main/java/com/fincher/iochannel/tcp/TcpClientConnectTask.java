@@ -15,11 +15,11 @@ import com.fincher.thread.CallableTask;
  * @author Brian Fincher
  *
  */
-class TcpClientConnectRunnable implements CallableTask<Socket> {
+class TcpClientConnectTask implements CallableTask<Socket> {
 
-    private static final Logger LOG = Utilities.getInstance().getLogger(TcpClientConnectRunnable.class);
+    private static final Logger LOG = Utilities.getInstance().getLogger(TcpClientConnectTask.class);
 
-    /** Should this thread continue to execute. */
+    /** Should this task continue to execute. */
     private boolean continueExecution = true;
 
     /** The parent object. */
@@ -29,12 +29,12 @@ class TcpClientConnectRunnable implements CallableTask<Socket> {
     private final InetSocketAddress remoteAddress;
 
     /**
-     * Constructs a new TcpClientConnectRunnable.
+     * Constructs a new TcpClientConnectTask.
      * 
      * @param parent        The parent object
      * @param remoteAddress The remote address to which this client is trying to connect
      */
-    TcpClientConnectRunnable(TcpClientChannel parent, InetSocketAddress remoteAddress) {
+    TcpClientConnectTask(TcpClientChannel parent, InetSocketAddress remoteAddress) {
         this.parent = parent;
         this.remoteAddress = remoteAddress;
     }

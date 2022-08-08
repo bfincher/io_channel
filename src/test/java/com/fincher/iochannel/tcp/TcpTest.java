@@ -220,8 +220,8 @@ public class TcpTest extends IoChannelTesterBase<MessageBuffer> {
         assertFalse(server.removeMessageListener(null));
 
         try {
-            ReceiveRunnableFactory factory = mock(ReceiveRunnableFactory.class);
-            server.setReceiveRunnableFactory(factory);
+            ReceiveTaskFactory factory = mock(ReceiveTaskFactory.class);
+            server.setReceiveTaskFactory(factory);
             fail("Should have got exception");
         } catch (IllegalStateException e) {
             // expected

@@ -11,9 +11,9 @@ import org.slf4j.Logger;
 import com.fincher.iochannel.ChannelException;
 import com.fincher.iochannel.Utilities;
 
-class ReceiveRunnable extends AbstractReceiveRunnable {
+class ReceiveTask extends AbstractReceiveTask {
 
-    private static final Logger LOG = Utilities.getInstance().getLogger(ReceiveRunnable.class);
+    private static final Logger LOG = Utilities.getInstance().getLogger(ReceiveTask.class);
 
     /** The byte array used to receive data. */
     private byte[] buf = new byte[4096];
@@ -26,13 +26,13 @@ class ReceiveRunnable extends AbstractReceiveRunnable {
     private final InputStream inputStream;
 
     /**
-     * Creates a new ReceiveRunnable object.
+     * Creates a new ReceiveTask object.
      * 
-     * @param id     The ID of this ReceiveRunnable
+     * @param id     The ID of this ReceiveTask
      * @param socket The TCP Socket
      * @throws ChannelException If an error occurs while creating the socket connection
      */
-    ReceiveRunnable(String id, Socket socket, StreamIo streamIo, TcpChannel parent)
+    ReceiveTask(String id, Socket socket, StreamIo streamIo, TcpChannel parent)
             throws ChannelException {
         super(id, socket, parent);
         this.streamIo = streamIo;
@@ -86,7 +86,7 @@ class ReceiveRunnable extends AbstractReceiveRunnable {
     }
 
     /**
-     * The body of the thread. Reads data from the socket and places the received messages on a
+     * The body of the task. Reads data from the socket and places the received messages on a
      * queue
      */
     @Override

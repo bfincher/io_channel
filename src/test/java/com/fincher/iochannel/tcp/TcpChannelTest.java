@@ -22,11 +22,11 @@ public class TcpChannelTest {
     @Test
     public void testSetReceiveRunnable() throws Exception {
         TestImpl impl = new TestImpl();
-        impl.setReceiveRunnableFactory(null);
+        impl.setReceiveTaskFactory(null);
         
         impl.setState(ChannelState.CONNECTED);
         try {
-            impl.setReceiveRunnableFactory(null);
+            impl.setReceiveTaskFactory(null);
             fail("Should have got exception");
         } catch (IllegalStateException e) {
             // expected
@@ -101,7 +101,7 @@ public class TcpChannelTest {
         }
         
         @Override
-        protected CallableTask<Socket> getConnectRunnable() {
+        protected CallableTask<Socket> getConnectTask() {
             return null;
         }
         

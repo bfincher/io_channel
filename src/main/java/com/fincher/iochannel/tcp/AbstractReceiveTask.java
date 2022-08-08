@@ -9,11 +9,11 @@ import com.fincher.iochannel.MessageBuffer;
 import com.fincher.iochannel.Utilities;
 import com.fincher.thread.RunnableTask;
 
-abstract class AbstractReceiveRunnable implements RunnableTask {
+abstract class AbstractReceiveTask implements RunnableTask {
 
-    private static final Logger LOGGER = Utilities.getInstance().getLogger(AbstractReceiveRunnable.class);
+    private static final Logger LOGGER = Utilities.getInstance().getLogger(AbstractReceiveTask.class);
 
-    /** Should this thread continue to execute. */
+    /** Should this task continue to execute. */
     private boolean continueExecution = true;
 
     private Socket socket;
@@ -24,13 +24,13 @@ abstract class AbstractReceiveRunnable implements RunnableTask {
 
     protected final TcpChannel parent;
 
-    /** Constructs a new AbstractReceiveRunnable.
+    /** Constructs a new AbstractReceiveTask.
      * 
-     * @param id The ID of this ReceiveRunnable
+     * @param id The ID of this ReceiveTask
      * @param socket The TCP socket
      * @param parent The parent TCPChannel
      */
-    AbstractReceiveRunnable(String id, Socket socket, TcpChannel parent) {
+    AbstractReceiveTask(String id, Socket socket, TcpChannel parent) {
         this.id = id;
         this.socket = socket;
         this.parent = parent;

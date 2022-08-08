@@ -21,7 +21,7 @@ public class ReceiveRunnableTest {
         Socket socket = mock(Socket.class);
         when(socket.getInputStream()).thenThrow(IOException.class);
         
-        assertThrows(IOException.class, () -> new ReceiveRunnable("id", socket, new SimpleStreamIo(), null));
+        assertThrows(IOException.class, () -> new ReceiveTask("id", socket, new SimpleStreamIo(), null));
     }
     
     @Test
@@ -35,10 +35,10 @@ public class ReceiveRunnableTest {
         when(inputStream.read(any(byte[].class), anyInt(), anyInt())).thenReturn(4097);
         when(socket.getInputStream()).thenReturn(inputStream);
         
-        ReceiveRunnable rr = new ReceiveRunnable("id", socket, streamIo, parent);
+        ReceiveTask rr = new ReceiveTask("id", socket, streamIo, parent);
         rr.run();
         
-        Field f = ReceiveRunnable.class.getDeclaredField("buf");
+        Field f = ReceiveTask.class.getDeclaredField("buf");
         f.setAccessible(true);
         byte[] buf = (byte[])f.get(rr);
         assertEquals(4197, buf.length);
