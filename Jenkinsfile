@@ -75,7 +75,7 @@ pipeline {
             publishParams += ' -PpublishSnapshotUrl=https://nexus.fincherhome.com/nexus/content/repositories/snapshots'
             publishParams += ' -PpublishReleaseUrl=https://nexus.fincherhome.com/nexus/content/repositories/releases'
             withCredentials([usernamePassword(credentialsId: 'nexus.fincherhome.com', usernameVariable: 'publishUsername', passwordVariable: 'publishPassword')]) {
-              sh './gradlew publish  ${publishParams} -s --build-cache -PlocalNexus=https://nexus.fincherhome.com/nexus/content/groups/public'
+              sh "./gradlew publish  ${publishParams} -s --build-cache -PlocalNexus=https://nexus.fincherhome.com/nexus/content/groups/public"
             }
           }
 
