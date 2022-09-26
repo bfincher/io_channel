@@ -11,12 +11,10 @@ buildscript {
   }
 
   dependencies {
-    classpath 'com.fincher:gradle-utilities:0.1.2-SNAPSHOT'
+    classpath 'com.fincher:gradle-utilities:0.2.0'
     classpath 'com.fincher:gradle-release:0.1.1'
   }
 }
-
-import com.fincher.gradle.jenkinsfile.CreateJenkinsfileTask
 
 plugins {
   id 'java'
@@ -118,7 +116,4 @@ release {
   if (project.hasProperty('sshKeyFile')) {
     gitRepositorySshPrivateKeyFile = file("${sshKeyFile}")
   }
-}
-
-tasks.register('generateJenkinsfile', CreateJenkinsfileTask) {
 }
