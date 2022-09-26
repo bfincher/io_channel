@@ -11,19 +11,17 @@ buildscript {
   }
 
   dependencies {
-    classpath 'com.fincher:gradle-utilities:0.1.2-SNAPSHOT'
+    classpath 'com.fincher:gradle-utilities:0.2.0'
     classpath 'com.fincher:gradle-release:0.1.1'
   }
 }
-
-import com.fincher.gradle.jenkinsfile.CreateJenkinsfileTask
 
 plugins {
   id 'java'
   id 'maven-publish'
   id 'jacoco'
   id 'eclipse'
-  id "com.diffplug.spotless" version "6.10.0"
+  id "com.diffplug.spotless" version "6.11.0"
   id 'checkstyle'
 }
 
@@ -50,9 +48,9 @@ repositories {
 dependencies {
   implementation 'com.fincher:java-thread:4.2.1'
   implementation 'com.google.guava:guava:31.1-jre'
-  implementation 'org.apache.logging.log4j:log4j-slf4j-impl:2.18.0'
+  implementation 'org.apache.logging.log4j:log4j-slf4j-impl:2.19.0'
   testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.1'
-  testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.9.0'
+  testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.9.1'
   testImplementation 'org.awaitility:awaitility:4.2.0'
   testImplementation 'org.mockito:mockito-core:4.8.0'
 }
@@ -118,7 +116,4 @@ release {
   if (project.hasProperty('sshKeyFile')) {
     gitRepositorySshPrivateKeyFile = file("${sshKeyFile}")
   }
-}
-
-tasks.register('generateJenkinsfile', CreateJenkinsfileTask) {
 }
