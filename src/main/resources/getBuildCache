@@ -1,0 +1,42 @@
+#!/bin/bash
+
+LOCK_EXPIRATION_SECONDS=86400 # one day
+
+function createLockFile {
+    local currentTime=$(date +%s)
+    echo $currentTime > $1/.lock
+    echo $1
+}
+
+function deleteLockIfExpired {
+    local currentTime=$(date +%s)
+    if [ -f $1/.lock ]; then
+        local lockTime=$(cat $1/.lock)
+        local delta=`expr $currentTime - $lockTime`
+        echo "BKF delta = $delta"
+        if (( delta > LOCK_EXPIRATION_SECONDS )); then
+            rm $1/.lock
+        fi
+    fi
+}
+
+baseDir=$1
+cacheName=$2
+
+suffixes="1 2 3 4 5 6 7 8 9"
+for suffix in $suffixes; do
+    dir=${baseDir}/${cacheName}-${suffix}
+    if [ -d $dir ]; then
+        deleteLockIfExpired $dir
+        if [ ! -f $dir/.lock ]; then
+            createLockFile $dir
+            exit 0
+        fi
+    else
+        mkdir $dir
+        createLockFile $dir
+        exit 0
+    fi
+done
+
+return -1

@@ -1,5 +1,6 @@
 def performRelease = false
 def gradleOpts = "-s --build-cache -PlocalNexus=https://nexus.fincherhome.com/nexus/content/groups/public"
+def buildCacheDir = ""
 
 pipeline {
   agent { label 'docker-jdk17' }
@@ -10,6 +11,8 @@ pipeline {
     booleanParam(name: 'minorRelease', defaultValue: false, description: 'Perform a minor release')
     booleanParam(name: 'patchRelease', defaultValue: false, description: 'Perform a patch release')
     booleanParam(name: 'publish', defaultValue: false, description: 'Publish to nexus')
+    string(name: 'baseBuildCacheDir', defaultValue: '/cache', description: 'Base build cache dir')
+    string(name: 'buildCacheName', defaultValue: 'default', description: 'Build cache name')
 
   }
 
@@ -18,6 +21,12 @@ pipeline {
       steps {
         script {
           
+          buildCacheDir = sh(
+              script: "src/main/resources/getBuildCache ${params.baseBuildCacheDir} ${params.buildCacheName}",
+              returnStdout: true)
+
+          gradleOpts = gradleOpts + " --gradle-user-home " + buildCacheDir
+
           def releaseOptionCount = 0;
           def prepareReleaseOptions = "";
           
@@ -83,6 +92,12 @@ pipeline {
           
         }
       }
+    }
+  }
+
+  post {
+    always {
+      sh("src/main/resources/releaseBuildCache ${buildCacheDir}")
     }
   }
 }
