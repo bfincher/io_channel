@@ -48,7 +48,7 @@ public class DelegatingTcpChannelTest {
         byte[] bytes = { 1, 2, 3 };
         channel.send(bytes);
         Mockito.verify(delegate, Mockito.times(1)).send(bytes);
-        
+
         channel.close();
 
     }
@@ -63,12 +63,10 @@ public class DelegatingTcpChannelTest {
             this.delegate = delegate;
         }
 
-
         @Override
         public TcpChannelIfc getDelegate() {
             return delegate;
         }
-
 
         @Override
         public String getId() {

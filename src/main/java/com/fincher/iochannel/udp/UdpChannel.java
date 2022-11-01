@@ -183,7 +183,7 @@ public class UdpChannel extends SocketIoChannel {
             }
 
         }
-        
+
         if (getIoType().isInput()) {
             receiveFuture = LongLivedTask.create(getId() + "ReceiveTask", new ReceiveTask()).start();
         }
@@ -197,7 +197,7 @@ public class UdpChannel extends SocketIoChannel {
             logger.info("{} Remote address = {}", getId(), remoteAddress);
         }
     }
-    
+
     protected long getBindExceptionSleepTimeMillis() {
         return 2000;
     }

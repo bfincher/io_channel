@@ -40,11 +40,11 @@ public abstract class TcpChannel extends SocketIoChannel implements TcpChannelIf
     private final Map<String, Future<?>> receiveTasks = new HashMap<>();
 
     protected Future<Socket> connectTaskFuture;
-    
+
     protected CallableTask<Socket> connectTask;
 
     /** The TCP Socket Options. */
-    private TcpSocketOptions socketOptions = new TcpSocketOptions();    
+    private TcpSocketOptions socketOptions = new TcpSocketOptions();
 
     private final Listeners<ConnectionEstablishedListener, String> connectionEstablishedListeners = new Listeners<>();
 
@@ -116,7 +116,7 @@ public abstract class TcpChannel extends SocketIoChannel implements TcpChannelIf
     protected void performConnect() throws ChannelException {
         LOG.debug("{} Setting state to CONNECTING", getId());
         setState(ChannelState.CONNECTING);
-        
+
         connectTask = getConnectTask();
         connectTaskFuture = LongLivedTask.create(getId() + "ConnectTask", connectTask).start();
     }
@@ -125,8 +125,7 @@ public abstract class TcpChannel extends SocketIoChannel implements TcpChannelIf
      * Gets the task object used to create a connect task.
      * 
      * @return the task object used to create a connect task
-     * @throws ChannelException If an error occurs while building the connect
-     *                          task
+     * @throws ChannelException If an error occurs while building the connect task
      */
     protected abstract CallableTask<Socket> getConnectTask() throws ChannelException;
 
@@ -372,7 +371,7 @@ public abstract class TcpChannel extends SocketIoChannel implements TcpChannelIf
     protected TcpSocketOptions getSocketOptions() {
         return socketOptions;
     }
-    
+
     protected Duration getSocketSleepTime() {
         return Duration.ofMillis(socketOptions.getTimeout().orElse(0));
     }

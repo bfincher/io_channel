@@ -3,22 +3,22 @@ package com.fincher.iochannel;
 import java.util.List;
 
 /**
- * An interface representing messages exchanged between components. This can either be MessageIfc
- * (internal POJOs) or MessageBuffer (external encoded messages)
+ * An interface representing messages exchanged between components. This can
+ * either be MessageIfc (internal POJOs) or MessageBuffer (external encoded
+ * messages)
  * 
  * @author Brian Fincher
  *
  */
 public interface Exchangeable {
-    
+
     /**
      * Gets the time at which this message was instantiated.
      * 
      * @return the time at which this message was instantiated
      */
     public long getOriginationTime();
-    
-    
+
     /**
      * get the transaction ID for this exchangeable.
      * 

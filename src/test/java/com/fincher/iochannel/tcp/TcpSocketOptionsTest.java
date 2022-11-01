@@ -21,7 +21,6 @@ public class TcpSocketOptionsTest extends SocketOptionsTest {
         return new TcpSocketOptions();
     }
 
-
     @Override
     protected void init() {
         super.init();
@@ -29,7 +28,6 @@ public class TcpSocketOptionsTest extends SocketOptionsTest {
         tcpSo.setKeepAlive(true);
         tcpSo.setTcpNoDelay(true);
     }
-
 
     @Test
     public void testConstruct() {
@@ -43,7 +41,6 @@ public class TcpSocketOptionsTest extends SocketOptionsTest {
         assertFalse(tcpSo.getKeepAlive());
         assertFalse(tcpSo.getTcpNoDelay());
     }
-
 
     @Test
     public void setApplySocketOptionsServer() throws Exception {
@@ -73,7 +70,6 @@ public class TcpSocketOptionsTest extends SocketOptionsTest {
             // expected
         }
     }
-
 
     @Test
     public void setApplySocketOptionsClient() throws Exception {

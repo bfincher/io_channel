@@ -31,8 +31,8 @@ public class MessageBuffer implements Exchangeable {
      * 
      * @param bytes  The encoded message bytes
      * @param offset The offset into the bytes array
-     * @param length The length of the bytes array from offset which should be copied into this
-     *               MessageBuffer
+     * @param length The length of the bytes array from offset which should be
+     *               copied into this MessageBuffer
      */
     public MessageBuffer(byte[] bytes, int offset, int length) {
         transactionId = TransactionIdFactory.getNextTid();
@@ -40,30 +40,29 @@ public class MessageBuffer implements Exchangeable {
         this.bytes = new byte[length];
         System.arraycopy(bytes, offset, this.bytes, 0, length);
     }
-    
-    
-    /** Constructs a new Message Buffer from the given byte arrays
+
+    /**
+     * Constructs a new Message Buffer from the given byte arrays
      * 
      * @param byteArrays The byte arrays
      */
-    public MessageBuffer(byte[]...byteArrays) {
+    public MessageBuffer(byte[]... byteArrays) {
         transactionId = TransactionIdFactory.getNextTid();
         originationTime = System.currentTimeMillis();
-        
+
         int length = 0;
-        for (byte[] byteArray: byteArrays) {
+        for (byte[] byteArray : byteArrays) {
             length += byteArray.length;
         }
-        
+
         this.bytes = new byte[length];
-        
+
         int pos = 0;
-        for (byte[] byteArray: byteArrays) {
+        for (byte[] byteArray : byteArrays) {
             System.arraycopy(byteArray, 0, this.bytes, pos, byteArray.length);
             pos += byteArray.length;
         }
     }
-
 
     /**
      * Get the encoded bytes.
@@ -115,7 +114,7 @@ public class MessageBuffer implements Exchangeable {
         sb.append(toHexString(bytes));
         return sb.toString();
     }
-    
+
     /**
      * Convert the array of bytes into a hexadecimal formatted string.
      * 
@@ -141,17 +140,17 @@ public class MessageBuffer implements Exchangeable {
         return sb.toString();
     }
 
-    
-    
-    /** Sets the ID of the channel from which this message was received.
+    /**
+     * Sets the ID of the channel from which this message was received.
      * 
      * @param channelId the ID of the channel from which this message was received
      */
     public void setReceivedFromIoChannelId(String channelId) {
         receivedFromIoChannel = channelId;
     }
-    
-    /** Gets the ID of the IO channel from which this message was received.
+
+    /**
+     * Gets the ID of the IO channel from which this message was received.
      * 
      * @return the ID of the IO channel from which this message was received
      */
@@ -159,7 +158,6 @@ public class MessageBuffer implements Exchangeable {
         return receivedFromIoChannel;
     }
 
-  
     /**
      * Convert the hex string into a MessageBuffer.
      * 

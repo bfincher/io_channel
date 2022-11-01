@@ -1,7 +1,8 @@
 package com.fincher.iochannel;
 
 /**
- * An enumeration of the different types of data that could be received by an IoChannel.
+ * An enumeration of the different types of data that could be received by an
+ * IoChannel.
  * 
  * @author Brian Fincher
  *

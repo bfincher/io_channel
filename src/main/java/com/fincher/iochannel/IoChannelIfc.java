@@ -64,7 +64,7 @@ public interface IoChannelIfc<T extends Exchangeable> extends Closeable {
     /**
      * Close this IO Channel.
      * 
-     * @throws ChannelException     If an error occurs while closing
+     * @throws ChannelException If an error occurs while closing
      */
     @Override
     public void close() throws ChannelException;

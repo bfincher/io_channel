@@ -32,7 +32,8 @@ class TcpClientConnectTask implements CallableTask<Socket> {
      * Constructs a new TcpClientConnectTask.
      * 
      * @param parent        The parent object
-     * @param remoteAddress The remote address to which this client is trying to connect
+     * @param remoteAddress The remote address to which this client is trying to
+     *                      connect
      */
     TcpClientConnectTask(TcpClientChannel parent, InetSocketAddress remoteAddress) {
         this.parent = parent;

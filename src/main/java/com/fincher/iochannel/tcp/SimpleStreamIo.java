@@ -1,8 +1,8 @@
 package com.fincher.iochannel.tcp;
 
 /**
- * Uses a simple scheme of prepending a 4 byte integer containing the length of the message before
- * sending.
+ * Uses a simple scheme of prepending a 4 byte integer containing the length of
+ * the message before sending.
  *
  * @author Brian Fincher
  *
@@ -52,8 +52,8 @@ public class SimpleStreamIo implements StreamIo {
     }
 
     /**
-     * Creates a 4 byte integer containing the length of the given bytes. This 4 bytes along with the
-     * given bytes are concatenated and returned
+     * Creates a 4 byte integer containing the length of the given bytes. This 4
+     * bytes along with the given bytes are concatenated and returned
      * 
      * @param bytes message bytes before pre-pending the length
      * @return the original bytes plus the 4 byte length pre-pended
@@ -86,7 +86,8 @@ public class SimpleStreamIo implements StreamIo {
     }
 
     /**
-     * Should the header be included as a part of the message that is placed on the socket's queue?.
+     * Should the header be included as a part of the message that is placed on the
+     * socket's queue?.
      * 
      * @return false
      */

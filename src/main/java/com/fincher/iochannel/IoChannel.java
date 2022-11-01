@@ -47,24 +47,20 @@ public abstract class IoChannel<T extends Exchangeable> implements IoChannelIfc<
         }
     }
 
-
     @Override
     public String getId() {
         return id;
     }
-
 
     @Override
     public final IoType getIoType() {
         return ioType;
     }
 
-
     @Override
     public ChannelState getState() {
         return state;
     }
-
 
     /**
      * Sets the state of this IO Channel.
@@ -74,7 +70,6 @@ public abstract class IoChannel<T extends Exchangeable> implements IoChannelIfc<
     protected void setState(ChannelState state) {
         this.state = state;
     }
-
 
     /**
      * Handle a received message.
@@ -88,43 +83,37 @@ public abstract class IoChannel<T extends Exchangeable> implements IoChannelIfc<
         listeners.getListenersThatMatch(mb).forEach(l -> l.accept(mb));
     }
 
-
     @Override
     public void addMessageListener(Consumer<T> listener) {
         Preconditions.checkState(ioType.isInput(), "Cannot set a message listener on an output only channel");
         Preconditions.checkNotNull(listener, "Listener cannot be null");
-        
+
         listeners.addListener(listener);
     }
-    
-    
+
     @Override
     public void addMessageListener(Consumer<T> listener, Predicate<T> predicate) {
         Preconditions.checkState(ioType.isInput(), "Cannot set a message listener on an output only channel");
         Preconditions.checkNotNull(listener, "Listener cannot be null");
         Preconditions.checkNotNull(predicate, "predicate cannot be null");
-        
+
         listeners.addListener(listener, predicate);
     }
-
 
     @Override
     public boolean removeMessageListener(Consumer<T> listener) {
         return listeners != null && listeners.removeListener(listener);
     }
 
-
     @Override
     public boolean isInput() {
         return ioType.isInput();
     }
 
-
     @Override
     public boolean isOutput() {
         return ioType.isOutput();
     }
-
 
     /**
      * Log the fact that this IoChannel is sending data.

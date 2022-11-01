@@ -19,10 +19,13 @@ public class SocketOptions {
     /** The SO_REUSEADDR socket setting. Defaults to true */
     private boolean reuseAddress = true;
 
-    /** The SO_TIMEOUT socket setting (in milliseconds). Defaults to 2000 (2 seconds) */
+    /**
+     * The SO_TIMEOUT socket setting (in milliseconds). Defaults to 2000 (2 seconds)
+     */
     private OptionalInt timeout = OptionalInt.of(2000);
 
-    /** Gets the SO_SNDBUF socket setting.
+    /**
+     * Gets the SO_SNDBUF socket setting.
      * 
      * @return the SO_SNDBUF socket setting
      */
@@ -30,22 +33,22 @@ public class SocketOptions {
         return sendBufferSize;
     }
 
-    /** Sets the SO_SNDBUF socket setting.
+    /**
+     * Sets the SO_SNDBUF socket setting.
      * 
      * @param sendBufferSize the SO_SNDBUF socket setting
      */
     public void setSendBufferSize(int sendBufferSize) {
         this.sendBufferSize = OptionalInt.of(sendBufferSize);
     }
-    
+
     /** Clears the SO_SNDBUF socket setting */
     public void clearSendBufferSize() {
         sendBufferSize = OptionalInt.empty();
     }
-    
 
-    
-    /** Gets the SO_RCVBUF socket setting.
+    /**
+     * Gets the SO_RCVBUF socket setting.
      * 
      * @return the SO_RCVBUF socket setting
      */
@@ -53,20 +56,22 @@ public class SocketOptions {
         return receiveBufferSize;
     }
 
-    /** Sets the SO_RCVBUF socket setting.
+    /**
+     * Sets the SO_RCVBUF socket setting.
      * 
      * @param receiveBufferSize the SO_RCVBUF socket setting
      */
     public void setReceiveBufferSize(int receiveBufferSize) {
         this.receiveBufferSize = OptionalInt.of(receiveBufferSize);
     }
-    
+
     /** Clears the SO_RCVBUF socket setting */
     public void clearReceiveBufferSize() {
         receiveBufferSize = OptionalInt.empty();
     }
 
-    /** Gets the SO_REUSEADDR socket setting.
+    /**
+     * Gets the SO_REUSEADDR socket setting.
      * 
      * @return the SO_REUSEADDR socket setting
      */
@@ -74,7 +79,8 @@ public class SocketOptions {
         return reuseAddress;
     }
 
-    /** Sets the SO_REUSEADDR socket setting.
+    /**
+     * Sets the SO_REUSEADDR socket setting.
      * 
      * @param reuseAddress the SO_REUSEADDR socket setting
      */
@@ -82,7 +88,8 @@ public class SocketOptions {
         this.reuseAddress = reuseAddress;
     }
 
-    /** Gets the SO_TIMEOUT socket setting (in milliseconds).
+    /**
+     * Gets the SO_TIMEOUT socket setting (in milliseconds).
      * 
      * @return the SO_TIMEOUT socket setting (in milliseconds)
      */
@@ -90,14 +97,15 @@ public class SocketOptions {
         return timeout;
     }
 
-    /** Sets the SO_TIMEOUT socket setting (in milliseconds).
+    /**
+     * Sets the SO_TIMEOUT socket setting (in milliseconds).
      * 
      * @param timeout the SO_TIMEOUT socket setting (in milliseconds)
      */
     public void setTimeout(int timeout) {
         this.timeout = OptionalInt.of(timeout);
     }
-    
+
     /** Clears the SO_TIMEOUT socket setting */
     public void clearTimeout() {
         timeout = OptionalInt.empty();

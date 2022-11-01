@@ -55,13 +55,15 @@ public interface TcpChannelIfc extends IoChannelIfc<MessageBuffer> {
      */
     void removeConnectionEstablishedListener(ConnectionEstablishedListener listener);
 
-    /** Add a listener to be notified when a connection is lost
+    /**
+     * Add a listener to be notified when a connection is lost
      * 
      * @param listener The listener
      */
     void addConnectionLostListener(ConnectionLostListener listener);
 
-    /** Remove a connection lost listener
+    /**
+     * Remove a connection lost listener
      * 
      * @param listener The listener to be removed
      */

@@ -21,7 +21,6 @@ public abstract class IoChannelTesterBase<T extends Exchangeable> {
     /** The queue used to store retrieved messages */
     protected BlockingQueue<T> messageQueue = new LinkedBlockingQueue<T>();
 
-
     /**
      * Test IO Channels
      * 
@@ -41,7 +40,7 @@ public abstract class IoChannelTesterBase<T extends Exchangeable> {
             for (int i = 0; i < 5; i++) {
                 output.send(testDataFactory.getTestData(i));
             }
-            
+
             Awaitility.await().atMost(10, TimeUnit.SECONDS).until(() -> messageQueue.size() == 5);
 
             System.out.println("messages: ");

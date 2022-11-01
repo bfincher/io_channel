@@ -9,11 +9,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 
 public class MessageBufferTest {
-    
+
     @Test
     public void test() {
-        byte[] bytes = {10, 11, 12, 13, 14, 20};
-        
+        byte[] bytes = { 10, 11, 12, 13, 14, 20 };
+
         long time = System.currentTimeMillis();
         MessageBuffer mb = new MessageBuffer(bytes, 1, 2);
         assertEquals(2, mb.getBytes().length);
@@ -32,34 +32,34 @@ public class MessageBufferTest {
         assertEquals(2, mb.getParentTransactionIds().size());
         assertEquals(5, mb.getParentTransactionIds().get(0).longValue());
         assertEquals(7, mb.getParentTransactionIds().get(1).longValue());
-        
+
         mb = new MessageBuffer(bytes);
         assertArrayEquals(bytes, mb.getBytes());
         assertNotEquals(0, mb.getTransactionId());
         assertEquals(0, mb.getParentTransactionIds().size());
-        
-        String expectedHexDump = mb.getTransactionId() + ", " + mb.getOriginationTime() + ", hex dump: 0a 0b 0c 0d 0e 14";
+
+        String expectedHexDump = mb.getTransactionId() + ", " + mb.getOriginationTime()
+                + ", hex dump: 0a 0b 0c 0d 0e 14";
         assertEquals(expectedHexDump, mb.toHexString());
-        
+
         MessageBuffer mb2 = MessageBuffer.fromHexString(mb.toHexString());
         assertArrayEquals(mb.getBytes(), mb2.getBytes());
-        
+
         assertEquals("0a 0b 0c 0d 0e 14", MessageBuffer.toHexString(bytes));
         mb2 = MessageBuffer.fromHexString(MessageBuffer.toHexString(bytes));
-        assertArrayEquals(bytes, mb2.getBytes());   
+        assertArrayEquals(bytes, mb2.getBytes());
     }
-    
-    
+
     @Test
     public void testConstructMultipleArrays() {
-        byte[] bytes1 = {1, 2, 3};
-        byte[] bytes2 = {4, 5, 6};
+        byte[] bytes1 = { 1, 2, 3 };
+        byte[] bytes2 = { 4, 5, 6 };
         MessageBuffer mb = new MessageBuffer(bytes1, bytes2);
-        
+
         byte[] bytes = mb.getBytes();
         assertEquals(6, bytes.length);
-        
-        byte[] expected = {1, 2, 3, 4, 5, 6};
+
+        byte[] expected = { 1, 2, 3, 4, 5, 6 };
         assertArrayEquals(expected, bytes);
     }
 
