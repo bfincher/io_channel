@@ -1,9 +1,0 @@
-#!/bin/bash
-
-function createLockFile {
-    echo $PPID > $1/.lock
-    echo $1
-}
-
-dir=$1
-[ -f $1/.lock ] && rm $1/.lock
