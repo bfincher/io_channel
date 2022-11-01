@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
 
 public class TransactionIdFactoryTest {
-    
+
     @Test
     public void test() {
         TransactionIdFactory.init(5, 7);

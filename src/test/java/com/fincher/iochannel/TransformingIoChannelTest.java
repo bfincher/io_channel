@@ -12,14 +12,13 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
 public class TransformingIoChannelTest {
-    
+
     public IoChannelIfc<MessageBuffer> getDelegate() {
         @SuppressWarnings("unchecked")
         IoChannelIfc<MessageBuffer> delegate = Mockito.mock(IoChannelIfc.class);
         return delegate;
     }
-    
-    
+
     public TestImplIfc getTestImpl(String id, IoChannelIfc<MessageBuffer> delegate) {
         return new TestImpl(id, delegate);
     }
@@ -66,11 +65,10 @@ public class TransformingIoChannelTest {
 
         channel.close();
     }
-    
-    
-    public static interface TestImplIfc extends TransformingIoChannelIfc<MessageBuffer, String, String>{
+
+    public static interface TestImplIfc extends TransformingIoChannelIfc<MessageBuffer, String, String> {
         void setBlowUpOnDecode(boolean val);
-        
+
         void handleMessage(MessageBuffer mb);
     }
 
@@ -82,7 +80,6 @@ public class TransformingIoChannelTest {
             super(id, delegate);
         }
 
-
         @Override
         protected String decode(MessageBuffer mb) throws ChannelException {
             if (blowUpOnDecode) {
@@ -91,19 +88,16 @@ public class TransformingIoChannelTest {
             return new String(mb.getBytes());
         }
 
-
         @Override
         protected MessageBuffer encode(String str) {
             return new MessageBuffer(str.getBytes());
         }
 
-
         @Override
         public void setBlowUpOnDecode(boolean val) {
             blowUpOnDecode = val;
         }
-        
-        
+
         @Override
         public void handleMessage(MessageBuffer mb) {
             super.handleMessage(mb);

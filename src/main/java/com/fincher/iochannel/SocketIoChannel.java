@@ -20,8 +20,9 @@ public abstract class SocketIoChannel extends IoChannel<MessageBuffer> {
      * 
      * @param id           The ID of this IO Thread
      * @param ioType       Is this IO Thread input, output, or both
-     * @param localAddress The local address to which this socket will be bound. If null "localhost"
-     *                     will be used that the OS will choose an available port
+     * @param localAddress The local address to which this socket will be bound. If
+     *                     null "localhost" will be used that the OS will choose an
+     *                     available port
      */
     protected SocketIoChannel(String id, IoType ioType, InetSocketAddress localAddress) {
         super(id, ioType);
@@ -34,8 +35,8 @@ public abstract class SocketIoChannel extends IoChannel<MessageBuffer> {
     }
 
     /**
-     * Get the local address to which this socket is bound or the address to which it will be bound
-     * if not already bound.
+     * Get the local address to which this socket is bound or the address to which
+     * it will be bound if not already bound.
      * 
      * @return the local address
      */

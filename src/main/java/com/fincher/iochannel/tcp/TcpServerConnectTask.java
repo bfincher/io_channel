@@ -24,12 +24,12 @@ import com.fincher.thread.CallableTask;
 class TcpServerConnectTask implements CallableTask<Socket> {
 
     private static final Logger LOG = Utilities.getInstance().getLogger(TcpServerConnectTask.class);
-    
+
     @FunctionalInterface
     interface CheckedSupplier extends Supplier<ServerSocket> {
-        
+
         ServerSocket checkedGet() throws IOException;
-        
+
         @Override
         default ServerSocket get() {
             try {
@@ -39,9 +39,9 @@ class TcpServerConnectTask implements CallableTask<Socket> {
             }
         }
     }
-    
+
     static final CheckedSupplier DEFAULT_SERVER_SOCKET_FACTORY = ServerSocket::new;
-    
+
     // This factory is only used for unit testing purposes
     static CheckedSupplier serverSocketFactory = DEFAULT_SERVER_SOCKET_FACTORY;
 
@@ -56,7 +56,7 @@ class TcpServerConnectTask implements CallableTask<Socket> {
 
     /** Is the server socket bound locally?. */
     private boolean serverSocketConnected = false;
-    
+
     /**
      * Construct a new TcpServerConnectTask.
      * 
@@ -135,7 +135,7 @@ class TcpServerConnectTask implements CallableTask<Socket> {
             }
         }
     }
-    
+
     // This method is here for unit testing purposes
     protected ServerSocket getServerSocket() {
         return serverSocket;

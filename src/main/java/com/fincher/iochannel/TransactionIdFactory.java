@@ -18,7 +18,7 @@ class TransactionIdFactory {
 
     /** The value of the next TID to be assigned. */
     private static AtomicLong nextTID = new AtomicLong(minTID);
-    
+
     private TransactionIdFactory() {
     }
 

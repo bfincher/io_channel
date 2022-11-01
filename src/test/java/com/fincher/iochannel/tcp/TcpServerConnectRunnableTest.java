@@ -90,7 +90,9 @@ public class TcpServerConnectRunnableTest {
 
     @Test
     public void testCreateWithIoException() throws Exception {
-        TcpServerConnectTask.serverSocketFactory = () -> { throw new IOException();};
+        TcpServerConnectTask.serverSocketFactory = () -> {
+            throw new IOException();
+        };
 
         assertThrows(IOException.class, () -> TcpServerConnectTask.create(server));
     }
@@ -161,13 +163,15 @@ public class TcpServerConnectRunnableTest {
         tcr.setCallSuperConnectSocket(true);
         assertTrue(tcr.connectSocket());
     }
-    
+
     @Test
     public void testCheckedSupplier() {
         TcpServerConnectTask.CheckedSupplier supplier1 = () -> null;
         assertNull(supplier1.get());
-                
-        TcpServerConnectTask.CheckedSupplier supplier2 = () -> {throw new IOException();};
+
+        TcpServerConnectTask.CheckedSupplier supplier2 = () -> {
+            throw new IOException();
+        };
         assertThrows(RuntimeException.class, () -> supplier2.get());
     }
 

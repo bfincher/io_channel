@@ -14,8 +14,8 @@ public enum ChannelState {
     CONNECTING,
 
     /**
-     * The socket has a connected peer. In the case of a TCP Server, the socket is still trying to
-     * accept additional peers.
+     * The socket has a connected peer. In the case of a TCP Server, the socket is
+     * still trying to accept additional peers.
      */
     CONNECTED,
 

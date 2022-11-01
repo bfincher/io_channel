@@ -30,7 +30,8 @@ class ReceiveTask extends AbstractReceiveTask {
      * 
      * @param id     The ID of this ReceiveTask
      * @param socket The TCP Socket
-     * @throws ChannelException If an error occurs while creating the socket connection
+     * @throws ChannelException If an error occurs while creating the socket
+     *                          connection
      */
     ReceiveTask(String id, Socket socket, StreamIo streamIo, TcpChannel parent)
             throws ChannelException {
@@ -44,7 +45,7 @@ class ReceiveTask extends AbstractReceiveTask {
             throw new ChannelException(e);
         }
     }
-    
+
     private void growBufIfNecessary(int offset, int length) {
         int bytesRemaining = buf.length - offset;
         int delta = length - bytesRemaining;
@@ -86,8 +87,8 @@ class ReceiveTask extends AbstractReceiveTask {
     }
 
     /**
-     * The body of the task. Reads data from the socket and places the received messages on a
-     * queue
+     * The body of the task. Reads data from the socket and places the received
+     * messages on a queue
      */
     @Override
     public void run() {

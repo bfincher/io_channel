@@ -1,52 +1,15 @@
-buildscript {
-  repositories {
-    mavenLocal()
-    if (project.hasProperty('localNexus')) {
-      maven {
-        url "${localNexus}"
-      }
-    } else {
-      mavenCentral()
-    }
-  }
-
-  dependencies {
-    classpath 'com.fincher:gradle-utilities:0.2.0'
-    classpath 'com.fincher:gradle-release:0.1.1'
-  }
-}
-
 plugins {
-  id 'java'
-  id 'maven-publish'
-  id 'jacoco'
-  id 'eclipse'
-  id "com.diffplug.spotless" version "6.11.0"
-  id 'checkstyle'
+  id 'com.fincher.release'
+  id 'com.fincher.java'
 }
-
-apply plugin: 'com.fincher.java.eclipse'
-apply plugin: 'com.fincher.java.checkstyle'
-apply plugin: 'com.fincher.release'
 
 group = 'com.fincher'
 description = 'Input / Output channels'
 sourceCompatibility = 1.17
 targetCompatibility = 1.17
 
-repositories {
-  mavenLocal()
-  if (project.hasProperty('localNexus')) {
-    maven {
-      url "${localNexus}"
-    }
-  } else {
-    mavenCentral()
-  }
-}
-
 dependencies {
-  implementation 'com.fincher:java-thread:4.2.1'
+  implementation 'com.fincher:java-thread:4.2.3'
   implementation 'com.google.guava:guava:31.1-jre'
   implementation 'org.apache.logging.log4j:log4j-slf4j-impl:2.19.0'
   testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.1'
@@ -55,62 +18,6 @@ dependencies {
   testImplementation 'org.mockito:mockito-core:4.8.0'
 }
 
-test {
-  useJUnitPlatform()
-}
-
-jacocoTestReport {
-  reports {
-    xml.required=true
-  }
-}
-
-test.finalizedBy jacocoTestReport
-
-task sourcesJar(type: Jar) {
-  from sourceSets.main.allJava
-  archiveClassifier.set("sources")
-}
-
-if (project.hasProperty("publishUsername") && 
-    project.hasProperty("publishPassword") &&
-    project.hasProperty("publishSnapshotUrl") &&
-    project.hasProperty("publishReleaseUrl")) {
-  publishing {
-    publications {
-      mavenJava(MavenPublication) {
-        from components.java
-	    artifact tasks.sourcesJar
-	  }
-    }
-
-    repositories {
-      maven {
-        if (project.hasProperty("publishUsername") && project.hasProperty("publishPassword")) { 
-          credentials {
-            username = "${publishUsername}"
-            password = "${publishPassword}"
-          }
-        }
-		
-       if (project.version.endsWith('-SNAPSHOT')) {
-	     url "${publishSnapshotUrl}"
-	    } else {
-	      url "${publishReleaseUrl}"
-	    }
-        authentication {
-          basic(BasicAuthentication)
-        }
-      }
-    }
-  }
-}
-
-tasks.checkstyleMain.dependsOn("copyCheckstyleConfig")
-
-checkstyle {
-  configDirectory = "${buildDir}/generated/checkstyleConfig" as File
-}
 
 release {
   if (project.hasProperty('sshKeyFile')) {

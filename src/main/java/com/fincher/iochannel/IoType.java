@@ -16,17 +16,18 @@ public enum IoType {
 
     /** The IO Thread is capable of both sending and receiving messages. */
     INPUT_AND_OUTPUT;
-    
-    
-    /** Is this IoType capable of receiving messages.
+
+    /**
+     * Is this IoType capable of receiving messages.
      * 
      * @return true if this IoType capable of receiving messages
      */
     public boolean isInput() {
         return this == INPUT_ONLY || this == INPUT_AND_OUTPUT;
     }
-    
-    /** Is this IoType capable of sending messages.
+
+    /**
+     * Is this IoType capable of sending messages.
      * 
      * @return true if this IoType capable of sending messages
      */

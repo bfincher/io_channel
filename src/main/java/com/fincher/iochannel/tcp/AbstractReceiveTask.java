@@ -24,9 +24,10 @@ abstract class AbstractReceiveTask implements RunnableTask {
 
     protected final TcpChannel parent;
 
-    /** Constructs a new AbstractReceiveTask.
+    /**
+     * Constructs a new AbstractReceiveTask.
      * 
-     * @param id The ID of this ReceiveTask
+     * @param id     The ID of this ReceiveTask
      * @param socket The TCP socket
      * @param parent The parent TCPChannel
      */
@@ -40,7 +41,6 @@ abstract class AbstractReceiveTask implements RunnableTask {
         return id;
     }
 
-
     public TcpChannel getParent() {
         return parent;
     }
@@ -50,7 +50,9 @@ abstract class AbstractReceiveTask implements RunnableTask {
         return continueExecution;
     }
 
-    /** The connection was lost so notify the parent that the connection was lost.*/
+    /**
+     * The connection was lost so notify the parent that the connection was lost.
+     */
     protected void closeSocket() throws ChannelException {
         continueExecution = false;
         terminate = true;

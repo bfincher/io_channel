@@ -21,8 +21,11 @@ pipeline {
       steps {
         script {
           
+          sh "wget https://nexus.fincherhome.com/nexus/service/local/repositories/releases/content/com/fincher/gradle-cache/0.0.1/gradle-cache-0.0.1.tgz -O /tmp/gradle-cache.tgz"
+          sh "tar -zxf /tmp/gradle-cache.tgz --directory /tmp"
+
           buildCacheDir = sh(
-              script: "src/main/resources/getBuildCache ${params.baseBuildCacheDir} ${params.buildCacheName}",
+              script: "/tmp/getBuildCache ${params.baseBuildCacheDir} ${params.buildCacheName}",
               returnStdout: true)
 
           gradleOpts = gradleOpts + " --gradle-user-home " + buildCacheDir
@@ -97,7 +100,7 @@ pipeline {
 
   post {
     always {
-      sh("src/main/resources/releaseBuildCache ${buildCacheDir}")
+      sh("/tmp/releaseBuildCache ${buildCacheDir}")
     }
   }
 }
