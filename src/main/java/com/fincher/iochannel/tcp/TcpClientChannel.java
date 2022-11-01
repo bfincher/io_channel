@@ -97,7 +97,7 @@ public class TcpClientChannel extends TcpChannel {
     /**
      * Called when the socket connection is lost.
      * 
-     * @param The socket what was lost
+     * @param socket The socket what was lost
      */
     @Override
     protected synchronized void connectionLost(Socket socket) throws ChannelException {
