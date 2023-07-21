@@ -1,5 +1,6 @@
 def performRelease = false
-def gradleOpts = "-s --build-cache -PlocalNexus=https://nexus.fincherhome.com/nexus/content/groups/public"
+def localNexusBaseUrl = 'http://nexus.dev:8081'
+def gradleOpts = "-s --build-cache -PlocalNexus=http://nexus.dev:8081/nexus/content/groups/public"
 def buildCacheDir = ""
 
 pipeline {
@@ -22,14 +23,14 @@ pipeline {
       steps {
         script {
           
-          sh "wget https://nexus.fincherhome.com/nexus/service/local/repositories/releases/content/com/fincher/gradle-cache/0.0.1/gradle-cache-0.0.1.tgz -O /tmp/gradle-cache.tgz"
+          sh "wget http://nexus.dev:8081/nexus/service/local/repositories/releases/content/com/fincher/gradle-cache/0.0.1/gradle-cache-0.0.1.tgz -O /tmp/gradle-cache.tgz"
           sh "tar -zxf /tmp/gradle-cache.tgz --directory /tmp"
 
           buildCacheDir = sh(
               script: "/tmp/getBuildCache ${params.baseBuildCacheDir} ${params.buildCacheName}",
               returnStdout: true)
               
-          gradleOpts = gradleOpts + " --gradle-user-home " + buildCacheDir
+          gradleOpts = gradleOpts + " --gradle-user-home " + buildCacheDir.trim()
           
           def releaseOptionCount = 0;
           def prepareReleaseOptions = "";
@@ -81,8 +82,8 @@ pipeline {
           
           if (performRelease || params.publish ) {
             def publishParams = '-PpublishUsername=${publishUsername} -PpublishPassword=${publishPassword}'
-            publishParams += ' -PpublishSnapshotUrl=https://nexus.fincherhome.com/nexus/content/repositories/snapshots'
-            publishParams += ' -PpublishReleaseUrl=https://nexus.fincherhome.com/nexus/content/repositories/releases'
+            publishParams += ' -PpublishSnapshotUrl=http://nexus.dev:8081/nexus/content/repositories/snapshots'
+            publishParams += ' -PpublishReleaseUrl=http://nexus.dev:8081/nexus/content/repositories/releases'
             withCredentials([usernamePassword(credentialsId: 'nexus.fincherhome.com', usernameVariable: 'publishUsername', passwordVariable: 'publishPassword')]) {
               sh "gradle publish  ${publishParams} ${gradleOpts}"
             }

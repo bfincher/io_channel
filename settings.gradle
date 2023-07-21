@@ -4,6 +4,7 @@ pluginManagement {
 
     maven {
       url "${localNexus}"
+      allowInsecureProtocol = true
     }
 
     gradlePluginPortal()
