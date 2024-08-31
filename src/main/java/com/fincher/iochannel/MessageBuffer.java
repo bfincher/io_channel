@@ -29,10 +29,10 @@ public class MessageBuffer implements Exchangeable {
     /**
      * Constructs a new MessageBuffer.
      * 
-     * @param bytes  The encoded message bytes
+     * @param bytes The encoded message bytes
      * @param offset The offset into the bytes array
      * @param length The length of the bytes array from offset which should be
-     *               copied into this MessageBuffer
+     *        copied into this MessageBuffer
      */
     public MessageBuffer(byte[] bytes, int offset, int length) {
         transactionId = TransactionIdFactory.getNextTid();

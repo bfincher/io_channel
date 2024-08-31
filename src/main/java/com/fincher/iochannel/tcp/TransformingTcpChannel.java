@@ -18,9 +18,9 @@ public abstract class TransformingTcpChannel<S, R>
     /**
      * Construct a new TransformingTcpChannel
      * 
-     * @param id       The ID of this channel
+     * @param id The ID of this channel
      * @param delegate The delegate channel which will execute the channel
-     *                 operations
+     *        operations
      */
     protected TransformingTcpChannel(String id, TcpChannelIfc delegate) {
         super(id, delegate);
@@ -36,7 +36,7 @@ public abstract class TransformingTcpChannel<S, R>
      * Send the message on the channel with the specified ID by first transforming
      * the message
      * 
-     * @param msg       The message to be transformed and sent
+     * @param msg The message to be transformed and sent
      * @param channelId The channel on which the message should be sent
      * @throws ChannelException If an exception occurs while transforming or sending
      */

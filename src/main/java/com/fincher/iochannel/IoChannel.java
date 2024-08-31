@@ -33,7 +33,7 @@ public abstract class IoChannel<T extends Exchangeable> implements IoChannelIfc<
     /**
      * Constructs a new IOChannel.
      * 
-     * @param id     The ID of this IO Thread
+     * @param id The ID of this IO Thread
      * @param ioType Is this IO Thread input, output, or both
      */
     protected IoChannel(String id, IoType ioType) {
@@ -74,8 +74,8 @@ public abstract class IoChannel<T extends Exchangeable> implements IoChannelIfc<
     /**
      * Handle a received message.
      * 
-     * @param mb        The message that was received
-     * @param logger    The Log4j Logger
+     * @param mb The message that was received
+     * @param logger The Log4j Logger
      * @param logString log information about the received message
      */
     protected void messageReceived(T mb, Logger logger, String logString) {
@@ -118,8 +118,8 @@ public abstract class IoChannel<T extends Exchangeable> implements IoChannelIfc<
     /**
      * Log the fact that this IoChannel is sending data.
      * 
-     * @param logger    The Log4jLogger
-     * @param message   The message being sent
+     * @param logger The Log4jLogger
+     * @param message The message being sent
      * @param logString Additional Log info
      */
     protected void logSend(Logger logger, T message, String logString) {

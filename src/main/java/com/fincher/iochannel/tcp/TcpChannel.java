@@ -64,13 +64,13 @@ public abstract class TcpChannel extends SocketIoChannel implements TcpChannelIf
      * Constructs a new TCP socket that is capable of both sending and receiving
      * data.
      * 
-     * @param id           The ID of this IO Channel
-     * @param ioType       Specifies the input/output status of this channel
-     * @param streamIo     Used to determine how many bytes should be read from the
-     *                     socket for each message
+     * @param id The ID of this IO Channel
+     * @param ioType Specifies the input/output status of this channel
+     * @param streamIo Used to determine how many bytes should be read from the
+     *        socket for each message
      * @param localAddress The local address to which this socket will be bound. If
-     *                     null "localhost" will be used that the OS will choose an
-     *                     available port
+     *        null "localhost" will be used that the OS will choose an
+     *        available port.
      */
     protected TcpChannel(String id, IoType ioType, InetSocketAddress localAddress, StreamIo streamIo) {
         super(id, ioType, localAddress);
@@ -98,7 +98,7 @@ public abstract class TcpChannel extends SocketIoChannel implements TcpChannelIf
     /**
      * Connect this socket.
      * 
-     * @throws ChannelException     If an error occurs while connecting
+     * @throws ChannelException If an error occurs while connecting
      * @throws InterruptedException if the task is interrupted
      */
     @Override
@@ -220,11 +220,11 @@ public abstract class TcpChannel extends SocketIoChannel implements TcpChannelIf
     /**
      * Sends a message on this channel.
      * 
-     * @param message   The message to send
+     * @param message The message to send
      * @param channelId The ID of the channel on which to send this message. "*" if
-     *                  sending to all channels
+     *        sending to all channels
      * @throws ChannelException If an exception occurs while sending or if the
-     *                          channelID does not exist
+     *         channelID does not exist
      */
     @Override
     public void send(MessageBuffer message, String channelId) throws ChannelException {
@@ -303,10 +303,12 @@ public abstract class TcpChannel extends SocketIoChannel implements TcpChannelIf
      * 
      * @param socket The socket that was lost
      * @throws ChannelException If an error occurs while handling the connection
-     *                          loss event
+     *         loss event
      */
     protected synchronized void connectionLost(Socket socket) throws ChannelException {
-        LOG.warn("{} {} connection lost", getId(), getSocketId(socket));
+        LOG.atWarn().setMessage("{} {} connection lost")
+                .addArgument(this::getId)
+                .addArgument(() -> getSocketId(socket));
 
         String socketId = getSocketId(socket);
         connectionLostListeners.getListeners().forEach(listener -> listener.connectionLost(socketId));
@@ -364,6 +366,7 @@ public abstract class TcpChannel extends SocketIoChannel implements TcpChannelIf
     }
 
     @Override
+    @SuppressWarnings("squid:S1185")
     protected void messageReceived(MessageBuffer mb, Logger logger, String logString) {
         super.messageReceived(mb, logger, logString);
     }

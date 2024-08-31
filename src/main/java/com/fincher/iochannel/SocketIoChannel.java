@@ -18,11 +18,11 @@ public abstract class SocketIoChannel extends IoChannel<MessageBuffer> {
     /**
      * Constructs a new SocketIoChannel.
      * 
-     * @param id           The ID of this IO Thread
-     * @param ioType       Is this IO Thread input, output, or both
+     * @param id The ID of this IO Thread
+     * @param ioType Is this IO Thread input, output, or both
      * @param localAddress The local address to which this socket will be bound. If
-     *                     null "localhost" will be used that the OS will choose an
-     *                     available port
+     *        null "localhost" will be used that the OS will choose an
+     *        available port
      */
     protected SocketIoChannel(String id, IoType ioType, InetSocketAddress localAddress) {
         super(id, ioType);
@@ -57,8 +57,8 @@ public abstract class SocketIoChannel extends IoChannel<MessageBuffer> {
     /**
      * Handle a received message.
      * 
-     * @param mb        The message that was received
-     * @param logger    The Log4j Logger
+     * @param mb The message that was received
+     * @param logger The Log4j Logger
      * @param logString log information about the received message
      */
     @Override

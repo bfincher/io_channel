@@ -28,10 +28,10 @@ class ReceiveTask extends AbstractReceiveTask {
     /**
      * Creates a new ReceiveTask object.
      * 
-     * @param id     The ID of this ReceiveTask
+     * @param id The ID of this ReceiveTask
      * @param socket The TCP Socket
      * @throws ChannelException If an error occurs while creating the socket
-     *                          connection
+     *         connection
      */
     ReceiveTask(String id, Socket socket, StreamIo streamIo, TcpChannel parent)
             throws ChannelException {
@@ -59,7 +59,7 @@ class ReceiveTask extends AbstractReceiveTask {
     /**
      * Read data from the socket.
      * 
-     * @param buf    The byte array used to store the result of the read
+     * @param buf The byte array used to store the result of the read
      * @param offset The index into buf used to store the result of the read
      * @param length The number of bytes that should be read
      * @throws IOException If an exception occurs while reading from the socket

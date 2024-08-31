@@ -24,8 +24,8 @@ public abstract class IoChannelTesterBase<T extends Exchangeable> {
     /**
      * Test IO Channels
      * 
-     * @param input           The input IoChannel
-     * @param output          The output IoChannel
+     * @param input The input IoChannel
+     * @param output The output IoChannel
      * @param testDataFactory Used to create test data
      */
     protected void test(IoChannelIfc<T> input, IoChannelIfc<T> output,

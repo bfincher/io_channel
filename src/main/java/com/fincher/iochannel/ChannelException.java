@@ -24,7 +24,7 @@ public class ChannelException extends IOException {
     /**
      * Construct a new ChannelException.
      * 
-     * @param msg   The Exception message
+     * @param msg The Exception message
      * @param cause The nested exception
      */
     public ChannelException(String msg, Throwable cause) {

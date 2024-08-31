@@ -147,7 +147,6 @@ class TcpServerConnectTask implements CallableTask<Socket> {
             serverSocket.bind(tcpServer.getlocalAddress());
             return true;
         } catch (BindException be) {
-            LOG.warn("{} {} ", tcpServer.getId(), be.getMessage());
             Utilities.sleep(this, tcpServer.getSocketSleepTime());
             throw be;
         }

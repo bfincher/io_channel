@@ -85,10 +85,10 @@ public class UdpChannel extends SocketIoChannel {
     /**
      * Constructs a new input only UDP IO Channel.
      * 
-     * @param id           The ID of this IO Channel
-     * @param ioType       The input/output status of this channel
+     * @param id The ID of this IO Channel
+     * @param ioType The input/output status of this channel
      * @param localAddress The local address to which this socket will be bound. If
-     *                     null "localhost" will be used
+     *        null "localhost" will be used
      */
     protected UdpChannel(String id, IoType ioType, InetSocketAddress localAddress) {
         super(id, ioType, localAddress);
@@ -99,10 +99,10 @@ public class UdpChannel extends SocketIoChannel {
     /**
      * Constructs a new output only UDP IO Channel.
      * 
-     * @param id            The ID of this IO Channel
-     * @param ioType        The input/output status of this channel
-     * @param localAddress  The local address to which this socket will be bound. If
-     *                      null "localhost" will be used
+     * @param id The ID of this IO Channel
+     * @param ioType The input/output status of this channel
+     * @param localAddress The local address to which this socket will be bound. If
+     *        null "localhost" will be used
      * @param remoteAddress The remote address to which messages will be sent
      */
     protected UdpChannel(String id, IoType ioType, InetSocketAddress localAddress, InetSocketAddress remoteAddress) {
@@ -115,10 +115,10 @@ public class UdpChannel extends SocketIoChannel {
     /**
      * Creates a new input only UDP IO Channel.
      * 
-     * @param id             The ID of this IO Channel
+     * @param id The ID of this IO Channel
      * @param messageHandler Used to notify clients of received data
-     * @param localAddress   The local address to which this socket will be bound.
-     *                       If null "localhost" will be used
+     * @param localAddress The local address to which this socket will be bound.
+     *        If null "localhost" will be used
      * @return a new input only UDP IO Channel
      */
     public static UdpChannel createInputChannel(String id, Consumer<MessageBuffer> messageHandler,
@@ -131,9 +131,9 @@ public class UdpChannel extends SocketIoChannel {
     /**
      * Creates a new input only UDP IO Channel.
      * 
-     * @param id           The ID of this IO Channel
+     * @param id The ID of this IO Channel
      * @param localAddress The local address to which this socket will be bound. If
-     *                     null "localhost" will be used
+     *        null "localhost" will be used
      * @return a new input only UDP IO Channel
      */
     public static UdpChannel createInputChannel(String id, InetSocketAddress localAddress) {
@@ -143,9 +143,9 @@ public class UdpChannel extends SocketIoChannel {
     /**
      * Constructs a new output only UDP IO Channel.
      * 
-     * @param id            The ID of this IO Channel
-     * @param localAddress  The local address to which this socket will be bound. If
-     *                      null "localhost" will be used
+     * @param id The ID of this IO Channel
+     * @param localAddress The local address to which this socket will be bound. If
+     *        null "localhost" will be used
      * @param remoteAddress The remote address to which messages will be sent
      * @return The newly created channel
      */

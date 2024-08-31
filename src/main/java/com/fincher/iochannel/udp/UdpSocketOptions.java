@@ -24,7 +24,7 @@ public class UdpSocketOptions extends SocketOptions {
      * Sets the options represented by this object to the given socket.
      * 
      * @param socketId The ID of the socket
-     * @param socket   The socket for which options will be set
+     * @param socket The socket for which options will be set
      * @throws ChannelException If an exception occurs while setting socket options
      */
     public void applySocketOptions(String socketId, DatagramSocket socket) throws ChannelException {

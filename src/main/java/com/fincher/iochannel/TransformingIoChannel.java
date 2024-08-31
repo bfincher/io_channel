@@ -27,7 +27,7 @@ public abstract class TransformingIoChannel<T extends Exchangeable, S, R>
     /**
      * Constructs a new TransformingIOChannel
      * 
-     * @param id       The ID of the channel
+     * @param id The ID of the channel
      * @param delegate The delegate to actually send/receive data
      */
     protected TransformingIoChannel(String id, IoChannelIfc<T> delegate) {

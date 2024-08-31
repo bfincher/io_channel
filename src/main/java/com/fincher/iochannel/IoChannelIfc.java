@@ -32,9 +32,9 @@ public interface IoChannelIfc<T extends Exchangeable> extends Closeable {
      * Adds a listener to be notified of received messages. Not applicable for
      * output only channels
      * 
-     * @param listener  The message listener
+     * @param listener The message listener
      * @param predicate A predicate to be evaluated upon receipt of a message to
-     *                  determine if this listener will be notified
+     *        determine if this listener will be notified
      */
     public void addMessageListener(Consumer<T> listener, Predicate<T> predicate);
 
@@ -49,7 +49,7 @@ public interface IoChannelIfc<T extends Exchangeable> extends Closeable {
     /**
      * Connects this IOChannel.
      * 
-     * @throws ChannelException     If an exception occurs while connecting
+     * @throws ChannelException If an exception occurs while connecting
      * @throws InterruptedException If the thread is interrupted
      */
     public void connect() throws ChannelException, InterruptedException;

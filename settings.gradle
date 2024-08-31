@@ -17,3 +17,21 @@ pluginManagement {
 }
 
 rootProject.name = 'io-channel'
+
+dependencyResolutionManagement {
+    repositories {
+        mavenLocal()
+
+        maven {
+            url "${localNexus}"
+            allowInsecureProtocol = true
+        }
+    }
+
+    versionCatalogs {
+        libs {
+            from("com.fincher:version-catalog:${versionCatalogVersion}")
+        }
+    }
+}
+

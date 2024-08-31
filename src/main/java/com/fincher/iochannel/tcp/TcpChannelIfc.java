@@ -19,11 +19,11 @@ public interface TcpChannelIfc extends IoChannelIfc<MessageBuffer> {
     /**
      * Sends a message on this channel.
      * 
-     * @param message   The message to send
+     * @param message The message to send
      * @param channelId The ID of the channel on which to send this message. "*" if
-     *                  sending to all channels
+     *        sending to all channels
      * @throws ChannelException If an exception occurs while sending or if the
-     *                          channelID does not exist
+     *         channelID does not exist
      */
     void send(MessageBuffer message, String channelId) throws ChannelException;
 
