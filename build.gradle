@@ -34,9 +34,9 @@ release {
 tasks.register("createJenkinsfile", CreateJenkinsfileTask)
 
 tasks.named('createJenkinsfile') {
-    agent = '{ label "docker-jdk17" }'
+    agent = '{ label "gradle-8.10-jdk11" }'
     buildSteps = ["sh 'gradle clean build ' + gradleOpts"]
-    localNexusBaseUrl = 'http://nexus.dev:8081'
-    publishReleaseUrl = 'http://nexus.dev:8081/nexus/content/repositories/releases'
-    publishSnapshotUrl = 'http://nexus.dev:8081/nexus/content/repositories/snapshots'
+    localNexusBaseUrl = 'http://nexus3:8081'
+    publishReleaseUrl = 'http://nexus3:8081/repository/releases'
+    publishSnapshotUrl = 'http://nexus3:8081/repository/snapshots'
 }
