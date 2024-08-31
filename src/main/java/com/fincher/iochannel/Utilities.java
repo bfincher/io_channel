@@ -49,12 +49,12 @@ public class Utilities {
      * Sleep for the given duration
      * 
      * @param synchronizer The object to synchronize on for the sleep (wait)
-     * @param duration     The duration to sleep
+     * @param duration The duration to sleep
      * @throws InterruptedException If interrupted while sleeping
      */
-    public static void sleep(Object synchronizer, Duration duration) throws InterruptedException {
+    public static void sleep(final Object synchronizer, Duration duration) throws InterruptedException {
         Instant sleepUntil = clock.instant().plus(duration);
-        synchronized (synchronizer) {
+        synchronized (synchronizer) { // NOSONAR
             Duration sleepTime = Duration.between(Instant.now(), sleepUntil);
             while (sleepTime.isNegative() || sleepTime.isZero()) {
                 synchronizer.wait(sleepTime.toSeconds(), sleepTime.getNano());

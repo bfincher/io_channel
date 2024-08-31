@@ -25,7 +25,7 @@ public interface StreamIo {
      * @param header The message header
      * @return the length of the message minus the header bytes
      * @throws IOException If an exception occurs while determining the message
-     *                     length
+     *         length
      */
     public int getMessageLength(byte[] header) throws IOException;
 

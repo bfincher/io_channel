@@ -32,12 +32,12 @@ public class UdpMulticastChannel extends UdpChannel {
     /**
      * Constructs a new UDP MULTICAST IO Channel.
      * 
-     * @param id               The ID of this IO Channel
-     * @param ioType           The input/output status of this channel
-     * @param localAddress     The local address to which this socket will be bound.
+     * @param id The ID of this IO Channel
+     * @param ioType The input/output status of this channel
+     * @param localAddress The local address to which this socket will be bound.
      * @param multicastAddress The multicast address to which this socket will join
      * @param networkInterface The network interface on which to join the multicast
-     *                         group.
+     *        group.
      */
     UdpMulticastChannel(String id, InetSocketAddress localAddress, InetAddress multicastAddress,
             NetworkInterface networkInterface) {
@@ -72,12 +72,12 @@ public class UdpMulticastChannel extends UdpChannel {
     /**
      * Creates a new input only UDP MULTICAST IO Channel.
      * 
-     * @param id               The ID of this IO Channel
-     * @param messageHandler   Used to notify clients of received data
-     * @param localAddress     The local address to which this socket will be bound.
+     * @param id The ID of this IO Channel
+     * @param messageHandler Used to notify clients of received data
+     * @param localAddress The local address to which this socket will be bound.
      * @param multicastAddress The multicast address to which this socket will join
      * @param networkInterface The network interface on which to join the multicast
-     *                         group.
+     *        group.
      * @return a new input only UDP MULTICAST IO Channel
      */
     public static UdpMulticastChannel createInputChannel(String id, Consumer<MessageBuffer> messageHandler,
@@ -90,11 +90,11 @@ public class UdpMulticastChannel extends UdpChannel {
     /**
      * Creates a new input only UDP MULTICAST IO Channel.
      * 
-     * @param id               The ID of this IO Channel
-     * @param localAddress     The local address to which this socket will be bound.
+     * @param id The ID of this IO Channel
+     * @param localAddress The local address to which this socket will be bound.
      * @param multicastAddress The multicast address to which this socket will join
      * @param networkInterface The network interface on which to join the multicast
-     *                         group.
+     *        group.
      * @return a new input only UDP MULTICAST IO Channel
      */
     public static UdpMulticastChannel createInputChannel(String id, InetSocketAddress localAddress,
@@ -105,10 +105,10 @@ public class UdpMulticastChannel extends UdpChannel {
     /**
      * Creates a new output only UDP IO Channel.
      * 
-     * @param id               The ID of this IO Channel
-     * @param localAddress     The local address to which this socket will be bound.
+     * @param id The ID of this IO Channel
+     * @param localAddress The local address to which this socket will be bound.
      * @param multicastAddress The remote multicast address to which messages will
-     *                         be sent
+     *        be sent
      * @return Creates a new output only UDP IO Channel
      */
     public static UdpMulticastChannel createOutputChannel(String id, InetSocketAddress localAddress,

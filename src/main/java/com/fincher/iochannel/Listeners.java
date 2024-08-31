@@ -29,9 +29,9 @@ public class Listeners<L, D> {
     /**
      * Add a listener
      * 
-     * @param listener  The listener
+     * @param listener The listener
      * @param predicate A predicate such that the listener will only be notified if
-     *                  the predicate matches
+     *        the predicate matches
      */
     public void addListener(L listener, Predicate<D> predicate) {
         listenerList.add(new ListenerEntry(listener, predicate));

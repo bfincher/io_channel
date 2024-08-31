@@ -26,7 +26,7 @@ public class TcpSocketOptions extends SocketOptions {
      * Sets the options represented by this object to the given TCP Socket.
      * 
      * @param socketId The ID of the socket
-     * @param socket   The socket for which options will be set
+     * @param socket The socket for which options will be set
      * @throws ChannelException If an exception occurs while applying socket options
      */
     public void applySocketOptions(String socketId, Socket socket) throws ChannelException {
@@ -70,7 +70,7 @@ public class TcpSocketOptions extends SocketOptions {
      * Sets the options represented by this object to the given TCP Server Socket.
      * 
      * @param socketId The ID of the socket
-     * @param socket   The socket for which options will be set
+     * @param socket The socket for which options will be set
      * @throws ChannelException If an exception occurs while setting socket options
      */
     public void applySocketOptions(String socketId, ServerSocket socket) throws ChannelException {

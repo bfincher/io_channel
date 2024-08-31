@@ -22,12 +22,12 @@ public class TcpServerChannel extends TcpChannel {
      * Constructs a new TCP server socket that is capable of both sending and
      * receiving data.
      * 
-     * @param id           The ID of this IO Channel
-     * @param ioType       Specifies the input/output status of this channel
-     * @param streamIo     Used to determine how many bytes should be read from the
-     *                     socket for each message
+     * @param id The ID of this IO Channel
+     * @param ioType Specifies the input/output status of this channel
+     * @param streamIo Used to determine how many bytes should be read from the
+     *        socket for each message
      * @param localAddress The local address to which this socket will be bound. If
-     *                     null "localhost" will be used
+     *        null "localhost" will be used
      */
     protected TcpServerChannel(String id, IoType ioType,
             StreamIo streamIo, InetSocketAddress localAddress) {
@@ -38,11 +38,11 @@ public class TcpServerChannel extends TcpChannel {
      * Creates a new TCP server socket that is capable of both sending and receiving
      * data.
      * 
-     * @param id           The ID of this IO Channel
-     * @param streamIo     Used to determine how many bytes should be read from the
-     *                     socket for each message
+     * @param id The ID of this IO Channel
+     * @param streamIo Used to determine how many bytes should be read from the
+     *        socket for each message
      * @param localAddress The local address to which this socket will be bound. If
-     *                     null "localhost" will be used
+     *        null "localhost" will be used
      * @return a new TCP server socket that is capable of both sending and receiving
      *         data
      */
@@ -55,12 +55,12 @@ public class TcpServerChannel extends TcpChannel {
      * Creates a new TCP server socket that is capable of both sending and receiving
      * data.
      * 
-     * @param id             The ID of this IO Channel
+     * @param id The ID of this IO Channel
      * @param messageHandler Used to notify clients of received data
-     * @param streamIo       Used to determine how many bytes should be read from
-     *                       the socket for each message
-     * @param localAddress   The local address to which this socket will be bound.
-     *                       If null "localhost" will be used
+     * @param streamIo Used to determine how many bytes should be read from
+     *        the socket for each message
+     * @param localAddress The local address to which this socket will be bound.
+     *        If null "localhost" will be used
      * @return a new TCP server socket that is capable of both sending and receiving
      *         data
      */
@@ -74,11 +74,11 @@ public class TcpServerChannel extends TcpChannel {
     /**
      * Creates a new TCP server socket that is capable of only sending data.
      * 
-     * @param id           The ID of this IO Channel
-     * @param streamIo     Used to determine how many bytes should be read from the
-     *                     socket for each message
+     * @param id The ID of this IO Channel
+     * @param streamIo Used to determine how many bytes should be read from the
+     *        socket for each message
      * @param localAddress The local address to which this socket will be bound. If
-     *                     null "localhost" will be used
+     *        null "localhost" will be used
      * @return a new TCP server socket that is capable of only sending data
      */
     public static TcpServerChannel createOutputOnly(String id, StreamIo streamIo, InetSocketAddress localAddress) {

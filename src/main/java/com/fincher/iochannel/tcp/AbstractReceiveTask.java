@@ -27,7 +27,7 @@ abstract class AbstractReceiveTask implements RunnableTask {
     /**
      * Constructs a new AbstractReceiveTask.
      * 
-     * @param id     The ID of this ReceiveTask
+     * @param id The ID of this ReceiveTask
      * @param socket The TCP socket
      * @param parent The parent TCPChannel
      */

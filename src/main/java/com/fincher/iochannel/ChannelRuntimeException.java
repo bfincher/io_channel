@@ -22,7 +22,7 @@ public class ChannelRuntimeException extends RuntimeException {
     /**
      * Construct a new ChannelException.
      * 
-     * @param msg   The Exception message
+     * @param msg The Exception message
      * @param cause The nested exception
      */
     public ChannelRuntimeException(String msg, Throwable cause) {

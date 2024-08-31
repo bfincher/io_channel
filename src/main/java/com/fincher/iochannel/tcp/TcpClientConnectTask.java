@@ -31,9 +31,9 @@ class TcpClientConnectTask implements CallableTask<Socket> {
     /**
      * Constructs a new TcpClientConnectTask.
      * 
-     * @param parent        The parent object
+     * @param parent The parent object
      * @param remoteAddress The remote address to which this client is trying to
-     *                      connect
+     *        connect
      */
     TcpClientConnectTask(TcpClientChannel parent, InetSocketAddress remoteAddress) {
         this.parent = parent;
@@ -48,7 +48,7 @@ class TcpClientConnectTask implements CallableTask<Socket> {
     @Override
     public Socket call() throws InterruptedException, IOException {
         try {
-            Socket socket = new Socket(remoteAddress.getAddress(), remoteAddress.getPort());
+            Socket socket = new Socket(remoteAddress.getAddress(), remoteAddress.getPort()); // NOSONAR
 
             socket.setSoTimeout(2000);
 
@@ -58,7 +58,6 @@ class TcpClientConnectTask implements CallableTask<Socket> {
             continueExecution = false;
             return socket;
         } catch (IOException ioe) {
-            LOG.error(parent.getId() + " " + ioe.getMessage(), ioe);
             Utilities.sleep(this, parent.getSocketSleepTime());
             throw ioe;
         }

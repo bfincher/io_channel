@@ -27,7 +27,7 @@ public interface TransformingIoChannelIfc<T extends Exchangeable, S, R> extends 
      * Add a listener to be notified when a transformed message is received by this
      * channel
      * 
-     * @param listener  The listener
+     * @param listener The listener
      * @param predicate A filter for this listener
      */
     public void addTransformedMessageListener(Consumer<R> listener, Predicate<R> predicate);
